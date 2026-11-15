@@ -31,6 +31,9 @@ def mat(name):
         c = P["colors"][name]; b.inputs["Base Color"].default_value = (*c, 1)
         b.inputs["Roughness"].default_value = {"glass": 0.05, "visor": 0.1, "nozzle": 0.45, "tire": 0.9}.get(name, 0.6)
         b.inputs["Metallic"].default_value = {"nozzle": 0.7, "strut": 0.3}.get(name, 0.05)
+        if name == "formation":
+            try: b.inputs["Emission Color"].default_value = (*c, 1); b.inputs["Emission Strength"].default_value = 0.6
+            except Exception: pass
         if name == "glass":
             b.inputs["Alpha"].default_value = 0.32
             try: m.surface_render_method = 'BLENDED'
@@ -219,9 +222,9 @@ for Sf in P["surfaces"]:
             ss = [s0] + [x[0] for x in Sf["stations"] if s0 + 1e-6 < x[0] < s1 - 1e-6] + [s1]
             ss2 = []
             for a, b in zip(ss, ss[1:]):
-                k = max(1, int((b - a) / 1.2 + 0.999)); ss2 += [a + (b - a) * i / k for i in range(k)]
+                k = max(1, int((b - a) / (1.2 / P.get("detail", 1)) + 0.999)); ss2 += [a + (b - a) * i / k for i in range(k)]
             ss2.append(ss[-1])
-            n = max(4, int((f1 - f0) * 18) + 2)
+            n = max(4, int((f1 - f0) * 18 * P.get("detail", 1)) + 2)
             fs = [f0 + (f1 - f0) * (0.5 - 0.5 * math.cos(math.pi * i / (n - 1))) for i in range(n)]
             bm = bmesh.new(); rings = []
             for i, s in enumerate(ss2):
@@ -346,6 +349,53 @@ if H:
   for v in bm.verts: v.co += B(*H["pivot"])
   finish(bm, "hook", ["dark", "white"], tuple(H["pivot"]), {"pivot": H["pivot"], "axis": [1, 0, 0]}, static=False)
 
+# ---------------- 細節零件（extras）----------------
+if P.get("extras"):
+    X = P["extras"]
+    # 空速管與攻角感測片（機鼻兩側）
+    for sg in (-1, 1):
+        bm = bmesh.new(); cyl(bm, (sg * 0.36, -0.02, -7.35), (sg * 0.36, -0.02, -7.95), 0.018, 1, 8); cyl(bm, (sg * 0.33, -0.02, -7.25), (sg * 0.36, -0.02, -7.40), 0.035, 1, 8)
+        box(bm, (sg * 0.47, 0.12, -6.55), (0.012, 0.07, 0.11), 1); finish(bm, "pitot", ["dark", "strut"])
+    # 機腹與背部天線
+    for x, y, z, h in X.get("blades", []):
+        bm = bmesh.new(); box(bm, (x, y, z), (0.022, h, 0.26), 0); finish(bm, "blade2", ["dark"])
+    # 進氣道分流板（內側薄板）
+    I = P["intake"]
+    for sg in (-1, 1):
+        bm = bmesh.new(); box(bm, (sg * (I["x"] - 0.47), -0.50, -2.55), (0.03, 0.78, 1.05), 0); finish(bm, "splitter", ["skin"])
+    # 編隊燈（綠色夜光條）：前機身兩側、垂尾外側、翼尖附近
+    for x, y, z, ry, ln in X.get("slime", []):
+        for sg in (-1, 1):
+            bm = bmesh.new(); box(bm, (sg * x, y, z), (0.012, 0.07, ln), 2, rz=sg * ry); finish(bm, "slime", ["skin", "dark", "formation"])
+    # 靜電放電刷（主翼、水平尾翼後緣）
+    for x, y, z in X.get("dischargers", []):
+        for sg in (-1, 1):
+            bm = bmesh.new(); cyl(bm, (sg * x, y, z), (sg * x, y, z + 0.28), 0.008, 1, 5, cap=False); finish(bm, "disch", ["dark", "strut"])
+    # 座艙罩邊框滑軌（兩側深色細條）
+    C = P["canopy"]; secs = catmull(C["sections"], 6)
+    for sg in (-1, 1):
+        bm = bmesh.new()
+        for a, b2 in zip(secs[1:-2], secs[2:-1]):
+            za, zb = a[0], b2[0]; xa, xb = sg * a[1] * 1.01, sg * b2[1] * 1.01
+            box(bm, ((xa + xb) / 2, a[4] + 0.015, (za + zb) / 2), (0.035, 0.035, abs(zb - za) + 0.01), 0)
+        finish(bm, "sill", ["dark"])
+    # 噴嘴內的後燃器襯套環（從後方看得到）
+    N = P["nozzle"]
+    for sg in (-1, 1):
+        bm = bmesh.new()
+        for z in (8.55, 8.8, 9.0):
+            r = N["sections"][1][1] * 0.86
+            loft(bm, [ring(bm, [z, r, r, r, N["y"], 2, 2], 28, N["x"] * sg), ring(bm, [z + 0.05, r * 0.93, r * 0.93, r * 0.93, N["y"], 2, 2], 28, N["x"] * sg)], 0, False, False)
+        finish(bm, "liner", ["nozzle"])
+    # 掛架防晃夾與掛鉤細節
+    for py in P["pylons"]:
+        for sg in (-1, 1):
+            yw, le, ch = wing_at(py["x"]); zc = le + ch * 0.42
+            bm = bmesh.new()
+            for dz in (-0.45, 0.45):
+                box(bm, (sg * py["x"], yw - 0.38, zc + dz), (0.2, 0.05, 0.05), 0)
+            finish(bm, "sway", ["dark"])
+
 # ---------------- 貼圖 ----------------
 sk = P["skin"]
 img = Image.new("RGB", (TW, TH)); px = img.load()
@@ -388,9 +438,19 @@ for reg in ("top", "bot", "R", "L"):
             a, b = pix(reg, 0, y0, z0), pix(reg, 0, y0 + h, z0 + w); base = sidecol(y0)
         dr.rectangle([min(a[0], b[0]), min(a[1], b[1]), max(a[0], b[0]), max(a[1], b[1])], fill=shade(base, random.uniform(0.95, 1.05)))
 LINE = sk["line"]
+RIV = P.get("rivets", False)
 def pline(reg, pts, k=LINE, w=1):
     q = [pix(reg, *p) for p in pts]; base = TOP if reg == "top" else BOT if reg == "bot" else sidecol(pts[0][1])
-    dr.line(q, fill=shade(base, k), width=w)
+    dr.line(q, fill=shade(base, k), width=max(1, int(w * TW / 2048)))
+    if RIV:  # 鉚釘：沿線兩側每 4 公分一點（以 4096 寬貼圖約 7 圖素）
+        rc = shade(base, 0.86)
+        for (x0, y0), (x1, y1) in zip(q, q[1:]):
+            L = math.hypot(x1 - x0, y1 - y0); n = int(L / 9)
+            if n < 1: continue
+            nx, ny = -(y1 - y0) / L * 3.5, (x1 - x0) / L * 3.5
+            for i in range(n + 1):
+                x, y = x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n
+                dr.point([(x + nx, y + ny), (x - nx, y - ny)], fill=rc)
 # 機身隔框線
 for z in [-6.9 + 0.95 * i for i in range(17)]:
     hw = 0.45 if z < -3 else 0.95 if z < -1 else 1.5
@@ -435,7 +495,59 @@ for reg in ("R", "L"):
     text(reg, sk["modex"], 0.05, -5.0, 0.30)
     text(reg, sk["code"], 1.55, 4.15, 0.55)
     text(reg, sk["modex"][-2:], 2.35, 4.75, 0.22)
-img = img.filter(ImageFilter.GaussianBlur(0.4))
+if P.get("extras"):
+    rnd = random.Random(7)
+    # 次要隔框線、縱向板線
+    for z in [-6.4 + 0.95 * i for i in range(16)]:
+        hw = 0.45 if z < -3 else 0.95 if z < -1 else 1.5
+        for reg in ("top", "bot"): pline(reg, [(-hw * 0.6, 0, z), (hw * 0.6, 0, z)], 0.88)
+        for reg in ("R", "L"): pline(reg, [(0, -0.6, z), (0, 0.5, z)], 0.88)
+    for reg in ("top", "bot"):
+        for sx in (-0.18, 0.18, -0.75, 0.75, -1.15, 1.15): pline(reg, [(sx, 0, -3.0 if abs(sx) > 0.5 else -6.6), (sx, 0, 7.8)], 0.86)
+    for reg in ("R", "L"):
+        for y in (0.45, -0.25, -0.85): pline(reg, [(0, y, -6.6), (0, y, 7.6)], 0.86)
+    # 檢修口（四角螺絲）
+    for reg in ("top", "bot", "R", "L"):
+        for _ in range(36):
+            if reg in ("top", "bot"): x0 = rnd.uniform(-1.3, 1.3); z0 = rnd.uniform(-6, 7); a, b = pix(reg, x0, 0, z0), pix(reg, x0 + rnd.uniform(.25, .6), 0, z0 + rnd.uniform(.2, .5)); base = TOP if reg == "top" else BOT
+            else: y0 = rnd.uniform(-0.8, 0.6); z0 = rnd.uniform(-6.5, 7); a, b = pix(reg, 0, y0, z0), pix(reg, 0, y0 + rnd.uniform(.15, .35), z0 + rnd.uniform(.25, .6)); base = sidecol(y0)
+            x0p, x1p, y0p, y1p = min(a[0], b[0]), max(a[0], b[0]), min(a[1], b[1]), max(a[1], b[1])
+            dr.rectangle([x0p, y0p, x1p, y1p], outline=shade(base, 0.8), width=2)
+            for px_, py_ in ((x0p + 5, y0p + 5), (x1p - 5, y0p + 5), (x0p + 5, y1p - 5), (x1p - 5, y1p - 5)): dr.ellipse([px_ - 2, py_ - 2, px_ + 2, py_ + 2], fill=shade(base, 0.7))
+    # 警告與維修字樣（小字，低可視度）
+    SF = ImageFont.truetype(FONT, int(TW / 2048 * 13))
+    def stamp(reg, s, x, y, z, k=0.62, rot=0):
+        cx, cy = pix(reg, x, y, z); base = TOP if reg == "top" else BOT if reg == "bot" else sidecol(y)
+        t = Image.new("RGBA", (int(len(s) * SF.size * 0.75) + 8, SF.size + 8), (0, 0, 0, 0)); ImageDraw.Draw(t).text((4, 2), s, font=SF, fill=shade(base, k) + (255,))
+        if rot: t = t.rotate(rot, expand=True)
+        img.paste(t, (int(cx - t.width / 2), int(cy - t.height / 2)), t)
+    for sg in (-1, 1):
+        stamp("top", "NO STEP", sg * 3.6, 0, 1.4, rot=90); stamp("top", "NO STEP", sg * 2.6, 0, 6.6, rot=90); stamp("top", "WALKWAY", sg * 0.75, 0, -2.0, rot=90)
+    for reg in ("R", "L"):
+        stamp(reg, "RESCUE", 0, 0.52, -4.9, 0.5); stamp(reg, "DANGER  JET INTAKE", 0, -0.62, -2.2, 0.55); stamp(reg, "EJECTION SEAT", 0, -0.12, -3.3, 0.55)
+        stamp(reg, "FUEL", 0, 0.2, 1.9); stamp(reg, "GND", 0, -0.75, 1.2); stamp(reg, "HYD", 0, -0.7, 3.4); stamp(reg, "NO STEP", 0, 0.55, 5.6)
+    # 走道虛線（邊條上方）
+    for sg in (-1, 1):
+        for i in range(10):
+            z = -4.2 + i * 0.32; a, b = pix("top", sg * 0.9, 0, z), pix("top", sg * 0.9, 0, z + 0.16); dr.line([a, b], fill=shade(TOP, 0.75), width=3)
+    # 機號（襟翼上方與機鼻起落架門）
+    BF = ImageFont.truetype(FONT, int(TW / 2048 * 30))
+    for sg in (-1, 1):
+        cx, cy = pix("top", sg * 2.9, 0, 3.2); t = Image.new("RGBA", (140 * TW // 2048, 50 * TW // 2048), (0, 0, 0, 0)); ImageDraw.Draw(t).text((t.width // 2, t.height // 2), sk["modex"], font=BF, fill=shade(TOP, 0.7) + (255,), anchor="mm")
+        t = t.rotate(-90 if sg > 0 else 90, expand=True); img.paste(t, (int(cx - t.width / 2), int(cy - t.height / 2)), t)
+    # 髒污：沿氣流方向的灰色條紋、噴嘴附近的燻黑
+    ov = Image.new("RGBA", (TW, TH), (0, 0, 0, 0)); od = ImageDraw.Draw(ov)
+    for reg in ("top", "bot", "R", "L"):
+        for _ in range(220):
+            if reg in ("top", "bot"): x0 = rnd.uniform(-5.5, 5.5); z0 = rnd.uniform(-6, 7); a, b = pix(reg, x0, 0, z0), pix(reg, x0, 0, z0 + rnd.uniform(.3, 1.6))
+            else: y0 = rnd.uniform(-0.9, 0.7); z0 = rnd.uniform(-6.5, 7); a, b = pix(reg, 0, y0, z0), pix(reg, 0, y0, z0 + rnd.uniform(.3, 1.4))
+            od.line([a, b], fill=(30, 32, 30, rnd.randint(8, 22)), width=rnd.randint(2, 7))
+        for _ in range(60):
+            if reg in ("top", "bot"): x0 = rnd.uniform(-1.6, 1.6); z0 = rnd.uniform(6.8, 9.1); c0 = pix(reg, x0, 0, z0)
+            else: y0 = rnd.uniform(-0.5, 0.6); z0 = rnd.uniform(6.8, 9.1); c0 = pix(reg, 0, y0, z0)
+            r = rnd.uniform(15, 50) * TW / 2048; od.ellipse([c0[0] - r, c0[1] - r * .5, c0[0] + r, c0[1] + r * .5], fill=(25, 22, 20, rnd.randint(10, 26)))
+    ov = ov.filter(ImageFilter.GaussianBlur(3 * TW / 2048)); img = Image.alpha_composite(img.convert("RGBA"), ov).convert("RGB"); dr = ImageDraw.Draw(img)
+img = img.filter(ImageFilter.GaussianBlur(0.4 * TW / 2048))
 noise = Image.effect_noise((TW // 4, TH // 4), 40).resize((TW, TH), Image.BILINEAR).filter(ImageFilter.GaussianBlur(2))
 img = Image.blend(img, Image.merge("RGB", [noise] * 3).point(lambda v: v), 0.05)
 img.save(TEX_PATH)

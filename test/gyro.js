@@ -12,7 +12,7 @@ await p.tap('[data-c="1"]');for(let i=0;i<5;i++){await send(...dev(0,0));await p
 console.log('啟用後',await p.evaluate(()=>JSON.stringify({on:__G.GY.on,ok:__G.GY.ok,msg:document.getElementById('gyMsg').textContent})));
 await p.tap('#mFree');await p.waitForTimeout(300);
 const st=()=>p.evaluate(()=>{const P=__G.P,V=P.pos.constructor;const r=new V(1,0,0).applyQuaternion(P.q),u=new V(0,1,0).applyQuaternion(P.q);return{bank:Math.round(Math.atan2(-r.y,u.y)*57.3),hdg:Math.round(Math.atan2(P.vel.x,-P.vel.z)*57.3),alt:P.pos.y|0,roll:+__G.GY.roll.toFixed(2),pitch:+__G.GY.pitch.toFixed(2)}});
-const hold=async(label,r,t,ms)=>{const o=[];const t0=Date.now();while(Date.now()-t0<ms){await send(...dev(r,t));await p.waitForTimeout(100);if(o.length<99)o.push(await st())}console.log(label,o.filter((_,i)=>i%3===0).map(x=>`坡${x.bank} 向${x.hdg} 高${x.alt}`).join(' | '),' 輸入',o[o.length-1].roll,o[o.length-1].pitch)};
+const hold=async(label,r,t,ms)=>{const o=[];const t0=Date.now();while(Date.now()-t0<ms){for(let j=0;j<8;j++)await send(...dev(r,t));await p.waitForTimeout(100);if(o.length<99)o.push(await st())}console.log(label,o.filter((_,i)=>i%3===0).map(x=>`坡${x.bank} 向${x.hdg} 高${x.alt}`).join(' | '),' 輸入',o[o.length-1].roll,o[o.length-1].pitch)};
 await p.evaluate(()=>{__G.M.paused=true;const P=__G.P;P.pos.set(0,2000,-1500);P.vel.set(0,0,-230);P.q.set(0,0,0,1);P.thr=P.thrAct=.85;__G.M.paused=false});
 await hold('水平拿著',0,0,1500);
 await hold('往右傾 20 度',20,0,3000);
