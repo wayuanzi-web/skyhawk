@@ -1,0 +1,1 @@
+const {open}=require('./lib');(async()=>{for(const q of process.argv.slice(2)){const {b,p,errs}=await open({viewport:{width:1600,height:1000}},'test/insp.html?'+q);await p.waitForFunction(()=>window.done,{timeout:30000});console.log(q,await p.evaluate(()=>window.done),errs.join('|'));await p.screenshot({path:'test/insp_'+q.replace(/[^a-z0-9]/gi,'_')+'.png'});await b.close()}})();

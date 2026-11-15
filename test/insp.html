@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><body style="margin:0;background:#b8cfe0"><canvas id=c width=1600 height=1000></canvas>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type=module>
+import * as THREE from 'three';import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
+const r=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});r.setScissorTest(true);r.toneMapping=THREE.ACESFilmicToneMapping;
+const sc=new THREE.Scene();sc.background=new THREE.Color(0xb8cfe0);sc.add(new THREE.HemisphereLight(0xdfeeff,0x6a6a58,1.4));const s=new THREE.DirectionalLight(0xffffff,2.0);s.position.set(.3,1,.5);sc.add(s);
+const q=new URLSearchParams(location.search),set=q.get('set')||'ortho';
+const L=new GLTFLoader();L.setMeshoptDecoder(MeshoptDecoder);
+L.load('../assets/fa18e.glb',g=>{sc.add(g.scene);for(const n of ['LOD1','LOD2','LOD3'])g.scene.getObjectByName(n).visible=false;
+ if(q.get('defl')){const _q=new THREE.Quaternion(),_v=new THREE.Vector3();const A={flapL:.52,flapR:.52,lefILx:0,ailL:.38,ailR:-.38,stabL:-.3,stabR:-.3,rudL:-.55,rudR:.55,hook:.66,lefIL:-.25,lefIR:-.25,lefOL:-.25,lefOR:-.25};
+  g.scene.traverse(o=>{const u=o.userData;if(u&&u.pivot&&A[o.name]!==undefined){const pv=new THREE.Vector3(...u.pivot),ax=new THREE.Vector3(...u.axis).normalize();_q.setFromAxisAngle(ax,A[o.name]);_v.copy(o.position).sub(pv).applyQuaternion(_q).add(pv);o.position.copy(_v);o.quaternion.premultiply(_q)}})}
+ if(q.get('clean')){for(const n of ['bomb0','bomb1','bomb2','bomb3','gear'])g.scene.getObjectByName(n).visible=false}
+ const O=(w,h,sz)=>{const c=new THREE.OrthographicCamera(-sz*w/h,sz*w/h,sz,-sz,.1,200);return c};
+ let views;
+ if(set==='ortho')views=[[0,500,800,500,'side',[40,0.4,0],[0,0.4,0],7],[800,500,800,500,'top',[0,40,0.001],[0,0,0],7],[0,0,800,500,'front',[0,0.4,-40],[0,0.4,0],5],[800,0,800,500,'rear',[0,0.4,40],[0,0.4,0],5]];
+ else if(set==='defl')views=[[0,500,800,500,'p',[-13,5,17],[0,0,2],30],[800,500,800,500,'p',[13,-5,17],[0,-.5,3],30],[0,0,800,500,'side',[40,0,0],[0,0,0],6],[800,0,800,500,'p',[-12,2,-14],[0,0,-1],30]];
+ else if(set==='zoom')views=[[0,0,1600,1000,'p',[12,-3,-14],[-4,-0.2,1],22]];
+ else views=[[0,500,800,500,'p',[-14,4,-16],[0,0,-1.5],30],[800,500,800,500,'p',[12,-3,-14],[0,-0.5,-3],30],[0,0,800,500,'p',[-11,7,13],[0,0.5,3],30],[800,0,800,500,'p',[3.5,1.6,-9.5],[0,0.4,-5.5],36]];
+ for(const [x,y,w,h,k,pos,at,sz] of views){r.setViewport(x,y,w,h);r.setScissor(x,y,w,h);let cam;
+  if(k==='p'){cam=new THREE.PerspectiveCamera(sz,w/h,.1,300)}else cam=O(w,h,sz);
+  cam.position.set(...pos);cam.up.set(0,1,0);if(k==='top')cam.up.set(0,0,-1);cam.lookAt(...at);r.render(sc,cam)}
+ window.done=1},undefined,e=>window.done='ERR '+e);
+</script></body></html>

@@ -1,0 +1,11 @@
+const {open}=require('./lib');const tag=process.argv[2]||'c';(async()=>{const {b,p,errs}=await open({viewport:{width:844,height:390}});await p.waitForFunction(()=>window.__G&&__G.PARTS,{timeout:30000});await p.waitForTimeout(1500);
+await p.screenshot({path:`test/l2_${tag}_menu.png`});
+const shot=async(name,setup,camf)=>{await p.evaluate(([s,c])=>{const G=__G,P=G.P;eval(s);const o=eval('('+c+')');const T=P.pos.constructor;window.__CAMO={p:new T(...o.p),l:new T(...o.l),fov:o.fov}},[setup,camf]);await p.waitForTimeout(800);await p.screenshot({path:`test/l2_${tag}_${name}.png`})};
+const st="G.start('mission');G.M.paused=true;G.run(.3);G.M.paused=true";
+await shot('over',st,"{p:[160,110,-230],l:[0,10,10],fov:50}");
+await shot('stern',st,"{p:[-40,40,420],l:[0,15,0],fov:45}");
+await shot('island',st,"{p:[-5,30,-5],l:[30,40,35],fov:55}");
+await shot('bow',st,"{p:[-70,12,-260],l:[0,20,-80],fov:45}");
+await shot('appr',"G.start('land');G.M.paused=true;G.run(.2);G.M.paused=true","{p:[0,0,0],l:[0,0,0],fov:0}");
+await p.evaluate(()=>{window.__CAMO=null;__G.M.paused=false});await p.waitForTimeout(500);await p.screenshot({path:`test/l2_${tag}_appr.png`});
+console.log(errs.join('|')||'no errors');await b.close()})();

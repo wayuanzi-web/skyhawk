@@ -1,0 +1,4 @@
+const {open}=require('./lib');(async()=>{const {b,p,errs}=await open();await p.waitForFunction(()=>window.__G&&__G.PARTS,{timeout:30000});await p.waitForTimeout(1000);
+await p.evaluate(()=>{const G=__G,P=G.P,M=G.M;G.start('free');M.paused=true;P.pos.set(0,1500,-3000);P.vel.set(0,0,-260);P.q.set(0,0,0,1);P.thr=P.thrAct=1;P.gear=false;P.gearT=0;M.paused=false;window.__AIM=setInterval(()=>P.aim.set(1,-.05,.2).normalize(),30)});
+await p.waitForTimeout(3500);const st=await p.evaluate(()=>({g:__G.P.g.toFixed(1),n:__G.P.pos.y|0}));await p.evaluate(()=>{const P=__G.P,T=P.pos.constructor;window.__CAMO={p:P.pos.clone().add(new T(-10,6,30).applyQuaternion(P.q)),l:P.pos.clone(),fov:50}});await p.waitForTimeout(200);
+await p.screenshot({path:'test/vtx.png'});console.log(st,errs.join('|')||'no errors');await b.close()})();
