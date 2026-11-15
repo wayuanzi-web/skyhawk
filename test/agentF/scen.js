@@ -1,0 +1,42 @@
+// 全部情境：PAGE=test/agentF/base.html（原版）或 test/agentF/exp.html（修正版）；輸出 JSON 與摘要表
+const {boot,metrics,fmt}=require('./h');const fs=require('fs');
+const EZ='document.querySelector(\'[data-c="0"]\').click();';
+const GYON='document.querySelector(\'[data-c="1"]\').click();';
+const AIMON='document.querySelector(\'[data-c="2"]\').click();';
+const S=[];const add=(name,setup,seq,holdSeg)=>S.push({name,setup,seq,holdSeg});
+const lvl=(kt,extra)=>Object.assign({alt:1500,kt,pre:EZ},extra||{});
+for(const a of [.2,.4,.7,1])add(`簡易 右推${a} 3秒→放開`,lvl(450),[[3,a,0,true],[4,0,0,false]]);
+add('簡易 右推0.4 8秒→放開(穩態)',lvl(450),[[8,.4,0,true],[4,0,0,false]]);
+add('簡易 右滿3秒→左滿3秒→放開',lvl(450),[[3,1,0,true],[3,-1,0,true],[4,0,0,false]],1);
+add('簡易 右上斜推(.7,-.7) 3秒',lvl(450),[[3,.7,-.7,true],[4,0,0,false]]);
+add('簡易 右下斜推(.7,.7) 3秒',lvl(450,{alt:3000}),[[3,.7,.7,true],[4,0,0,false]]);
+add('簡易 右滿3秒→再往下推(1,.8)',lvl(450,{alt:3000}),[[3,1,0,true],[3,.78,.62,true],[4,0,0,false]],0);
+add('簡易 右滿3秒→直接往下推(0,1)',lvl(450,{alt:3000}),[[3,1,0,true],[3,0,1,true],[4,0,0,false]],0);
+add('簡易 右滿3秒→再往上推(1,-.8)',lvl(450,{alt:3000}),[[3,1,0,true],[3,.78,-.62,true],[4,0,0,false]],0);
+add('簡易 低速150節 右推0.7',lvl(150,{thr:1}),[[3,.7,0,true],[4,0,0,false]]);
+add('簡易 低速150節 右推1.0',lvl(150,{thr:1}),[[3,1,0,true],[4,0,0,false]]);
+add('簡易 高速550節 右推0.4',lvl(550,{thr:1}),[[3,.4,0,true],[4,0,0,false]]);
+add('簡易 高速550節 右推1.0',lvl(550,{thr:1}),[[3,1,0,true],[4,0,0,false]]);
+add('任務 彈射後 右推0.3 2秒',{mode:'mission',pre:EZ+'G.P.thr=G.P.thrAct=1;G.act.launch();'},[[7,0,0,'none'],[2,.3,-.2,true],[4,0,0,false]],1);
+add('峽谷 右推0.3 2秒→左0.3 2秒',{mode:'mission',cp:1,pre:EZ},[[1,0,0,'none'],[2,.3,0,true],[2,-.3,0,true],[12,0,0,false]],1);
+// 峽谷跟隨：真人沿谷中心線修正（每 0.3 秒看一次，誤差大才推，推完放開）
+add('峽谷 跟隨中心線 40秒',{mode:'mission',cp:1,pre:EZ},[[40,0,0,'none',`const P=G.P;if(ph!=='tick')return;G._k=(G._k||0)+1;if(G._k%3)return;const u=-P.pos.z,L=550,tx=G.xc(u+L),des=Math.atan2(tx-P.pos.x,L);const V=P.vel.length();let he=Math.atan2(P.vel.x,-P.vel.z)-des;const r=new P.pos.constructor(1,0,0).applyQuaternion(P.q),up=new P.pos.constructor(0,1,0).applyQuaternion(P.q),bk=Math.atan2(-r.y,up.y);const want=Math.max(-1.3,Math.min(1.3,-he*9));const c=Math.max(-1,Math.min(1,Math.sign(want)*Math.pow(Math.abs(want)/1.3,1.1)));const gm=Math.asin(P.vel.y/V);const ae=(P.pos.y-(G.floorOf(u+400)+70))/60+gm*4;const ey=Math.max(-.35,Math.min(.35,ae*.2));G.inp.ezOn=true;P.ezRel=false;G.inp.ex=Math.abs(c)<.05?0:c;G.inp.ey=Math.abs(ey)<.06?0:ey;`]]);
+for(const d of [10,25,40])add(`體感 右傾${d}° 4秒→回正`,{alt:1500,kt:450,pre:GYON},[[1,0,0,'gy'],[4,d,0,'gy'],[4,0,0,'gy']],1);
+add('指向圈 右30°',{alt:1500,kt:450,pre:AIMON},[[6,0,0,'aim',[.5,0,-.866]]],0);
+add('指向圈 右90°',{alt:1500,kt:450,pre:AIMON},[[6,0,0,'aim',[1,0,0]]],0);
+add('指向圈 右160°',{alt:1500,kt:450,pre:AIMON},[[8,0,0,'aim',[.34,0,.94]]],0);
+add('指向圈 下方60°',{alt:4000,kt:450,pre:AIMON},[[6,0,0,'aim',[0,-.866,-.5]]],0);
+add('左手搖桿 右滿1秒→放',{alt:1500,kt:450,pre:EZ},[[1,1,0,'stick'],[4,0,0,'stickoff']],0);
+add('左手搖桿 右半0.4秒→放',{alt:1500,kt:450,pre:EZ},[[.4,.5,0,'stick'],[4,0,0,'stickoff']],0);
+add('GCAS 300m 坡70 俯衝20 觸發',{alt:300,kt:450,bank:70,dive:20,pre:EZ+'G.P.ezRel=true;'},[[5,0,0,'none']],0);
+add('GCAS 400m 倒飛150 俯衝25 觸發',{alt:450,kt:450,bank:150,dive:25,pre:EZ+'G.P.ezRel=true;'},[[5,0,0,'none']],0);
+add('簡易 往下推到底3秒(不按特技)',lvl(450,{alt:3000}),[[3,0,1,true],[5,0,0,false]]);
+add('簡易 右滿+往下推到底3秒(不按特技)',lvl(450,{alt:3000}),[[2,1,0,true],[3,.2,.98,true],[5,0,0,false]]);
+add('特技 副翼滾(按鈕)',lvl(450,{alt:3000}),[[1,0,0,false],[4,0,0,false,"if(ph==='start'&&G.trick)G.trick()"],[3,0,0,false]],1);
+add('特技 Split-S(往下推+按鈕) 3000m',lvl(400,{alt:3000}),[[.5,0,1,true],[9,0,1,true,"if(ph==='start'&&G.trick)G.trick()"],[4,0,0,false]],1);
+add('特技 Split-S 高度不足 1000m',lvl(400,{alt:1000}),[[.5,0,1,true],[3,0,1,true,"if(ph==='start'&&G.trick)G.trick()"],[3,0,0,false]],1);
+(async()=>{const {b,p,errs}=await boot();const only=process.argv[2]?new RegExp(process.argv[2]):null;const res=[];
+for(const s of S){if(only&&!only.test(s.name))continue;const L=await p.evaluate(([st,seq])=>__seq(st,seq),[s.setup,s.seq]);const m=metrics(L,{holdSeg:s.holdSeg});res.push({name:s.name,m,L});
+ console.log(`\n== ${s.name} ==\n ${JSON.stringify(m)}`);if(process.env.V)console.log('   '+fmt(L,+process.env.V||4))}
+const tag=(process.env.PAGE||'base').includes('exp')?'exp':'base';fs.writeFileSync(__dirname+`/res_${tag}${process.argv[2]?'_part':''}.json`,JSON.stringify(res.map(r=>({name:r.name,m:r.m,L:r.L}))));
+console.log(errs.join('|')||'no errors');await b.close()})();

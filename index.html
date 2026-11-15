@@ -63,12 +63,13 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
   <div class="btn" id="bFlap">襟翼</div>
   <div class="btn" id="bHook">尾鉤</div>
   <div class="btn" id="bAT">自動油門</div>
+  <div class="btn" id="bTrick" style="grid-column:2">特技</div>
 </div>
 <div class="btn" id="bBrake">減速板</div>
 <div class="btn" id="bView">視角</div>
 <div class="panel" id="menu"><div class="box">
   <h1>怒海雄鷹</h1>
-  <div class="sub">試飛版 0.11 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
+  <div class="sub">試飛版 0.12 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
   <div id="resume" class="row" style="display:none"><button class="mb pri" id="mResume">繼續</button><button class="mb" id="mRetry">從檢查點重來</button><button class="mb" id="mHome">回主選單</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操作靈敏度</span><button class="mb" data-s="0" style="min-width:64px">低</button><button class="mb" data-s="1" style="min-width:64px">中</button><button class="mb" data-s="2" style="min-width:64px">高</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">時段</span><button class="mb" data-tod="0" style="min-width:64px">白天</button><button class="mb" data-tod="1" style="min-width:64px">黃昏</button></div>
@@ -566,7 +567,7 @@ const fwd=V3(),up=V3(),right=V3(),vb=V3(),vh=V3(),qi=new THREE.Quaternion(),t1=V
 const mass=()=>AC.M0+P.bombs*AC.BOMB;
 function say(s,t=4){M.msg=s;M.msgT=t}
 function setAtt(psi,th){P.psi=psi;P.th=th;eul.set(th,psi,0);P.q.setFromEuler(eul)}
-function spawn(cp){M.cp=cp;P.hold=null;P.ovr=null;P.bt=0;P.simT=0;clearCombat();P.m9=2;P.m120=2;P.agm=4;P.cm=30;M.stage=null;M.stT=0;M.samL=0;M._r1=0;if(cp===0){CB.kills=0;CB.dodged=0;resetGU()}if(cp>=3&&M.mode==='mission'){M.tgt=false;beam.visible=bunker.visible=ring.visible=false}M.msgT=0;M._l=0;M.sam=0;M.gate=0;M._o=0;P.w.set(0,0,0);P.acc.set(0,0,0);P.hp=100;P.ammo=578;P.onDeck=false;P.catT=0;P.state='fly';P.brake=false;P.g=P.gAvg=1;M.lock=0;M.over=false;M.failT=0;
+function spawn(cp){M.cp=cp;P.hold=null;P.man=null;P.manCd=0;P.ovr=null;P.bt=0;P.simT=0;clearCombat();P.m9=2;P.m120=2;P.agm=4;P.cm=30;M.stage=null;M.stT=0;M.samL=0;M._r1=0;if(cp===0){CB.kills=0;CB.dodged=0;resetGU()}if(cp>=3&&M.mode==='mission'){M.tgt=false;beam.visible=bunker.visible=ring.visible=false}M.msgT=0;M._l=0;M.sam=0;M.gate=0;M._o=0;P.w.set(0,0,0);P.acc.set(0,0,0);P.hp=100;P.ammo=578;P.onDeck=false;P.catT=0;P.state='fly';P.brake=false;P.g=P.gAvg=1;M.lock=0;M.over=false;M.failT=0;
   shells.items.length=0;bullets.items.length=0;for(const b of bombs)scene.remove(b.m);bombs.length=0;
   const air=(x,y,z,psi,v,th=0)=>{P.pos.set(x,y,z);setAtt(psi,th);P.vel.set(0,0,-1).applyQuaternion(P.q).multiplyScalar(v);P.thr=P.thrAct=.8;P.gear=P.flaps=P.hook=false;P.at=false};
   const lim=LIM[M.diff];
@@ -587,31 +588,66 @@ function spawn(cp){M.cp=cp;P.hold=null;P.ovr=null;P.bt=0;P.simT=0;clearCombat();
 const clOf=a=>{const s=sstep(.5,.95,Math.abs(a));return AC.CLA*a*(1-s)+Math.sin(2*a)*s};
 /* 飛行控制：像真飛機一樣「壓坡度＋拉桿」轉彎。
    bankG(坡度目標, 需要的 G) → 滾轉量與攻角指令；坡度最多 78 度，不會翻過頭。 */
-const BANKMAX=1.44;
-function bankG(bankT,nT){const V=Math.max(30,P.vel.length()),rho=1.225*Math.exp(-P.pos.y/8500),qS=Math.max(1,.5*rho*V*V*AC.S),W=mass()*G0,clF=P.flaps?AC.CLFLAP:0;
-  const bank=Math.atan2(-right.y,up.y),rate=-P.w.z,e=wrapPi(bankT-bank);
-  const roll=clamp(e*3-rate*.4,-1,1);
-  if(nT>0)nT=Math.max(Math.min(nT,1),nT*Math.cos(Math.max(0,Math.abs(e)-.15)));   // FIX1：坡度沒到位前不拉滿，避免先拉後滾（轉彎爬升、想俯衝卻先抬頭）
+const BANKMAX=1.36;   // 指向圈／體感最大坡度約 78°
+/* bankG(坡度目標, G, 選項 o)：o.p＝最大滾轉率（rad/s，預設約 100°/s）、o.rf＝嚴格「先滾再拉」。
+   滾轉率有加速、減速（剩幾度就慢下來），到位不過衝；像真飛機壓坡度，不會一下子翻過去。 */
+function rollTo(e,pMax,o){const rate=-P.w.z;
+  let pD=Math.sign(e)*Math.min(pMax,Math.sqrt(2*3*Math.abs(e)),4*Math.abs(e));             // 減速：約 170°/s²（剩幾度就慢下來）
+  if(Math.abs(e)<.035&&Math.abs(rate)<.17)pD=e*4;                                               // 誤差 <2° 且滾轉率 <10°/s：吸附
+  if(!(P.pcT>=P.simT-.05))P.pc=rate;P.pcT=P.simT;
+  P.pc+=clamp(pD-P.pc,-5*DT,5*DT);                                                            // 加速：約 290°/s²
+  const V=P.vel.length(),qd=.5*1.225*Math.exp(-P.pos.y/8500)*V*V,au=3.1*clamp(qd/9000,.15,1);
+  return clamp((P.pc+1.0*(P.pc-rate))/au,-1,1)}
+function bankG(bankT,nT,o){const V=Math.max(30,P.vel.length()),rho=1.225*Math.exp(-P.pos.y/8500),qS=Math.max(1,.5*rho*V*V*AC.S),W=mass()*G0,clF=P.flaps?AC.CLFLAP:0;
+  const bank=Math.atan2(-right.y,up.y),e=wrapPi(bankT-bank);
+  const roll=rollTo(e,(o&&o.p)||1.75,o);
+  if(o&&o.rf){if(nT>1){const gm=Math.asin(clamp(vh.y,-1,1)),nL=Math.min(nT,Math.max(1,levelN(bank,gm,0))),k=clamp(1-(Math.abs(e)-.1)/.45,0,1);nT=Math.max(nL,1+(nT-1)*k)}}   // 先滾再拉：坡度差 30° 以上只拉到保持高度所需，到位前才拉滿
+  else if(nT>0)nT=Math.max(Math.min(nT,1),nT*Math.cos(Math.max(0,Math.abs(e)-.15)));   // FIX1：坡度沒到位前不拉滿，避免先拉後滾（轉彎爬升、想俯衝卻先抬頭）
   const n=clamp(nT,-1.5,P.gear?1.4:AC.GMAX),aCmd=(n*W/qS-clF)/AC.CLA;return{roll,aCmd,pitch:0,yaw:0,steer:0}}
+function bankCap(V){const rho=1.225*Math.exp(-P.pos.y/8500),qS=.5*rho*V*V*AC.S,nA=Math.min(AC.GMAX,qS*(AC.CLA*AC.AMAX+(P.flaps?AC.CLFLAP:0))/(mass()*G0))*.85;return nA>1.05?Math.acos(1/nA):.3}   // 這個速度拉得出的 G 能撐的坡度
+/* 特別動作（按「特技」鍵才會做，一般推桿永遠不會翻過去）：
+   roll＝360° 副翼滾（方向看搖桿左右，預設往右）；splitS＝按住簡易搖桿往下推再按「特技」：翻背→拉下→反向改平（高度夠才做） */
+function trick(){if(P.state!=='fly'||P.onDeck||P.gear||P.man||P.simT<(P.manCd||0))return;const V=P.vel.length();if(V<110){say('速度太低，不能做特技',1.5);return}
+  const dir=Math.sign(inp.ex)||1;
+  if(inp.ezOn&&inp.ey>.5){const agl=P.pos.y-Math.max(0,groundH(P.pos.x,P.pos.z));if(agl<1800||V>330){say(agl<1800?'高度不夠（需離地 1,800 公尺），不能翻背拉下':'速度太快，不能翻背拉下',2);return}
+    P.man={k:'splitS',dir,ph:0,acc:0};say('翻背拉下（Split-S）',2)}
+  else{P.man={k:'roll',dir,acc:0};say('副翼滾 360°',1.5)}}
+function manCtl(bank,gamma,ref){const m=P.man,rate=-P.w.z;m.acc+=rate*m.dir*DT;P.aim.copy(ref);
+  if(m.k==='roll'){const rem=2*Math.PI-m.acc;if(rem<.06){P.man=null;P.manCd=P.simT+3;P.ezRel=true;return null}
+    return{roll:rollTo(m.dir*Math.max(rem,.02),3.1),aCmd:aOfN(Math.cos(bank)*Math.cos(gamma)+.25),pitch:0,yaw:0,steer:0}}
+  // Split-S
+  if(m.ph===0){const rem=Math.PI-m.acc;if(rem<.08)m.ph=1;return{roll:rollTo(m.dir*Math.max(rem,.02),2.1),aCmd:aOfN(.4),pitch:0,yaw:0,steer:0}}
+  if(m.ph===1&&gamma<-1.2)m.ph=2;
+  if(m.ph===1)return bankG(m.dir>0?Math.PI-.001:-Math.PI+.001,AC.GMAX*.85,{p:1.2});
+  if(gamma>-.12){P.man=null;P.manCd=P.simT+3;P.ezRel=true;return null}
+  if(gamma>-1.05)return bankG(0,AC.GMAX*.85,{p:1.2});
+  return{roll:rollTo(0,1),aCmd:aOfN(AC.GMAX*.85),pitch:0,yaw:0,steer:0}}
+function aOfN(n){const V=Math.max(30,P.vel.length()),qS=Math.max(1,.5*1.225*Math.exp(-P.pos.y/8500)*V*V*AC.S);return(clamp(n,-1.5,AC.GMAX)*mass()*G0/qS-(P.flaps?AC.CLFLAP:0))/AC.CLA}
 function levelN(bank,gamma,gdot){const V=Math.max(30,P.vel.length());return(Math.cos(gamma)+V*gdot/G0)/Math.max(.2,Math.cos(bank))}
 function controls(){
   const k=inp.keys,kp=(k.KeyS?1:0)-(k.KeyW?1:0),kr=(k.KeyD?1:0)-(k.KeyA?1:0);
   const V=P.vel.length(),ref=V>30?vh:fwd,bank=Math.atan2(-right.y,up.y),gamma=Math.asin(clamp(ref.y,-1,1));
   if(P.ovr)return bankG(P.ovr.bank,P.ovr.n);
-  if(inp.stickOn||kp||kr){P.hold=null;P.aim.copy(ref);const tp=inp.stickOn?inp.sy:kp;P.ps=(P.ps||0)+(tp-(P.ps||0))*Math.min(1,(1/120)/.25);
+  if(inp.stickOn||kp||kr){P.hold=null;P.man=null;P.aim.copy(ref);const tp=inp.stickOn?inp.sy:kp;P.ps=(P.ps||0)+(tp-(P.ps||0))*Math.min(1,(1/120)/.25);
     return{pitch:P.ps,roll:inp.stickOn?inp.sx:kr,yaw:0,steer:inp.stickOn?inp.sx:kr}}
   P.ps=0;
   // 自動防撞地（輔助操控才有；手動搖桿不介入；困難模式沒有）：預測 4 秒內會撞地就改平拉起
   if(M.diff<2&&!P.onDeck&&!P.gear&&V>60){let hit=false;for(let t=.5;t<=2.01;t+=.5){const x=P.pos.x+P.vel.x*t,y=P.pos.y+P.vel.y*t,z=P.pos.z+P.vel.z*t;if(y-Math.max(0,groundH(x,z))<8+3*t){hit=true;break}}
-    if(hit||(P.gcas&&P.vel.y<5)){if(!P.gcas)say('自動拉起',1.5);P.gcas=true;P.hold=null;return bankG(0,Math.abs(bank)>1.3?1:AC.GMAX)}
+    if(hit||(P.gcas&&P.vel.y<5)){if(!P.gcas)say('自動拉起',1.5);P.gcas=true;P.hold=null;P.man=null;return bankG(0,Math.abs(bank)>1.3?1:AC.GMAX,{p:2.6})}
     P.gcas=false}
+  if(P.man){if(inp.stickOn||P.onDeck||P.state!=='fly')P.man=null;else{const c=manCtl(bank,gamma,ref);if(c)return c}}
   if(P.onDeck){const hE=wrapPi(Math.atan2(P.aim.x,-P.aim.z)-Math.atan2(ref.x,-ref.z));return{pitch:clamp((Math.asin(clamp(P.aim.y,-1,1))-P.th)*4,0,1),roll:0,yaw:0,steer:clamp(hE*2,-1,1)}}
   // 體感操控：傾斜手機＝坡度，前後傾＝拉起／推下
   // 簡易搖桿：左右＝坡度（最大 80°，自動拉桿保持高度）、上下＝航跡往上／往下（每秒最多約 30°）；放開＝自動改平
   if(inp.ezOn||(P.ezRel&&CT.ez&&!GY.on)){P.aim.copy(ref);const gR=(P.lastG!==undefined)?(gamma-P.lastG)*120:0;P.lastG=gamma;
-    if(inp.ezOn){const wD=Math.sign(inp.ex)*Math.pow(Math.abs(inp.ex),1.2)*.36,bT=clamp(Math.atan(wD*Math.max(60,V)/G0),-1.4,1.4);/* 推多少＝轉多快（滿推約每秒 20°），坡度自動算 */let gd=-inp.ey*.55;if(gamma>1.05&&gd>0)gd*=.2;if(gamma<-1.05&&gd<0)gd*=.2;return bankG(bT,levelN(bank,gamma,gd-gR*.15+(Math.abs(inp.ey)<.05?-gR*.2:0)))}
-    const gd=clamp(-gamma*.6,-.14,.14)-gR*.3;return bankG(0,levelN(bank,gamma,gd))}
-  if(GY.on&&GY.ok){const bT=clamp(GY.roll,-1,1)*BANKMAX,nT=levelN(bank,gamma,0)+GY.pitch*4.5;P.aim.copy(ref);return bankG(bT,nT)}
+    if(inp.ezOn){/* 推多少＝坡度多大（0.2≈19°、0.4≈34°、0.7≈55°、滿推≈75°），再受「這個速度拉得出的 G」限制；滾轉率 0.2≈70°/s、滿推≈120°/s */
+      const ax=Math.abs(inp.ex),ey=inp.ey,bF=ey<-.7?1.4:1.31;let bM=Math.min(bF,bankCap(V));     // 推 0.2≈29°、0.5≈50°、0.7≈61°、滿推 75°；同時往上拉 >0.7 才到 80°
+      if(ey>.08)bM=Math.min(bM,bF-(bF-.52)*sstep(.08,.35,ey));             // 往下推：先把坡度收到 30° 左右再俯衝，不會在大坡度推負 G 翻出去
+      const bT=Math.sign(inp.ex)*Math.min(bM,bF*Math.pow(ax,.6));let gd=-ey*.55;if(gamma>1.05&&gd>0)gd*=.2;if(gamma<-1.05&&gd<0)gd*=.2;
+      let nT=levelN(bank,gamma,gd-gR*.15+(Math.abs(ey)<.05?-gR*.2:0));nT=Math.max(nT,-1+1.4*sstep(.55,.8,Math.abs(bank)));   // 坡度 30° 以內最多 -1G；大於 45° 不推負 G（不會從側面翻出去）
+      return bankG(bT,nT,{p:(55+65*Math.max(ax,Math.abs(ey)*.5))/57.3,rf:1})}
+    const gd=clamp(-gamma*.6,-.14,.14)-gR*.3;return bankG(0,Math.max(-.5+.9*sstep(.55,.8,Math.abs(bank)),levelN(bank,gamma,gd)),{p:.96,rf:1})}   // 放開：約 55°/s 平順改平（75° 約 1.7 秒）
+  if(GY.on&&GY.ok){const bT=clamp(GY.roll,-1,1)*Math.min(BANKMAX,bankCap(V)),nT=levelN(bank,gamma,0)+GY.pitch*4.5;P.aim.copy(ref);return bankG(bT,nT,{p:(55+65*Math.abs(GY.roll))/57.3,rf:1})}
   // 放開搖桿後：維持當下坡度、保持高度，直到再碰畫面
   if(P.hold){P.aim.copy(ref);const bT=P.hold.bank;return bankG(bT,levelN(bank,gamma,-gamma*.6))}
   // 指向圈（三維）：要轉向的加速度＋抵銷重力的升力 → 升力方向（坡度）與大小（G）
@@ -630,7 +666,7 @@ function controls(){
   const BS=window.__BS||[.6,2.0],bSoft=(th<.8&&Math.abs(vd.y)<.26&&!(M.mode==="mission"&&M.phase===3))?Math.min(BANKMAX,BS[0]+BS[1]*th):9; // 小修正限制坡度：偏 10° 約 54°、25° 約 79°、45° 以上不限（像真人修航向，不是每次都急轉）
   if(Math.abs(bD)>bSoft&&Math.abs(bD)<=bMax){const v=_al.dot(_u0)/G0;bD=Math.sign(bD)*bSoft;nT=clamp(v/Math.max(.2,Math.cos(bSoft)),-1.5,nReq)}
   if(Math.abs(bD)>bMax){const b2=wrapPi(bD+Math.PI);if(Math.abs(b2)<=bMax&&_al.dot(_u0)<-.85*_al.length()){bD=b2;nT=-Math.min(nReq,1.5)}else{bD=Math.sign(bD)*bMax}}
-  return bankG(bD,nT)}
+  return bankG(bD,nT,{p:2.6})}   // 指向圈（進階）：滾轉上限約 150°/s，用 FIX1 的先滾再拉
 const _pp=V3(),_gp=V3(),_al=V3(),_u0=V3(),_r0=V3();
 function die(why){if(P.state==='dead')return;P.state='dead';boom(P.pos,20);M.failT=1.6;M.why=why;plane.visible=false}
 function simStep(dt){P.simT=(P.simT||0)+dt;
@@ -944,7 +980,7 @@ function syncBtns(){$('bGear').classList.toggle('on',P.gear);$('bFlap').classLis
 const act={gear(){if(!P.onDeck){P.gear=!P.gear}},flap(){P.flaps=!P.flaps},hook(){P.hook=!P.hook},brake(){P.brake=!P.brake},at(){P.at=!P.at},view(){view=1-view},
   launch(){if(P.state!=='cat')return;if(P.thrAct<.8){say('先把油門推到頂');return}P.state='fly';P.catT=2.5;thump(.7);say('彈射！',2)}};
 function tap(id,fn){$(id).addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();audioOn();fn();syncBtns()})}
-tap('bGear',act.gear);tap('bFlap',act.flap);tap('bHook',act.hook);tap('bBrake',act.brake);tap('bAT',act.at);tap('bView',act.view);tap('bLaunch',act.launch);tap('bBomb',dropBomb);tap('bMsl',fireMsl);tap('bFlr',countermeasure);tap('bPause',()=>openMenu(true));
+tap('bGear',act.gear);tap('bFlap',act.flap);tap('bHook',act.hook);tap('bBrake',act.brake);tap('bAT',act.at);tap('bView',act.view);tap('bLaunch',act.launch);tap('bBomb',dropBomb);tap('bMsl',fireMsl);tap('bFlr',countermeasure);tap('bPause',()=>openMenu(true));tap('bTrick',()=>trick());
 {const f=$('bFire');f.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();audioOn();inp.fire=true;f.setPointerCapture(e.pointerId)});const offf=()=>inp.fire=false;f.addEventListener('pointerup',offf);f.addEventListener('pointercancel',offf)}
 const ptr=new Map(),pad=$('pad');
 const thrOf=s=>s<=.78?s/.78*.85:s<.88?.85:.85+(s-.88)/.12*.15,slOf=t=>t<=.85?t/.85*.78:.88+(t-.85)/.15*.12;
@@ -1114,10 +1150,13 @@ function updCam(dt){fwd.set(0,0,-1).applyQuaternion(P.q);up.set(0,1,0).applyQuat
     CS.lag.lerp(t1.set(0,0,0).addScaledVector(vhc,-clamp(along,-15,35)*.2).addScaledVector(up,-clamp(gn,-3,8)*.2),1-Math.exp(-3*dt));
     cam.position.copy(P.pos).add(CS.off).add(CS.lag);
     const gh=Math.max(0,groundH(cam.position.x,cam.position.z))+2;if(cam.position.y<gh)cam.position.y=gh;
-    cam.up.set(0,1,0);t1.copy(P.pos).addScaledVector(camDir,160);t1.y+=H;cam.lookAt(t1);
-    // 4) 部分跟著壓坡度（地平線會斜，但不會整個翻過去）
-    const bank=Math.atan2(-right.y,up.y),inv=Math.abs(bank)>Math.PI/2;const rT=P.onDeck?0:clamp(bank,-2,2)*(inv?.3:.45);
-    CS.roll+=(rT-CS.roll)*(1-Math.exp(-4*dt));
+    {const cu=CS.up||(CS.up=V3(0,1,0)),d=camDir;t2.set(0,1,0).addScaledVector(d,-d.y);const wl=t2.length();cu.addScaledVector(d,-cu.dot(d));if(cu.lengthSq()<1e-6)cu.copy(t2);cu.normalize();
+      if(wl>1e-4){t2.multiplyScalar(1/wl);const ang=Math.atan2(d.dot(t1.crossVectors(cu,t2)),cu.dot(t2)),k=sstep(.08,.35,wl),st=clamp(ang,-2.2*dt,2.2*dt)*k;cu.applyAxisAngle(d,wl>.35&&Math.abs(ang)<.02?ang:st)}
+      cam.up.copy(cu)}
+    t1.copy(P.pos).addScaledVector(camDir,160);t1.y+=H;cam.lookAt(t1);
+    // 4) 部分跟著壓坡度（地平線會斜，但不會整個翻過去）：比例 0.3，坡度超過 80° 後漸減，倒飛時鏡頭不跟
+    const bank=Math.atan2(-right.y,up.y),ab=Math.abs(bank),bk=ab<=1.4?ab*.33:.46*Math.max(0,(Math.PI-ab)/(Math.PI-1.4));const rT=P.onDeck?0:Math.sign(bank)*bk*sstep(.05,.3,Math.hypot(up.y,right.y));
+    CS.roll+=(rT-CS.roll)*(1-Math.exp(-dt/.3));
     // 5) 震動：高動壓、大攻角抖振、後燃、觸艦／彈射衝擊
     const qd=.5*1.225*Math.exp(-P.pos.y/8500)*V*V;
     const amp=(P.onDeck&&P.catT<=0&&P.state!=='trap'?0:.0006+.0035*sstep(25000,70000,qd)+.006*sstep(.30,.45,P.alpha)*sstep(60,120,V)+.0015*clamp((P.thrAct-.85)/.15,0,1)+(P.catT>0?.004:0))+CS.imp;
@@ -1152,7 +1191,7 @@ function frame(now){requestAnimationFrame(frame);let dt=Math.min(.1,(now-last)/1
 requestAnimationFrame(frame);
 
 /* 測試用掛鉤 */
-window.__G={GU,GA,inp,plane,cam,sun,LOOK,setLook,GY,bankG,CB,LOCK,SAMS,fireMsl,countermeasure,spawnEne,launch,TERRAIN,renderer,scene,SURF,get PARTS(){return PARTS},get modelSrc(){return modelSrc},plane,ccip,AAA,P,M,AC,start,simStep,updWorld,spawn,act,dropBomb,groundH,floorOf,xc,LP0,LD,tgtPos,inp,DT,
+window.__G={trick,GU,GA,inp,plane,cam,sun,LOOK,setLook,GY,bankG,CB,LOCK,SAMS,fireMsl,countermeasure,spawnEne,launch,TERRAIN,renderer,scene,SURF,get PARTS(){return PARTS},get modelSrc(){return modelSrc},plane,ccip,AAA,P,M,AC,start,simStep,updWorld,spawn,act,dropBomb,groundH,floorOf,xc,LP0,LD,tgtPos,inp,DT,
   run(sec,fn){const n=Math.round(sec/DT);for(let i=0;i<n;i++){if(fn)fn(i*DT);simStep(DT);if(i%2===0)updWorld(DT*2)}}};
 </script>
 </body>
