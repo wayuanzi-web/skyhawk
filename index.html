@@ -68,7 +68,7 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
 <div class="btn" id="bView">視角</div>
 <div class="panel" id="menu"><div class="box">
   <h1>怒海雄鷹</h1>
-  <div class="sub">試飛版 0.8 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
+  <div class="sub">試飛版 0.9 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
   <div id="resume" class="row" style="display:none"><button class="mb pri" id="mResume">繼續</button><button class="mb" id="mRetry">從檢查點重來</button><button class="mb" id="mHome">回主選單</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操作靈敏度</span><button class="mb" data-s="0" style="min-width:64px">低</button><button class="mb" data-s="1" style="min-width:64px">中</button><button class="mb" data-s="2" style="min-width:64px">高</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">畫質</span><button class="mb" data-q="0" style="min-width:64px">省電</button><button class="mb" data-q="1" style="min-width:64px">標準</button><button class="mb" data-q="2" style="min-width:64px">精緻</button></div>
@@ -136,8 +136,13 @@ const HG=new Float32Array(TNX*TNU),TERRAIN={};
 for(let j=0;j<TNU;j++)for(let i=0;i<TNX;i++)HG[j*TNX+i]=hf(TX0+i*TD,-(TU0+j*TD));
 function groundH(x,z){const fx=(x-TX0)/TD,fu=(-z-TU0)/TD;
   if(fx<0||fu<0||fx>=TNX-1||fu>=TNU-1)return -30;
-  const i=fx|0,j=fu|0,a=fx-i,b=fu-j,k=j*TNX+i;
-  return lerp(lerp(HG[k],HG[k+1],a),lerp(HG[k+TNX],HG[k+TNX+1],a),b)}
+  return hgAt(fx,fu)}
+// 高度場平滑內插（Catmull-Rom 雙三次）：畫面上的細網格與碰撞用同一個曲面
+const _cr=(p0,p1,p2,p3,t)=>p1+.5*t*(p2-p0+t*(2*p0-5*p1+4*p2-p3+t*(3*(p1-p2)+p3-p0)));
+function hgAt(fx,fu){const i=Math.min(TNX-2,fx|0),j=Math.min(TNU-2,fu|0),a=fx-i,b=fu-j,I=k=>Math.max(0,Math.min(TNX-1,k)),J=k=>Math.max(0,Math.min(TNU-1,k));
+  const row=jj=>{const o=J(jj)*TNX;return _cr(HG[o+I(i-1)],HG[o+i],HG[o+I(i+1)],HG[o+I(i+2)],a)};
+  const v=_cr(row(j-1),row(j),row(j+1),row(j+2),b),lo=Math.min(HG[j*TNX+i],HG[j*TNX+i+1],HG[(j+1)*TNX+i],HG[(j+1)*TNX+i+1]),hi=Math.max(HG[j*TNX+i],HG[j*TNX+i+1],HG[(j+1)*TNX+i],HG[(j+1)*TNX+i+1]);
+  return Math.max(lo-6,Math.min(hi+6,v))}
 
 function noiseTex(sz,lo){const cv=document.createElement('canvas');cv.width=cv.height=sz;const x=cv.getContext('2d'),im=x.createImageData(sz,sz);
   const p=(a,b,per)=>{const fa=Math.floor(a),fb=Math.floor(b),i0=fa%per,j0=fb%per,i1=(i0+1)%per,j1=(j0+1)%per,fx=a-fa,fy=b-fb,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);return lerp(lerp(hash(i0,j0),hash(i1,j0),sx),lerp(hash(i0,j1),hash(i1,j1),sx),sy)};
@@ -150,12 +155,12 @@ const cam=new THREE.PerspectiveCamera(62,1,3,90000),cam2=new THREE.PerspectiveCa
 {const h=new THREE.HemisphereLight(0xdde9f5,0x7d8a8c,.75);h.layers.enableAll();scene.add(h)}
 const sun=new THREE.DirectionalLight(0xfff0d8,3.0);sun.position.set(-0.5,0.8,0.35);sun.layers.enableAll();scene.add(sun);
 /* ---------- 真實感：天空光照、色調、陰影 ---------- */
-const SUND=V3(-0.5,0.8,0.35).normalize(),LOOK={q:2};try{const v=localStorage.getItem('skyhawk_q');if(v!==null)LOOK.q=+v}catch(e){}
+const SUND=V3(-0.5,0.8,0.35).normalize(),LOOK={q:/iPhone|iPad|Android/.test(navigator.userAgent)?1:2};try{const v=localStorage.getItem('skyhawk_q');if(v!==null)LOOK.q=+v}catch(e){}
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
 sun.castShadow=true;{const sc=sun.shadow.camera;sc.left=-24;sc.right=24;sc.top=24;sc.bottom=-24;sc.near=1;sc.far=500;sc.layers.enableAll();sun.shadow.bias=-.0004;sun.shadow.normalBias=.04}
 scene.add(sun.target);
-function setLook(q){LOOK.q=q;const ms=q>=2?2048:1024;sun.castShadow=q>=1;if(sun.shadow.map&&sun.shadow.mapSize.x!==ms){sun.shadow.map.dispose();sun.shadow.map=null}sun.shadow.mapSize.set(ms,ms);try{localStorage.setItem('skyhawk_q',q)}catch(e){}}
+function setLook(q){LOOK.q=q;if(TERRAIN.mat&&TERRAIN.mat.defines&&TERRAIN.mat.defines.TQ!==q){TERRAIN.mat.defines.TQ=q;TERRAIN.mat.needsUpdate=true}if(TERRAIN.scat)for(const o of TERRAIN.scat)o.visible=q>=1;if(typeof resize==='function'&&window.__RS)resize();const ms=q>=2?2048:1024;sun.castShadow=q>=1;if(sun.shadow.map&&sun.shadow.mapSize.x!==ms){sun.shadow.map.dispose();sun.shadow.map=null}sun.shadow.mapSize.set(ms,ms);try{localStorage.setItem('skyhawk_q',q)}catch(e){}}
 setLook(LOOK.q);
 { // 天空：天頂深藍→地平線霧白、太陽周圍光暈；同一片天空做成環境光照（金屬、烤漆、座艙罩的反光都從這裡來）
   const mk=(lin)=>new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,toneMapped:false,uniforms:{sd:{value:SUND},lin:{value:lin}},
@@ -191,13 +196,17 @@ setLook(LOOK.q);
     c.putImageData(im,0,0);const t=new THREE.CanvasTexture(cv);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.colorSpace=THREE.NoColorSpace;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return t})();
   const tmat=new THREE.MeshLambertMaterial({vertexColors:true,color:new THREE.Color(1.12,1.12,1.1)});
   // 地表細節：同一張雜訊貼圖再以約 60 公尺一格疊一次（近看不糊），岩石凹凸法線約 40 公尺一格
-  TERRAIN.mat=tmat;tmat.onBeforeCompile=sh=>{sh.uniforms.tN={value:tN};sh.uniforms.tR={value:rockN};
+  TERRAIN.mat=tmat;tmat.defines={TQ:LOOK.q};tmat.customProgramCacheKey=()=>'terr'+tmat.defines.TQ;tmat.onBeforeCompile=sh=>{sh.uniforms.tN={value:tN};sh.uniforms.tR={value:rockN};
     sh.vertexShader='attribute vec2 lit;varying vec2 vLit;varying vec3 vWP;varying vec3 vWN;\n'+sh.vertexShader.replace('#include <project_vertex>',
       '#include <project_vertex>\n vWP=(modelMatrix*vec4(transformed,1.)).xyz;vWN=normalize(mat3(modelMatrix)*objectNormal);vLit=lit;');
-    sh.fragmentShader='uniform sampler2D tN,tR;varying vec2 vLit;varying vec3 vWP;varying vec3 vWN;\nfloat tri3(vec3 p,vec3 w,float s){if(w.y>.97)return texture2D(tN,p.xz*s).r;return texture2D(tN,p.zy*s).r*w.x+texture2D(tN,p.xz*s).r*w.y+texture2D(tN,p.xy*s).r*w.z;}\n'+
+    sh.fragmentShader='uniform sampler2D tN,tR;varying vec2 vLit;varying vec3 vWP;varying vec3 vWN;\nfloat tri3(vec3 p,vec3 w,float s){\n#if TQ<1\nreturn texture2D(tN,p.xz*s).r;\n#endif\nif(w.y>.97)return texture2D(tN,p.xz*s).r;return texture2D(tN,p.zy*s).r*w.x+texture2D(tN,p.xz*s).r*w.y+texture2D(tN,p.xy*s).r*w.z;}\n'+
      sh.fragmentShader.replace('#include <map_fragment>','').replace('#include <color_fragment>',`
       vec3 wn=normalize(vWN);vec3 bw=pow(abs(wn),vec3(6.));bw/=bw.x+bw.y+bw.z;
-      float nL=texture2D(tN,vWP.xz/2300.).r, nM=tri3(vWP,bw,1./170.), nD=tri3(vWP,bw,1./26.);
+      float nL=texture2D(tN,vWP.xz/2300.).r, nM=tri3(vWP,bw,1./170.), nD=.5;
+#if TQ>=1
+      nD=tri3(vWP,bw,1./26.);
+#endif
+
       float hgt=vWP.y;
       vec3 grass=vColor.rgb*mix(.80,1.16,nL)*mix(.86,1.10,nM);
       grass=mix(grass,grass*vec3(1.15,1.05,.80),smoothstep(.6,.85,nM)*.7);
@@ -213,17 +222,24 @@ setLook(LOOK.q);
       diffuseColor.rgb*=cS;
 `).replace('#include <normal_fragment_maps>',`#ifdef USE_NORMALMAP_TANGENTSPACE
       vec3 mapN=texture2D(normalMap,vNormalMapUv*17.).xyz*2.-1.;mapN.xy*=normalScale*(1.-snowK*.3);normal=normalize(tbn*mapN);
+      #if TQ>=2
       if(rockK>.01){vec3 p=vWP/60.,tx=texture2D(tR,p.zy).xyz*2.-1.,ty=texture2D(tR,p.xz).xyz*2.-1.,tz=texture2D(tR,p.xy).xyz*2.-1.;
         float rs=1.5*(1.-smoothstep(250.,1400.,length(vViewPosition)));tx.xy*=rs;ty.xy*=rs;tz.xy*=rs;
         vec3 wX=vec3(abs(tx.z)*wn.x,tx.y+wn.y,tx.x+wn.z),wY=vec3(ty.x+wn.x,abs(ty.z)*wn.y,ty.y+wn.z),wZ=vec3(tz.x+wn.x,tz.y+wn.y,abs(tz.z)*wn.z);
         vec3 nR=normalize((viewMatrix*vec4(normalize(wX*bw.x+wY*bw.y+wZ*bw.z),0.)).xyz);
         normal=normalize(mix(normal,nR,rockK));}
       #endif
+      #endif
       `).replace('#include <lights_fragment_end>',
       '#include <lights_fragment_end>\n reflectedLight.directDiffuse*=mix(.12,1.,vLit.x);reflectedLight.indirectDiffuse*=vLit.y;\n reflectedLight.indirectDiffuse+=diffuseColor.rgb*vec3(.16,.16,.15)*max(dot(normal,normalize((viewMatrix*vec4(.62,.2,-.45,0.)).xyz)),0.)*vLit.y;')};
   const CX=50,CU=40,STEPS=[[1,0],[2,3500],[5,8000],[10,16000]];TERRAIN.chunks=0;
   function chunkGeo(i0,j0,st){const nx=CX/st+1,nu=CU/st+1,P=[],N=[],C=[],U=[],I=[],L=[];
-    const put=(i,j,dy)=>{const k=j*TNX+i;L.push(LIT[k*2],LIT[k*2+1]);P.push(TX0+i*TD,HG[k]-dy,-(TU0+j*TD));N.push(NRM[k*3],NRM[k*3+1],NRM[k*3+2]);C.push(COL[k*3],COL[k*3+1],COL[k*3+2]);U.push((TX0+i*TD)/700,-(TU0+j*TD)/700);return P.length/3-1};
+    const put=(i,j,dy)=>{if(i===(i|0)&&j===(j|0)){const k=j*TNX+i;L.push(LIT[k*2],LIT[k*2+1]);P.push(TX0+i*TD,HG[k]-dy,-(TU0+j*TD));N.push(NRM[k*3],NRM[k*3+1],NRM[k*3+2]);C.push(COL[k*3],COL[k*3+1],COL[k*3+2])}
+      else{// 細網格：高度用雙三次、法線用高度差、顏色與烘焙光照用雙線性
+        const i0=Math.min(TNX-2,i|0),j0=Math.min(TNU-2,j|0),a=i-i0,b=j-j0,k=j0*TNX+i0,w=[(1-a)*(1-b),a*(1-b),(1-a)*b,a*b],ks=[k,k+1,k+TNX,k+TNX+1],bl=(A,n,c)=>w[0]*A[ks[0]*n+c]+w[1]*A[ks[1]*n+c]+w[2]*A[ks[2]*n+c]+w[3]*A[ks[3]*n+c];
+        const h=hgAt(i,j),e=.25,hx=hgAt(i+e,j)-hgAt(i-e,j),hz=hgAt(i,j+e)-hgAt(i,j-e),nl=Math.hypot(hx,2*e*TD,hz);
+        L.push(bl(LIT,2,0),bl(LIT,2,1));P.push(TX0+i*TD,h-dy,-(TU0+j*TD));N.push(-hx/nl,2*e*TD/nl,hz/nl);C.push(bl(COL,3,0),bl(COL,3,1),bl(COL,3,2))}
+      U.push((TX0+i*TD)/700,-(TU0+j*TD)/700);return P.length/3-1};
     for(let b=0;b<nu;b++)for(let a=0;a<nx;a++)put(i0+a*st,j0+b*st,0);
     for(let b=0;b<nu-1;b++)for(let a=0;a<nx-1;a++){const p=b*nx+a,q=p+1,r=p+nx,t=r+1;if(Math.abs(P[p*3+1]-P[t*3+1])<Math.abs(P[q*3+1]-P[r*3+1]))I.push(p,q,t,p,t,r);else I.push(p,q,r,q,t,r)}
     const sk=30+st*18,edge=[];for(let a=0;a<nx;a++)edge.push([a,0]);for(let b=1;b<nu;b++)edge.push([nx-1,b]);for(let a=nx-2;a>=0;a--)edge.push([a,nu-1]);for(let b=nu-2;b>0;b--)edge.push([0,b]);
@@ -232,8 +248,13 @@ setLook(LOOK.q);
     const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(N,3));
     g.setAttribute('color',new THREE.Float32BufferAttribute(C,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));g.setAttribute('lit',new THREE.Float32BufferAttribute(L,2));g.setIndex(I);g.computeBoundingSphere();return g}
   for(let j0=0;j0+CU<TNU;j0+=CU)for(let i0=0;i0+CX<TNX;i0+=CX){let mx=-99;for(let j=j0;j<=j0+CU;j++)for(let i=i0;i<=i0+CX;i++)mx=Math.max(mx,HG[j*TNX+i]);if(mx<=-29)continue;
-    const lod=new THREE.LOD();for(const [st,d] of STEPS){const m=new THREE.Mesh(chunkGeo(i0,j0,st),tmat);m.side=THREE.DoubleSide;m.receiveShadow=st<=2;lod.addLevel(m,d)}
-    const c=new THREE.Vector3(TX0+(i0+CX/2)*TD,0,-(TU0+(j0+CU/2)*TD));for(const l of lod.levels){l.object.geometry.translate(-c.x,0,-c.z);l.object.geometry.computeBoundingSphere()}lod.position.copy(c);lod.updateMatrixWorld(true);scene.add(lod);TERRAIN.chunks++}
+    const grp=new THREE.Group(),c=new THREE.Vector3(TX0+(i0+CX/2)*TD,0,-(TU0+(j0+CU/2)*TD)),lv={};
+    const mkL=st=>{const g=chunkGeo(i0,j0,st);g.translate(-c.x,0,-c.z);g.computeBoundingSphere();const m=new THREE.Mesh(g,tmat);m.side=THREE.DoubleSide;m.receiveShadow=st<=2;m.visible=false;grp.add(m);return lv[st]=m};
+    for(const [st] of STEPS)mkL(st);grp.position.copy(c);grp.updateMatrixWorld(true);scene.add(grp);
+    (TERRAIN.list=TERRAIN.list||[]).push({lv,mkL,cur:null,x0:TX0+i0*TD,x1:TX0+(i0+CX)*TD,z0:-(TU0+(j0+CU)*TD),z1:-(TU0+j0*TD)});TERRAIN.chunks++}
+  // 遠近細節：用鏡頭到分塊「最近邊」的距離挑網格粗細；精緻畫質時 1.6 公里內用 32 公尺細網格（第一次用到才產生）
+  TERRAIN.upd=(p)=>{for(const t of TERRAIN.list){const dx=Math.max(t.x0-p.x,0,p.x-t.x1),dz=Math.max(t.z0-p.z,0,p.z-t.z1),d=Math.hypot(dx,dz,Math.max(0,p.y-1500)*.5);
+      let st=d<1600&&LOOK.q>=2?.5:d<2600?1:d<6500?2:d<14000?5:10;if(st!==t.cur){if(!t.lv[st])t.mkL(st);if(t.cur!==null)t.lv[t.cur].visible=false;t.lv[st].visible=true;t.cur=st}}};
   // 峽谷谷底與下坡散佈岩塊／灌木：每 1,500 公尺一段一個 InstancedMesh（可被視錐剔除），每個 20 個三角形
   {const geo=new THREE.IcosahedronGeometry(1,0),mat=new THREE.MeshLambertMaterial({flatShading:true}),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),e=new THREE.Euler(),sc=new THREE.Vector3(),ps=new THREE.Vector3(),col=new THREE.Color();let sd=11;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;TERRAIN.scatter=0;
     for(let u0=5900;u0<21000;u0+=1500){const N=260,im=new THREE.InstancedMesh(geo,mat,N),cx=xc(u0+750),cz=-(u0+750);let n=0;
@@ -242,7 +263,7 @@ setLook(LOOK.q);
         const bush=sl<.35&&rnd()<.6,s=bush?2+rnd()*3.5:1.5+Math.pow(rnd(),2)*7;
         sc.set(s*(.8+rnd()*.6),s*(bush?.75:.45+rnd()*.4),s*(.8+rnd()*.6));q.setFromEuler(e.set(rnd()*.4,rnd()*6.28,rnd()*.4));ps.set(x-cx,h+sc.y*(bush?.45:.25)-sl*s*.5,z-cz);
         im.setMatrixAt(n,m4.compose(ps,q,sc));const v=.85+rnd()*.3;im.setColorAt(n,bush?col.setRGB(.16*v,.24*v,.11*v):col.setRGB(.42*v,.39*v,.36*v));n++}
-      im.count=n;im.computeBoundingSphere();const lo=new THREE.LOD();lo.addLevel(im,0);lo.addLevel(new THREE.Object3D(),3200);lo.position.set(cx,0,cz);scene.add(lo);TERRAIN.scatter+=n}}
+      im.count=n;im.computeBoundingSphere();const lo=new THREE.LOD();lo.addLevel(im,0);lo.addLevel(new THREE.Object3D(),3200);lo.position.set(cx,0,cz);scene.add(lo);(TERRAIN.scat=TERRAIN.scat||[]).push(lo);lo.visible=LOOK.q>=1;TERRAIN.scatter+=n}}
   // 海面：兩層波紋法線貼圖往不同方向流動，反射天空與太陽（亮面閃光）
   const waveN=(sz,per,amp)=>{const h=new Float32Array(sz*sz);const p=(a,b,q)=>{const fa=Math.floor(a),fb=Math.floor(b),i0=((fa%q)+q)%q,j0=((fb%q)+q)%q,i1=(i0+1)%q,j1=(j0+1)%q,fx=a-fa,fy=b-fb,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);return lerp(lerp(hash(i0,j0),hash(i1,j0),sx),lerp(hash(i0,j1),hash(i1,j1),sx),sy)};
     for(let j=0;j<sz;j++)for(let i=0;i<sz;i++){let v=0,f=per,w=1;for(let o=0;o<4;o++){v+=w*p(i/sz*f,j/sz*f,f);f*=2;w*=.5}h[j*sz+i]=v}
@@ -393,7 +414,7 @@ const plane=new THREE.Group();let gearGrp,hookMesh,stabL,stabR,abL,abR,HK=[-1.5,
     else if(n==='visor')o=new THREE.MeshPhysicalMaterial(Object.assign(base,{roughness:.08,metalness:.6,clearcoat:1}));
     else if(n==='white'||n==='store'||n==='bomb')o=new THREE.MeshPhysicalMaterial(Object.assign(base,{roughness:.5,metalness:.08,clearcoat:.25,clearcoatRoughness:.4}));
     else o=new THREE.MeshStandardMaterial(Object.assign(base,{roughness:m.roughness,metalness:m.metalness}));
-    return MC[m.uuid]=o};
+    return MC[m.uuid]=o};window.__SKM=skinMat;
   // 由塗裝貼圖算出接縫凹線的法線貼圖：亮度減去模糊後的亮度＝細線，換成高度再做 Sobel
   const panelNormal=(tex,mat)=>{const go=()=>{const im=tex.image;if(!im||!im.width)return setTimeout(go,200);const w=im.width,h=im.height,cv=document.createElement('canvas');cv.width=w;cv.height=h;const c=cv.getContext('2d');c.drawImage(im,0,0);
       const d=c.getImageData(0,0,w,h).data,L=new Float32Array(w*h);for(let i=0;i<w*h;i++)L[i]=(d[i*4]*.3+d[i*4+1]*.59+d[i*4+2]*.11)/255;
@@ -713,8 +734,13 @@ function stepMsl(m,h){m.t+=h;const sp=m.vel.length();_vh.copy(m.vel).multiplySca
   m.mesh.position.copy(m.pos);t1.copy(m.pos).add(m.vel);m.mesh.lookAt(t1);m.plume.visible=m.t<m.burn;m.plume.scale.z=1.4+Math.random();
   m.tr.k+=h;if(m.tr.k>.06&&m.t<m.burn+3){m.tr.k=0;m.tr.pts.push(m.pos.clone());if(m.tr.pts.length>90)m.tr.pts.shift()}}
 const eneMat=new THREE.MeshLambertMaterial({color:0x6a5a50});
+// 敵機：MiG-29 假想敵塗裝（另一個模型檔）；還沒載入時借 F/A-18 換色
+let ENE_SRC=null;{const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);const ok=g=>{const L=g.scene.getObjectByName('LOD1');if(!L)return;L.visible=true;L.traverse(o=>{if(o.isMesh){o.castShadow=true;o.material=(window.__SKM||(m=>m))(o.material)}});ENE_SRC=L;
+    for(const e of CB.ene){if(!e.mesh||e.mesh.userData.mig)continue;const n=eneMesh();n.position.copy(e.mesh.position);n.quaternion.copy(e.mesh.quaternion);scene.remove(e.mesh);e.mesh=n}};
+  if(window.__GLB2){const bin=atob(window.__GLB2),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn('mig',e))}else L2.load('assets/mig29.glb',ok,undefined,e=>console.warn('mig',e))}
 function eneMesh(){let m;const L1=MODEL&&MODEL.getObjectByName('LOD1');
-  if(L1){m=L1.clone(true);m.visible=true;m.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.color=new THREE.Color(.66,.52,.44)}})}
+  if(ENE_SRC){m=ENE_SRC.clone(true);m.userData.mig=true}
+  else if(L1){m=L1.clone(true);m.visible=true;m.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.color=new THREE.Color(.66,.52,.44)}})}
   else{m=new THREE.Mesh(new THREE.ConeGeometry(2,15,6),eneMat);m.geometry.rotateX(-Math.PI/2)}scene.add(m);return m}
 function spawnEne(n){const d=V3(LP0.x-P.pos.x,0,LP0.z-P.pos.z).normalize(),pr=V3(-d.z,0,d.x);
   for(let i=0;i<n;i++){const pos=P.pos.clone().addScaledVector(d,9000).addScaledVector(pr,(i-(n-1)/2)*900);pos.y=Math.max(2800,Math.max(0,groundH(pos.x,pos.z))+900);
@@ -785,7 +811,7 @@ let gunT=0;function gunSnd(){if(!AX||AX.currentTime<gunT)return;gunT=AX.currentT
 
 /* ---------- 介面 ---------- */
 const hud=$('hud'),hx=hud.getContext('2d');let W=1,H=1,DPR=1;
-function resize(){DPR=Math.min(window.devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;renderer.setPixelRatio(DPR);renderer.setSize(W,H,false);cam.aspect=W/H;cam.updateProjectionMatrix();hud.width=W*DPR;hud.height=H*DPR;if(H>W&&W<900&&!M.paused&&M.mode!=='menu')openMenu(true)}
+function resize(){DPR=Math.min(window.devicePixelRatio||1,LOOK.q===0?1:1.5);window.__RS=1;W=innerWidth;H=innerHeight;renderer.setPixelRatio(DPR);renderer.setSize(W,H,false);cam.aspect=W/H;cam.updateProjectionMatrix();hud.width=W*DPR;hud.height=H*DPR;if(H>W&&W<900&&!M.paused&&M.mode!=='menu')openMenu(true)}
 addEventListener('resize',resize);resize();
 function syncBtns(){$('bGear').classList.toggle('on',P.gear);$('bFlap').classList.toggle('on',P.flaps);$('bHook').classList.toggle('on',P.hook);$('bBrake').classList.toggle('on',P.brake);$('bAT').classList.toggle('on',P.at);$('bBomb').textContent='炸彈 '+P.bombs;$('bMsl').textContent='飛彈 '+((P.m9||0)+(P.m120||0));$('bFlr').textContent='干擾彈 '+(P.cm||0)}
 const act={gear(){if(!P.onDeck){P.gear=!P.gear}},flap(){P.flaps=!P.flaps},hook(){P.hook=!P.hook},brake(){P.brake=!P.brake},at(){P.at=!P.at},view(){view=1-view},
@@ -975,6 +1001,7 @@ function frame(now){requestAnimationFrame(frame);let dt=Math.min(.1,(now-last)/1
   if(cockpitNode)cockpitNode.visible=view!==1;
   if(window.__SEA&&__SEA.userData.sh)__SEA.userData.sh.uniforms.uT.value=now/1000;
   {const c=M.mode==='menu'?t1.set(0,20,0):P.pos;sun.position.copy(c).addScaledVector(SUND,220);sun.target.position.copy(c);sun.target.updateMatrixWorld();if(window.__SKY)window.__SKY.position.copy(cam.position);renderer.shadowMap.needsUpdate=sun.castShadow}
+  if(TERRAIN.upd)TERRAIN.upd(cam.position);
   if(window.__CAMO){cam.position.copy(window.__CAMO.p);cam.up.set(0,1,0);cam.lookAt(window.__CAMO.l);if(window.__CAMO.fov){cam.fov=window.__CAMO.fov;cam.updateProjectionMatrix()}}
   if(view===1&&M.mode!=='menu'){cam.layers.set(0);renderer.render(scene,cam);cam2.position.copy(cam.position);cam2.quaternion.copy(cam.quaternion);cam2.fov=cam.fov;cam2.aspect=cam.aspect;cam2.updateProjectionMatrix();
     const bg=scene.background;scene.background=null;renderer.autoClear=false;renderer.clearDepth();renderer.render(scene,cam2);renderer.autoClear=true;scene.background=bg}

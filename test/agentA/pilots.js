@@ -4,7 +4,7 @@ const R=await p.evaluate((N)=>{const G=__G,P=G.P,M=G.M,V3=P.pos.constructor,LIMS
  const PIL={novice:{delay:.4,jit:.05,altF:.85,altJ:.25,look:550,spd:230,jink:0,bombTol:50,gsJ:.012},
             normal:{delay:.2,jit:.02,altF:.6,altJ:.1,look:800,spd:220,jink:0,bombTol:35,gsJ:.005},
             expert:{delay:.1,jit:.008,altF:.45,altJ:.05,look:900,spd:245,jink:70,bombTol:20,gsJ:.002}};
- function fly(pn,diff,noAAA){const c=PIL[pn],LIM=LIMS[diff];M.diff=diff;G.start('mission');M.paused=true;if(noAAA)for(const a of G.AAA)a.hp=0;
+ function fly(pn,diff,noAAA){fly.pd=undefined;const c=PIL[pn],LIM=LIMS[diff];M.diff=diff;G.start('mission');M.paused=true;if(noAAA)for(const a of G.AAA)a.hp=0;
   const q=[],imp=new V3(),des=new V3(0,.17,-1).normalize();let jx=0,jy=0,t=0,maxLock=0,expo0=0,hpMin=100,dropped=false,dropT=0,cfg=false,tLand0=null,altBias=0,rel=null,boltered=0;
   const want=(x,y,z)=>des.set(x-P.pos.x,y-P.pos.y,z-P.pos.z).normalize();
   P.thr=1;G.run(2.2);G.act.launch();
@@ -14,7 +14,7 @@ const R=await p.evaluate((N)=>{const G=__G,P=G.P,M=G.M,V3=P.pos.constructor,LIMS
    if(s%30===0)altBias=(Math.random()*2-1)*c.altJ;
    if(M.phase<=1&&u<6400){if(!P.onDeck&&P.pos.y>60&&P.gear){G.act.gear();G.act.flap()}want(0,Math.max(60,80),-(u+1500));P.thr=P.onDeck||P.V<c.spd-25?1:Math.max(.15,Math.min(1,.55+(c.spd-P.V)*.03))}
    else if(M.phase<=2){if(!P.onDeck&&P.pos.y>60&&P.gear){G.act.gear();G.act.flap()}const la=u+c.look,jk=c.jink*Math.sin(t*1.3);want(G.xc(la)+jk,G.floorOf(la)+LIM*(c.altF+altBias),-la);P.thr=Math.max(.15,Math.min(1,.55+(c.spd-P.V)*.03));maxLock=Math.max(maxLock,M.lock)}
-   else if(M.phase===3){const T=G.tgtPos;if(u<21300)want(T.x,1050,-21500);else if(!dropped){if(G.ccip(imp)){const d=Math.hypot(imp.x-T.x,imp.z-T.z);want(2*T.x-imp.x,T.y+Math.min(400,d*.5),2*T.z-imp.z);if(d<c.bombTol&&P.bombs>0){G.dropBomb();rel={alt:P.pos.y|0,d:d|0,agl:(P.pos.y-G.groundH(P.pos.x,P.pos.z))|0}}}else want(T.x,T.y,T.z);if(P.pos.y-G.groundH(P.pos.x,P.pos.z)<420&&u>23000){dropped=true}}
+   else if(M.phase===3){const T=G.tgtPos;if(u<21300)want(T.x,1050,-21500);else if(!dropped){if(G.ccip(imp)){const d=Math.hypot(imp.x-T.x,imp.z-T.z);want(2*T.x-imp.x,T.y+Math.min(400,d*.5),2*T.z-imp.z);const closing=(fly.pd===undefined||d<fly.pd);const pick=d<c.bombTol||(!closing&&fly.pd<c.bombTol*1.8);fly.pd=d;/* 像真人：瞄準點掃過目標、開始遠離時按投彈 */if(pick&&P.bombs>0){G.dropBomb();rel={alt:P.pos.y|0,d:d|0,agl:(P.pos.y-G.groundH(P.pos.x,P.pos.z))|0}}}else want(T.x,T.y,T.z);if(P.pos.y-G.groundH(P.pos.x,P.pos.z)<420&&u>23000){dropped=true}}
      if(dropped||P.bombs<4&&false){}
      if(rel&&!dropped){dropped=true}
      if(dropped){want(P.pos.x,P.pos.y+1200,P.pos.z-900);P.thr=1;dropT+=.1}

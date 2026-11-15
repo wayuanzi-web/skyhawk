@@ -4,5 +4,6 @@ s=open('index.html').read()
 g=base64.b64encode(open('assets/fa18e.glb','rb').read()).decode()
 tag='<script type="importmap">'
 assert s.count(tag)==1
-s=s.replace(tag,'<script>window.__GLB="'+g+'"</script>\n'+tag)
+g2=base64.b64encode(open('assets/mig29.glb','rb').read()).decode()
+s=s.replace(tag,'<script>window.__GLB="'+g+'";window.__GLB2="'+g2+'"</script>\n'+tag)
 os.makedirs('dist',exist_ok=True);open('dist/index.html','w').write(s);print('dist/index.html',len(s),'bytes')

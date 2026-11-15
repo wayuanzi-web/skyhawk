@@ -261,13 +261,14 @@ for py in P["pylons"]:
             fins(bm, c, 2.68, 3.25, 0.27, 1); fins(bm, c, 0.52, 0.72, 0.13, 1, taper=0.2)
             ctr = (c[0], c[1], c[2] + 1.6)
             finish(bm, "bomb%d" % bomb_i, ["bomb", "store"], ctr, {"store": "bomb"}, static=False); bomb_i += 1
-T = P["centerTank"]
-bm = bmesh.new()
-prof = [(z, T["r"] * math.pow(max(0.0, 1 - ((z - T["len"] / 2) / (T["len"] / 2)) ** 2), 0.42)) for z in [T["len"] * i / 14 for i in range(15)]]
-revolve(bm, prof, (0, T["y"], T["z"] - T["len"] / 2), 0, 16)
-fins(bm, (0, T["y"], T["z"] - T["len"] / 2), T["len"] - 0.75, T["len"] - 0.15, 0.32, 0, n=3, rot=math.pi / 2 + 2 * math.pi / 3)
-box(bm, (0, T["y"] + T["r"] + 0.12, T["z"]), (0.12, 0.3, 1.8), 0)
-finish(bm, "tank", ["store"])
+T = P.get("centerTank")
+if T:
+  bm = bmesh.new()
+  prof = [(z, T["r"] * math.pow(max(0.0, 1 - ((z - T["len"] / 2) / (T["len"] / 2)) ** 2), 0.42)) for z in [T["len"] * i / 14 for i in range(15)]]
+  revolve(bm, prof, (0, T["y"], T["z"] - T["len"] / 2), 0, 16)
+  fins(bm, (0, T["y"], T["z"] - T["len"] / 2), T["len"] - 0.75, T["len"] - 0.15, 0.32, 0, n=3, rot=math.pi / 2 + 2 * math.pi / 3)
+  box(bm, (0, T["y"] + T["r"] + 0.12, T["z"]), (0.12, 0.3, 1.8), 0)
+  finish(bm, "tank", ["store"])
 AMRAAM = [(0, 0.0), (0.25, 0.06), (0.55, 0.089), (3.6, 0.089), (3.65, 0.07)]
 A = P["cheekAAM"]
 for sg in (-1, 1):
@@ -275,17 +276,17 @@ for sg in (-1, 1):
     fins(bm, c, 1.35, 1.9, 0.20, 1); fins(bm, c, 3.15, 3.6, 0.22, 1, taper=0.1)
     finish(bm, "aim120" + ("R" if sg > 0 else "L"), ["white", "dark"], (c[0], c[1], c[2] + 1.8), {"store": "aim120"}, static=False)
 SW = [(0, 0.0), (0.12, 0.045), (0.3, 0.064), (2.95, 0.064), (3.0, 0.05)]
-A = P["tipAAM"]
-for sg in (-1, 1):
+A = P.get("tipAAM")
+for sg in ((-1, 1) if A else ()):
     yw, le, ch = wing_at(A["x"] - 0.15)
     bm = bmesh.new(); box(bm, (sg * (A["x"] - 0.07), yw, A["z"] + 0.55), (0.09, 0.11, 2.6), 0); finish(bm, "rail", ["skin"])
     c = (sg * A["x"], yw - 0.10, A["z"] - 0.95); bm = bmesh.new(); revolve(bm, SW, c, 0, 10)
     fins(bm, c, 0.35, 0.62, 0.09, 1, taper=0.3); fins(bm, c, 2.55, 2.95, 0.12, 1, taper=0.2)
     finish(bm, "aim9" + ("R" if sg > 0 else "L"), ["white", "dark"], (c[0], c[1], c[2] + 1.5), {"store": "aim9"}, static=False)
 # 小細節：機砲口、加油管整流罩、天線
-bm = bmesh.new(); box(bm, (0, 0.47, -7.25), (0.09, 0.05, 0.35), 0); finish(bm, "gunport", ["dark"])
-bm = bmesh.new(); revolve(bm, [(0, 0.0), (0.25, 0.07), (1.3, 0.085), (1.6, 0.05)], (0.50, 0.42, -6.9), 0, 10); finish(bm, "probe", ["skin"])
-for z, h in ((-2.3, 0.22), (2.5, 0.16)):
+if P.get("blades", True): bm = bmesh.new(); box(bm, (0, 0.47, -7.25), (0.09, 0.05, 0.35), 0); finish(bm, "gunport", ["dark"])
+if P.get("probe", True): bm = bmesh.new(); revolve(bm, [(0, 0.0), (0.25, 0.07), (1.3, 0.085), (1.6, 0.05)], (0.50, 0.42, -6.9), 0, 10); finish(bm, "probe", ["skin"])
+for z, h in (((-2.3, 0.22), (2.5, 0.16)) if P.get("blades", True) else ()):
     bm = bmesh.new(); box(bm, (0, 0.95 if z < 0 else 0.92, z), (0.025, h, 0.30), 0); finish(bm, "blade", ["dark"])
 
 # ---------------- 座艙內部與飛行員 ----------------
@@ -331,18 +332,19 @@ for sx, nm in ((-0.24, "doorNL"), (0.24, "doorNR")):                            
 for sg, nm in ((-1, "L"), (1, "R")):
     bm = bmesh.new()
     ax_m = (sg * GM["x"], GY + GM["wheelR"], GM["axleZ"])
-    cyl(bm, (sg * 1.32, GM["top"], GM["z"]), ax_m, 0.09, 1, 10)
-    cyl(bm, (sg * 0.95, -0.70, GM["z"] - 0.65), (sg * 1.45, -1.25, GM["z"] + 0.05), 0.045, 1, 6)
+    cyl(bm, (sg * (GM["x"] - 0.26), GM["top"], GM["z"]), ax_m, 0.09, 1, 10)
+    cyl(bm, (sg * (GM["x"] - 0.63), -0.70, GM["z"] - 0.65), (sg * (GM["x"] - 0.13), -1.25, GM["z"] + 0.05), 0.045, 1, 6)
     cyl(bm, (ax_m[0] - GM["wheelW"] / 2, ax_m[1], ax_m[2]), (ax_m[0] + GM["wheelW"] / 2, ax_m[1], ax_m[2]), GM["wheelR"], 0, 16)
     cyl(bm, (ax_m[0] - GM["wheelW"] / 2 - 0.01, ax_m[1], ax_m[2]), (ax_m[0] + GM["wheelW"] / 2 + 0.01, ax_m[1], ax_m[2]), GM["wheelR"] * 0.55, 1, 12)
-    pv = [sg * 1.32, GM["top"], GM["z"]]; finish(bm, "gearM" + nm, ["tire", "strut", "skin"], tuple(pv), {"pivot": pv, "axis": [0, 0, 1]}, static=False)
-    bm = bmesh.new(); box(bm, (sg * 1.70, -1.05, GM["z"] - 0.1), (0.02, 0.6, 1.1), 2, rz=0.15 * sg)  # 主輪艙門
-    pv = [sg * 1.66, -0.76, GM["z"] - 0.1]; finish(bm, "doorM" + nm, ["tire", "strut", "skin"], tuple(pv), {"pivot": pv, "axis": [0, 0, 1]}, static=False)
-H = P["hook"]
-bm = bmesh.new(); cyl(bm, (0, 0, 0), (0, 0, H["length"]), 0.05, 0, 8)
-box(bm, (0, -0.07, H["length"] + 0.05), (0.12, 0.16, 0.18), 1)
-for v in bm.verts: v.co += B(*H["pivot"])
-finish(bm, "hook", ["dark", "white"], tuple(H["pivot"]), {"pivot": H["pivot"], "axis": [1, 0, 0]}, static=False)
+    pv = [sg * (GM["x"] - 0.26), GM["top"], GM["z"]]; finish(bm, "gearM" + nm, ["tire", "strut", "skin"], tuple(pv), {"pivot": pv, "axis": [0, 0, 1]}, static=False)
+    bm = bmesh.new(); box(bm, (sg * (GM["x"] + 0.12), -1.05, GM["z"] - 0.1), (0.02, 0.6, 1.1), 2, rz=0.15 * sg)  # 主輪艙門
+    pv = [sg * (GM["x"] + 0.08), -0.76, GM["z"] - 0.1]; finish(bm, "doorM" + nm, ["tire", "strut", "skin"], tuple(pv), {"pivot": pv, "axis": [0, 0, 1]}, static=False)
+H = P.get("hook")
+if H:
+  bm = bmesh.new(); cyl(bm, (0, 0, 0), (0, 0, H["length"]), 0.05, 0, 8)
+  box(bm, (0, -0.07, H["length"] + 0.05), (0.12, 0.16, 0.18), 1)
+  for v in bm.verts: v.co += B(*H["pivot"])
+  finish(bm, "hook", ["dark", "white"], tuple(H["pivot"]), {"pivot": H["pivot"], "axis": [1, 0, 0]}, static=False)
 
 # ---------------- 貼圖 ----------------
 sk = P["skin"]
@@ -364,6 +366,17 @@ def pix(region, x=0, y=0, z=0):
     else: u, v = 0.5 + (z + 9.5) / 19 * 0.5, 0.5 + (y + 3) / 7.5 * 0.5
     return (u * TW, (1 - v) * TH)
 def shade(c, k): return tuple(max(0, min(255, int(ch * k))) for ch in c)
+# 迷彩（選用）：上面與兩側畫不規則色塊
+for ci, cc in enumerate(sk.get("camo", [])):
+    col = tuple(int(c * 255) for c in cc); rnd = random.Random(100 + ci)
+    for reg in ("top", "R", "L"):
+        for _ in range(26):
+            z0 = rnd.uniform(-9, 9); x0 = rnd.uniform(-6.5, 6.5); y0 = rnd.uniform(-0.2, 2.8); r = rnd.uniform(0.6, 1.6)
+            pts = []
+            for k in range(9):
+                a = k / 9 * 6.283; rr = r * rnd.uniform(0.6, 1.2)
+                pts.append(pix(reg, x0 + math.cos(a) * rr, 0, z0 + math.sin(a) * rr * 1.4) if reg == "top" else pix(reg, 0, y0 + math.sin(a) * rr * 0.5, z0 + math.cos(a) * rr * 1.4))
+            dr.polygon(pts, fill=col)
 # 面板色差（補漆的斑駁感）
 for reg in ("top", "bot", "R", "L"):
     for _ in range(140):

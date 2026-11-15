@@ -1,5 +1,5 @@
 const {chromium}=require('playwright');const path=require('path');
-exports.open=async()=>{const L=require('../lib');const {b,p,errs}=await L.open();await p.waitForFunction(()=>window.__G);
+exports.open=async()=>{const L=require('../lib');const {b,p,errs}=await L.open({},process.env.PAGE||'index.html');await p.waitForFunction(()=>window.__G);
 await p.evaluate(()=>{const G=__G,P=G.P;window.H={
  hdg:()=>Math.atan2(P.vel.x,-P.vel.z)*57.2958,
  bank:()=>{const r=new P.pos.constructor(1,0,0).applyQuaternion(P.q),u=new P.pos.constructor(0,1,0).applyQuaternion(P.q);return Math.atan2(-r.y,u.y)},
