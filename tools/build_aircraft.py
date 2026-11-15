@@ -264,6 +264,15 @@ for py in P["pylons"]:
             fins(bm, c, 2.68, 3.25, 0.27, 1); fins(bm, c, 0.52, 0.72, 0.13, 1, taper=0.2)
             ctr = (c[0], c[1], c[2] + 1.6)
             finish(bm, "bomb%d" % bomb_i, ["bomb", "store"], ctr, {"store": "bomb"}, static=False); bomb_i += 1
+        if py.get("store") == "agm":  # AGM-65：發射滑軌＋飛彈（玻璃導引頭、四片長翼、尾翼）
+            bm = bmesh.new(); box(bm, (x, yb + 0.05, zc - 0.25), (0.16, 0.14, 2.0), 0); finish(bm, "lau117", ["store"])
+            c = (x, yb - 0.17, zc - 1.45)
+            AGM = [(0, 0.0), (0.03, 0.08), (0.12, 0.14), (0.28, 0.152), (2.40, 0.152), (2.49, 0.12)]
+            bm = bmesh.new(); revolve(bm, AGM, c, 0, 14)
+            fins(bm, c, 0.85, 1.95, 0.36, 0, taper=0.75); fins(bm, c, 2.1, 2.45, 0.22, 1, taper=0.2)
+            finish(bm, "agm" + ("R" if sg > 0 else "L"), ["agm", "dark"], (c[0], c[1], c[2] + 1.25), {"store": "agm"}, static=False)
+            bm = bmesh.new(); revolve(bm, [(0, 0.0), (0.03, 0.075), (0.11, 0.13), (0.12, 0.0)], c, 0, 12)
+            finish(bm, "agmDome" + ("R" if sg > 0 else "L"), ["glass"], (c[0], c[1], c[2] + 0.06), {"store": "agm"}, static=False)
 T = P.get("centerTank")
 if T:
   bm = bmesh.new()

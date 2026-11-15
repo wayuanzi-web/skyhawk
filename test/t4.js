@@ -1,7 +1,7 @@
 const {chromium}=require('playwright');const path=require('path');
 (async()=>{
 const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
-const ctx=await b.newContext({viewport:{width:844,height:390},hasTouch:true,isMobile:true});await ctx.addInitScript(()=>{try{localStorage.setItem('skyhawk_tut','1')}catch(e){}});const p=await ctx.newPage();
+const ctx=await b.newContext({viewport:{width:844,height:390},hasTouch:true,isMobile:true});await ctx.addInitScript(()=>{try{localStorage.setItem('skyhawk_tut','1');localStorage.setItem('skyhawk_qa','0')}catch(e){}});const p=await ctx.newPage();
 const errs=[];p.on('pageerror',e=>errs.push('PAGEERR '+e.message));
 await p.route('https://cdn.jsdelivr.net/npm/three@0.160.0/**',r=>r.fulfill({path:path.join(__dirname,'../node_modules/three',r.request().url().split('three@0.160.0/')[1]),contentType:'application/javascript'}));await p.route('http://sky.test/**',r=>r.fulfill({path:path.join(__dirname,'..',new URL(r.request().url()).pathname)}));
 await p.goto('http://sky.test/index.html');await p.waitForFunction(()=>window.__G);

@@ -69,11 +69,11 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
 <div class="btn" id="bView">視角</div>
 <div class="panel" id="menu"><div class="box">
   <h1>怒海雄鷹</h1>
-  <div class="sub">試飛版 0.13 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
+  <div class="sub">試飛版 0.14 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
   <div id="resume" class="row" style="display:none"><button class="mb pri" id="mResume">繼續</button><button class="mb" id="mRetry">從檢查點重來</button><button class="mb" id="mHome">回主選單</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操作靈敏度</span><button class="mb" data-s="0" style="min-width:64px">低</button><button class="mb" data-s="1" style="min-width:64px">中</button><button class="mb" data-s="2" style="min-width:64px">高</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">時段</span><button class="mb" data-tod="0" style="min-width:64px">白天</button><button class="mb" data-tod="1" style="min-width:64px">黃昏</button></div>
-  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">畫質</span><button class="mb" data-q="0" style="min-width:64px">省電</button><button class="mb" data-q="1" style="min-width:64px">標準</button><button class="mb" data-q="2" style="min-width:64px">精緻</button></div>
+  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">畫質</span><button class="mb" data-q="0" style="min-width:64px">省電</button><button class="mb" data-q="1" style="min-width:64px">標準</button><button class="mb" data-q="2" style="min-width:64px">精緻</button><button class="mb" id="mQA" style="min-width:64px">自動</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操控方式</span><button class="mb" data-c="0" style="min-width:90px">簡易搖桿</button><button class="mb" data-c="2" style="min-width:80px">指向圈</button><button class="mb" data-c="1" style="min-width:110px">體感（傾斜手機）</button><button class="mb" id="mInv" style="min-width:90px">前後反向</button></div>
   <div id="gyMsg" style="font-size:12.5px;color:#ffd08a;min-height:0"></div>
   <div id="mainRows">
@@ -167,7 +167,7 @@ const cam=new THREE.PerspectiveCamera(62,1,3,90000),cam2=new THREE.PerspectiveCa
 {const h=TOD?new THREE.HemisphereLight(0xf3c9a8,0x4e4a55,.6):new THREE.HemisphereLight(0xdde9f5,0x7d8a8c,.75);h.layers.enableAll();scene.add(h)}
 const sun=new THREE.DirectionalLight(TOD?0xffa45a:0xfff0d8,TOD?2.7:3.0);sun.position.set(-0.5,0.8,0.35);sun.layers.enableAll();scene.add(sun);
 /* ---------- 真實感：天空光照、色調、陰影 ---------- */
-const SUND=(TOD?V3(-0.62,0.2,-0.45):V3(-0.5,0.8,0.35)).normalize(),LOOK={q:/iPhone|iPad|Android/.test(navigator.userAgent)?1:2};try{const v=localStorage.getItem('skyhawk_q');if(v!==null)LOOK.q=+v}catch(e){}
+const SUND=(TOD?V3(-0.62,0.2,-0.45):V3(-0.5,0.8,0.35)).normalize(),LOOK={q:/iPhone|iPad|Android/.test(navigator.userAgent)?1:2};try{const v=localStorage.getItem('skyhawk_q');if(v!==null)LOOK.q=+v;LOOK.auto=localStorage.getItem('skyhawk_qa')!=='0'}catch(e){}
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
 sun.castShadow=true;{const sc=sun.shadow.camera;sc.left=-24;sc.right=24;sc.top=24;sc.bottom=-24;sc.near=1;sc.far=500;sc.layers.enableAll();sun.shadow.bias=-.0004;sun.shadow.normalBias=.04}
@@ -470,7 +470,7 @@ const plane=new THREE.Group();let gearGrp,hookMesh,stabL,stabR,abL,abR,HK=[-1.5,
     else if(n==='formation')o=new THREE.MeshStandardMaterial(Object.assign(base,{color:new THREE.Color(.55,.8,.5),emissive:new THREE.Color(.35,.75,.3),emissiveIntensity:TOD?1.4:.5,roughness:.4}));
     else if(n==='glass')o=new THREE.MeshPhysicalMaterial(Object.assign(base,{color:new THREE.Color(.17,.19,.17),opacity:.38,roughness:.03,metalness:.1,clearcoat:1,clearcoatRoughness:.02,envMapIntensity:2.2,depthWrite:false}));
     else if(n==='visor')o=new THREE.MeshPhysicalMaterial(Object.assign(base,{roughness:.08,metalness:.6,clearcoat:1}));
-    else if(n==='white'||n==='store'||n==='bomb')o=new THREE.MeshPhysicalMaterial(Object.assign(base,{roughness:.5,metalness:.08,clearcoat:.25,clearcoatRoughness:.4}));
+    else if(n==='white'||n==='store'||n==='bomb'||n==='agm')o=new THREE.MeshPhysicalMaterial(Object.assign(base,{roughness:.5,metalness:.08,clearcoat:.25,clearcoatRoughness:.4}));
     else o=new THREE.MeshStandardMaterial(Object.assign(base,{roughness:m.roughness,metalness:m.metalness}));
     return MC[m.uuid]=o};window.__SKM=skinMat;
   // 由塗裝貼圖算出接縫凹線的法線貼圖：亮度減去模糊後的亮度＝細線，換成高度再做 Sobel
@@ -536,7 +536,7 @@ function animParts(dt){const c=P.cmd||{pitch:0,roll:0},k=Math.min(1,dt*6),t=(n,v
   if(P.gearT===undefined)P.gearT=P.gear?1:0;P.gearT=clamp(P.gearT+(P.gear?1:-1)*dt/4,0,1);const gp=clamp((P.gearT-.15)/.85,0,1),dop=clamp(P.gearT*4,0,1),ge=x=>x*x*(3-2*x);
   {const f=1-ge(gp);part('gearN',f*1.75);part('gearML',f*1.55);part('gearMR',-f*1.55);const c=1-ge(dop);part('doorNL',c*1.5);part('doorNR',-c*1.5);part('doorML',c*1.45);part('doorMR',-c*1.45);
     for(const n of ['gearN','gearML','gearMR'])if(PARTS[n])PARTS[n].o.visible=gp>0;for(const n of ['doorNL','doorNR','doorML','doorMR'])if(PARTS[n])PARTS[n].o.visible=true}
-  for(const [n,c,i] of [['aim9R',P.m9,1],['aim9L',P.m9,2],['aim120R',P.m120,1],['aim120L',P.m120,2]]){const o=MODEL&&MODEL.getObjectByName(n);if(o)o.visible=c>=i}
+  for(const [n,c,i] of [['aim9R',P.m9,1],['aim9L',P.m9,2],['aim120R',P.m120,1],['aim120L',P.m120,2],['agmR',P.agm,1],['agmDomeR',P.agm,1],['agmL',P.agm,2],['agmDomeL',P.agm,2]]){const o=MODEL&&MODEL.getObjectByName(n);if(o)o.visible=c>=i}
   for(let i=0;i<4;i++){const o=PARTS['bomb'+i]?PARTS['bomb'+i].o:(MODEL&&MODEL.getObjectByName('bomb'+i));if(o)o.visible=i<P.bombs}}
 
 /* 目標、高砲、特效 */
@@ -553,7 +553,19 @@ function linePool(n,color){const g=new THREE.BufferGeometry(),a=new Float32Array
 const shells=linePool(320,0xff8a1a),bullets=linePool(160,0xfff0a0);
 function drawPool(pl,tail){let k=0;for(const s of pl.items){pl.a[k++]=s.p.x;pl.a[k++]=s.p.y;pl.a[k++]=s.p.z;pl.a[k++]=s.p.x-s.v.x*tail;pl.a[k++]=s.p.y-s.v.y*tail;pl.a[k++]=s.p.z-s.v.z*tail}
   pl.o.geometry.setDrawRange(0,pl.items.length*2);pl.o.geometry.attributes.position.needsUpdate=true}
-const booms=[];for(let i=0;i<8;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(1,16,12),new THREE.MeshBasicMaterial({color:0xffb040,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));m.visible=false;scene.add(m);booms.push({m,t:9,r:1})}
+// 爆炸：火球（雜訊翻滾的火焰著色器：白黃核心→橘→暗紅邊）＋衝擊波環＋火星碎片＋黑煙柱
+const BOOMF=`uniform float uK,uT;varying vec3 vN;varying vec3 vP;
+  float h3(vec3 p){return fract(sin(dot(p,vec3(17.1,31.7,11.3)))*43758.5);}
+  float n3(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(h3(i),h3(i+vec3(1,0,0)),f.x),mix(h3(i+vec3(0,1,0)),h3(i+vec3(1,1,0)),f.x),f.y),mix(mix(h3(i+vec3(0,0,1)),h3(i+vec3(1,0,1)),f.x),mix(h3(i+vec3(0,1,1)),h3(i+vec3(1,1,1)),f.x),f.y),f.z);}
+  void main(){float n=n3(vP*2.6+vec3(0.,-uT*2.,0.))*.6+n3(vP*5.3-vec3(uT))*.4;float rim=pow(1.-abs(vN.z),1.5);float heat=clamp(1.15-uK*1.3-rim*.5+(n-.5)*.9,0.,1.);
+    vec3 c=mix(vec3(.25,.05,.02),vec3(1.,.45,.08),smoothstep(.15,.55,heat));c=mix(c,vec3(1.,.93,.7),smoothstep(.6,.95,heat));float a=smoothstep(.05,.35,n+.4-uK*.8)*(1.-smoothstep(.7,1.,uK))*(1.-rim*.75);gl_FragColor=vec4(c*1.6,a);}`;
+const booms=[];for(let i=0;i<10;i++){const mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uK:{value:0},uT:{value:0}},
+    vertexShader:`uniform float uT,uK;varying vec3 vN;varying vec3 vP;
+      float h3(vec3 p){return fract(sin(dot(p,vec3(17.1,31.7,11.3)))*43758.5);}
+      float n3(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(h3(i),h3(i+vec3(1,0,0)),f.x),mix(h3(i+vec3(0,1,0)),h3(i+vec3(1,1,0)),f.x),f.y),mix(mix(h3(i+vec3(0,0,1)),h3(i+vec3(1,0,1)),f.x),mix(h3(i+vec3(0,1,1)),h3(i+vec3(1,1,1)),f.x),f.y),f.z);}
+      void main(){vec3 p=position*(1.+.55*(n3(position*1.7+vec3(uT*1.5))-.5)+.25*(n3(position*3.9-vec3(uT))-.5));p.y+=max(0.,position.y)*.35;vP=position;vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:BOOMF});
+  const m=new THREE.Mesh(new THREE.IcosahedronGeometry(1,3),mat);m.visible=false;m.layers.enableAll();scene.add(m);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(.85,1,48),new THREE.MeshBasicMaterial({color:0xffe8c8,transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));ring.visible=false;scene.add(ring);booms.push({m,ring,t:9,r:1})}
 // 煙霧／蒸汽粒子：柔邊貼圖精靈池（彈射蒸汽、觸艦輪煙）
 const PUFF=(()=>{const cv=document.createElement('canvas');cv.width=cv.height=64;const x=cv.getContext('2d'),g=x.createRadialGradient(32,32,2,32,32,31);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(.5,'rgba(255,255,255,.45)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);
   const tx=new THREE.CanvasTexture(cv),L=[];for(let i=0;i<160;i++){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthWrite:false}));sp.visible=false;sp.layers.enableAll();scene.add(sp);L.push({sp,t:9,life:1,v:V3(),s0:1,s1:2,a:.6})}return L})();
@@ -561,7 +573,12 @@ function puff(p,v,life,s0,s1,a,col=0xffffff){const q=PUFF.reduce((m,x)=>x.t/x.li
 function updPuffs(dt){for(const q of PUFF){if(!q.sp.visible)continue;q.t+=dt;if(q.t>=q.life){q.sp.visible=false;continue}const k=q.t/q.life;q.sp.position.addScaledVector(q.v,dt);q.v.multiplyScalar(Math.exp(-dt*1.5));q.v.y+=dt*.8;q.sp.scale.setScalar(q.s0+(q.s1-q.s0)*Math.sqrt(k));q.sp.material.opacity=q.a*(1-k)*(1-k)}}
 // 鉤住的攔阻索：從甲板兩端拉到尾鉤的 V 形鋼索
 const WIREL=(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(9),3));const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:0x2a2a2a}));l.frustumCulled=false;l.visible=false;l.layers.enableAll();scene.add(l);return l})();
-function boom(p,r){const b=booms.sort((a,b)=>b.t-a.t)[0];b.m.position.copy(p);b.t=0;b.r=r;b.m.visible=true}
+function boom(p,r){const b=booms.sort((a,b)=>b.t-a.t)[0];b.m.position.copy(p);b.t=0;b.r=r;b.m.visible=true;b.m.rotation.set(Math.random()*6,Math.random()*6,0);b.ring.position.copy(p);b.ring.visible=true;
+  const gh=Math.max(0,groundH(p.x,p.z));if(p.y-gh<r*1.2){b.ring.rotation.set(-Math.PI/2,0,0);b.ring.position.y=gh+1.5}else b.ring.lookAt(cam.position);
+  const n=Math.min(14,4+r/4|0);for(let i=0;i<n;i++){_xv.set(Math.random()-.5,Math.random()*.9,Math.random()-.5).normalize().multiplyScalar(r*(1.2+Math.random()*1.5));puff(p,_xv,.6+Math.random()*.6,.4,1.6,1,0xffa040)}
+  for(let i=0;i<Math.min(8,2+r/6|0);i++){_xv.set((Math.random()-.5)*4,4+Math.random()*5,(Math.random()-.5)*4);puff(_x2.copy(p).add(_xv.clone().multiplyScalar(.3)),_xv,4+Math.random()*3,r*.4,r*1.4,.55,0x1e1b18)}
+  const d=p.distanceTo(cam.position);if(window.__CS&&d<r*25)__CS.imp=Math.max(__CS.imp||0,.02*(1-d/(r*25)));beepBoom(r,d)}
+const _xv=V3(),_x2=V3();
 const bombs=[],bombGeo=new THREE.CylinderGeometry(.25,.25,2.6,6),bombMat=new THREE.MeshLambertMaterial({color:0x4b5a3a});
 
 /* ---------- 狀態 ---------- */
@@ -766,7 +783,8 @@ function updWorld(dt){
       shells.items.push({p:a.pos.clone(),v:t1.clone().multiplyScalar(950),t:4.2})}}
   for(let i=shells.items.length-1;i>=0;i--){const s=shells.items[i];s.p.addScaledVector(s.v,dt);s.t-=dt;
     if(s.t<=0)shells.items.splice(i,1);else if(hot&&s.p.distanceToSquared(P.pos)<50){shells.items.splice(i,1);P.hp-=ADMG[M.diff];say('中彈！',1.2);beep(140,.12);if(P.hp<=0)die(CB.ene.some(e=>e.alive)?'被敵機擊落':'被防空砲火擊落')}}
-  for(const b of booms)if(b.t<1.2){b.t+=dt;const k=b.t/1.2;b.m.scale.setScalar(b.r*(.3+k));b.m.material.opacity=.7*(1-k);if(k>=1)b.m.visible=false}
+  for(const b of booms)if(b.t<1.6){b.t+=dt;const k=b.t/1.6;b.m.scale.setScalar(b.r*(.25+.95*Math.pow(k,.45)));b.m.position.y+=dt*b.r*.35;b.m.material.uniforms.uK.value=k;b.m.material.uniforms.uT.value+=dt;
+    const rk=Math.min(1,b.t/.5);b.ring.scale.setScalar(b.r*(.5+5*rk));b.ring.material.opacity=.45*(1-rk);if(rk>=1)b.ring.visible=false;if(k>=1)b.m.visible=false}
   // 任務
   if(M.mode==='mission'&&P.state!=='dead'&&P.state!=='done'){const u=-P.pos.z;if(M.phase>0)M.t+=dt;
     if(M.phase===0&&P.state==='fly'&&!P.onDeck&&P.pos.y>DECK_Y+8){M.phase=1;say('收起落架和襟翼，保持低空往北，飛向峽谷入口',6)}
@@ -874,7 +892,7 @@ function reviveGU(u){if(u.type==='aaa'){u.hp=3;u.m.visible=true;return}u.ghp={ta
 function resetGU(){for(const u of GU){if(u.type!=='aaa')reviveGU(u)}GA.kills=0;for(const m of GA.msl)scene.remove(m.mesh);GA.msl.length=0}
 const agmGeo=new THREE.CylinderGeometry(.16,.16,2.5,8);agmGeo.rotateX(Math.PI/2);const agmMat=new THREE.MeshStandardMaterial({color:0xc9c9bf,roughness:.5,metalness:.3});
 function fireAgm(){const u=GA.lock.u;if(!u||!GA.lock.ok||P.agm<=0)return false;P.agm--;fwd.set(0,0,-1).applyQuaternion(P.q);const m=new THREE.Mesh(agmGeo,agmMat);scene.add(m);
-  GA.msl.push({mesh:m,pos:P.pos.clone().add(V3(0,-1.6,0).applyQuaternion(P.q)),vel:P.vel.clone().addScaledVector(fwd,10),tgt:u,t:0,pf:0});GA.lock.t=0;GA.lock.ok=false;say('發射對地飛彈',1.2);beep(600,.1);syncBtns();return true}
+  whoosh(.35);GA.msl.push({mesh:m,pos:P.pos.clone().add(V3(0,-1.6,0).applyQuaternion(P.q)),vel:P.vel.clone().addScaledVector(fwd,10),tgt:u,t:0,pf:0});GA.lock.t=0;GA.lock.ok=false;say('發射對地飛彈',1.2);beep(600,.1);syncBtns();return true}
 function updGA(dt){const L=GA.lock;
   // 對地鎖定：機頭前方約 20°、0.5–12 公里、地形沒擋住的最近一個；0.6 秒鎖定
   if(P.state==='fly'&&!P.onDeck&&P.agm>0){fwd.set(0,0,-1).applyQuaternion(P.q);let best=null,bs=9;for(const u of GU){if(!guAlive(u))continue;_a.copy(u.pos).sub(P.pos);const d=_a.length();if(d<500||d>12000)continue;const ang=Math.acos(clamp(_a.dot(fwd)/d,-1,1));if(ang>.36)continue;const sc=ang+d/40000;if(sc<bs&&losClear(P.pos,_b.copy(u.pos).setY(u.pos.y+3))){bs=sc;best=u}}
@@ -1014,7 +1032,13 @@ function audioOn(){if(AX)return;try{AX=new (window.AudioContext||window.webkitAu
   // 後燃低頻轟鳴、隨動壓的風切聲、渦輪嘯聲
   const mk=(type,f,q)=>{const src=AX.createBufferSource();src.buffer=buf;src.loop=true;src.playbackRate.value=.7+Math.random()*.3;const fl=AX.createBiquadFilter();fl.type=type;fl.frequency.value=f;if(q)fl.Q.value=q;const g=AX.createGain();g.gain.value=0;src.connect(fl).connect(g).connect(AX.destination);src.start();return g};
   AX.rum=mk('lowpass',130);AX.wind=mk('bandpass',950,.7);const o=AX.createOscillator(),og=AX.createGain();o.type='sawtooth';og.gain.value=0;const of=AX.createBiquadFilter();of.type='lowpass';of.frequency.value=2500;o.connect(of).connect(og).connect(AX.destination);o.start();AX.tur=o;AX.turG=og}catch(e){AX=null}}
+function beepBoom(r,d){if(!AX)return;const v=Math.min(.9,(.15+r/60)*Math.max(.05,1-d/6000));if(v<.03)return;const delay=Math.min(1.5,d/340);setTimeout(()=>thump(v),delay*1000)}
 function thump(v){if(!AX)return;const src=AX.createBufferSource();src.buffer=AX._buf;const f=AX.createBiquadFilter();f.type='lowpass';f.frequency.value=180;const g=AX.createGain(),t=AX.currentTime;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);src.connect(f).connect(g).connect(AX.destination);src.start(t);src.stop(t+.7)}
+// 鎖定音：找目標時低沉斷續、鎖定後高音連續（空對空與對地共用）；被雷達照射或敵機在背後時雷達警告音
+function lockTone(dt){if(!AX)return;if(!AX.lk){const o=AX.createOscillator(),g=AX.createGain();o.type='square';o.frequency.value=700;g.gain.value=0;const f=AX.createBiquadFilter();f.type='lowpass';f.frequency.value=2200;o.connect(f).connect(g).connect(AX.destination);o.start();AX.lk={o,g,t:0}}
+  const L=AX.lk;L.t+=dt;const fly=P.state==='fly'&&!P.onDeck&&!M.paused;const ok=fly&&((LOCK.ok&&LOCK.e)||GA.lock.ok),acq=fly&&!ok&&((LOCK.w&&LOCK.t>0)||(GA.lock.u&&GA.lock.t>0));
+  L.o.frequency.value=ok?1250:640;L.g.gain.value=ok?.022:acq?((L.t*6)%1<.5?.016:0):0;
+  const rwr=fly&&(CB.ene.some(e=>e.alive&&e.pos.distanceTo(P.pos)<9000)||(M.mode==='mission'&&M.stage==='sam'));if(rwr){AX.rwT=(AX.rwT||0)-dt;if(AX.rwT<=0){AX.rwT=2.2;beep(1900,.05);setTimeout(()=>beep(1900,.05),120)}}}
 function beep(f,d){if(!AX)return;const o=AX.createOscillator(),g=AX.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g).connect(AX.destination);o.start();o.stop(AX.currentTime+d)}
 let gunT=0;function gunSnd(){if(!AX||AX.currentTime<gunT)return;gunT=AX.currentTime+.05;const s=AX.createBufferSource();s.buffer=AX._buf;const g=AX.createGain();g.gain.setValueAtTime(.16,AX.currentTime);g.gain.exponentialRampToValueAtTime(.001,AX.currentTime+.06);s.connect(g).connect(AX.destination);s.start(0,Math.random());s.stop(AX.currentTime+.07)}
 
@@ -1083,7 +1107,7 @@ function showResult(win){M.over=true;M.paused=true;$('result').style.display='fl
   $('rRetry').textContent=win?'再飛一次':'從檢查點重來';if(win)M.cp=0}
 document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{M.diff=+b.dataset.d;document.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('sel',x===b))});
 document.querySelectorAll('[data-tod]').forEach(x=>{x.classList.toggle('sel',+x.dataset.tod===TOD);x.onclick=()=>{if(+x.dataset.tod===TOD)return;try{localStorage.setItem('skyhawk_tod',x.dataset.tod)}catch(e){}location.reload()}});
-const qb=()=>document.querySelectorAll('[data-q]').forEach(x=>x.classList.toggle('sel',+x.dataset.q===LOOK.q));document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{setLook(+b.dataset.q);qb()});qb();
+const qb=()=>{document.querySelectorAll('[data-q]').forEach(x=>x.classList.toggle('sel',+x.dataset.q===LOOK.q));$('mQA').classList.toggle('sel',LOOK.auto!==false)};window.qb=qb;$('mQA').onclick=()=>{LOOK.auto=LOOK.auto===false;try{localStorage.setItem('skyhawk_qa',LOOK.auto?'1':'0')}catch(e){}qb()};document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{setLook(+b.dataset.q);qb()});qb();
 const sb=()=>document.querySelectorAll('[data-s]').forEach(x=>x.classList.toggle('sel',+x.dataset.s===sens));document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sens=+b.dataset.s;try{localStorage.setItem('skyhawk_sens',sens)}catch(e){}sb()});sb();
 $('mMission').onclick=tutFirst(()=>start('mission'));function showTut(after){$('tut').style.display='flex';M.paused=true;$('tutOk').onclick=()=>{$('tut').style.display='none';try{localStorage.setItem('skyhawk_tut','1')}catch(e){}M.paused=false;last=performance.now();if(after)after()}}
 function tutFirst(f){return()=>{audioOn();let seen=false;try{seen=localStorage.getItem('skyhawk_tut')==='1'}catch(e){}if(seen)f();else showTut(f)}}
@@ -1214,7 +1238,11 @@ function updCam(dt){fwd.set(0,0,-1).applyQuaternion(P.q);up.set(0,1,0).applyQuat
     plane.visible=P.state!=='dead'}
   else{cam.position.copy(P.pos).addScaledVector(fwd,4.36).addScaledVector(up,1.14);cam.quaternion.copy(P.q);plane.visible=P.state!=='dead'}
   const ft=(P.gear&&!P.onDeck&&P.state==='fly'&&view===1)?38:(P.gear&&!P.onDeck&&P.state==='fly')?56:58+clamp((P.V-150)/250,0,1)*8+3*clamp((P.thrAct-.85)/.15,0,1);cam.fov+=(ft-cam.fov)*Math.min(1,dt*3);cam.updateProjectionMatrix()}
-function frame(now){requestAnimationFrame(frame);let dt=Math.min(.1,(now-last)/1000);last=now;
+// 畫質自動調整：遊戲中每 4 秒算一次平均幀率，持續低於 38 就降一級（精緻→標準→省電）
+const FPSM={n:0,t:0,low:0,warm:0};
+function frame(now){requestAnimationFrame(frame);const rdt=Math.min(1,(now-last)/1000);let dt=Math.min(.1,rdt);last=now;
+  if(LOOK.auto!==false&&!M.paused&&M.mode!=='menu'&&!document.hidden){FPSM.warm+=rdt;if(FPSM.warm>6){FPSM.n++;FPSM.t+=rdt;if(FPSM.t>=4){const f=FPSM.n/FPSM.t;FPSM.n=FPSM.t=0;FPSM.low=f<38?FPSM.low+1:0;
+    if(FPSM.low>=2&&LOOK.q>0){setLook(LOOK.q-1);FPSM.low=0;FPSM.warm=0;say('畫面不夠順，已自動改為「'+['省電','標準','精緻'][LOOK.q]+'」畫質（選單可調）',4);if(typeof qb==='function')qb()}}}}else{FPSM.n=FPSM.t=0}
   if(!M.paused&&M.mode!=='menu'){acc+=dt;if(inp.keys.ShiftLeft)P.thr=clamp(P.thr+dt*.6,0,1);if(inp.keys.ControlLeft)P.thr=clamp(P.thr-dt*.6,0,1);let n=0;while(acc>=DT&&n<12){simStep(DT);acc-=DT;n++}if(n===12)acc=0;updWorld(dt)}
   plane.position.copy(P.pos);plane.quaternion.copy(P.q);gearGrp.visible=P.gear;animParts(dt);updPuffs(dt);if(WIREL.visible){if(P.state==='trap'||P.state==='done'){const U=WIREL.userData,a=WIREL.geometry.attributes.position;t1.set(0,-1.95,8.4).applyQuaternion(P.q).add(P.pos);t1.y=Math.max(t1.y,DECK_Y+.15);a.setXYZ(0,U.a.x,U.a.y,U.a.z);a.setXYZ(1,t1.x,t1.y,t1.z);a.setXYZ(2,U.b.x,U.b.y,U.b.z);a.needsUpdate=true}else WIREL.visible=false}updCockpit(dt);if(M.mode!=='menu')updVortex(dt);
   if(stabL){const sd=clamp((P.w.x||0)*.25,-.35,.35);stabL.rotation.x=stabR.rotation.x=-sd}
@@ -1227,6 +1255,7 @@ function frame(now){requestAnimationFrame(frame);let dt=Math.min(.1,(now-last)/1
   drawPool(shells,.07);drawPool(bullets,.02);
   $('thrFill').style.height=(slOf(P.thr)*100)+'%';$('bLaunch').style.display=P.state==='cat'&&!M.paused?'flex':'none';
   if(AX&&engG){const run=!M.paused&&M.mode!=='menu'&&P.state!=='dead';engG.gain.value=run?.05+.12*P.thrAct:0;engF.frequency.value=300+2600*P.thrAct*P.thrAct;
+    lockTone(dt);
     if(AX.rum){const ab=clamp((P.thrAct-.85)/.15,0,1),qd=.5*1.225*Math.exp(-P.pos.y/8500)*P.V*P.V;AX.rum.gain.value=run?.35*ab:0;AX.wind.gain.value=run?Math.min(.18,qd/60000*.12)+(P.alpha>.3?.05:0):0;AX.tur.frequency.value=600+900*P.thrAct;AX.turG.gain.value=run?.008+.01*P.thrAct:0}}
   if(cockpitNode)cockpitNode.visible=view!==1;
   if(window.__SEA&&__SEA.userData.sh)__SEA.userData.sh.uniforms.uT.value=now/1000;
@@ -1240,7 +1269,7 @@ function frame(now){requestAnimationFrame(frame);let dt=Math.min(.1,(now-last)/1
 requestAnimationFrame(frame);
 
 /* 測試用掛鉤 */
-window.__G={trick,GU,GA,inp,plane,cam,sun,LOOK,setLook,GY,bankG,CB,LOCK,SAMS,fireMsl,countermeasure,spawnEne,launch,TERRAIN,renderer,scene,SURF,get PARTS(){return PARTS},get modelSrc(){return modelSrc},plane,ccip,AAA,P,M,AC,start,simStep,updWorld,spawn,act,dropBomb,groundH,floorOf,xc,LP0,LD,tgtPos,inp,DT,
+window.__G={boom,trick,GU,GA,inp,plane,cam,sun,LOOK,setLook,GY,bankG,CB,LOCK,SAMS,fireMsl,countermeasure,spawnEne,launch,TERRAIN,renderer,scene,SURF,get PARTS(){return PARTS},get modelSrc(){return modelSrc},plane,ccip,AAA,P,M,AC,start,simStep,updWorld,spawn,act,dropBomb,groundH,floorOf,xc,LP0,LD,tgtPos,inp,DT,
   run(sec,fn){const n=Math.round(sec/DT);for(let i=0;i<n;i++){if(fn)fn(i*DT);simStep(DT);if(i%2===0)updWorld(DT*2)}}};
 </script>
 </body>
