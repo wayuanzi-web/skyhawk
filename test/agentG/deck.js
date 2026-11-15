@@ -1,0 +1,3 @@
+const {open}=require('../lib');(async()=>{const {b,p,errs}=await open({},process.argv[2]);await p.waitForFunction(()=>window.__G&&__G.PARTS,{timeout:30000});await p.waitForTimeout(1000);
+const r=await p.evaluate(async()=>{const G=__G;G.start('mission');G.M.paused=true;await new Promise(r=>setTimeout(r,1500));const i=G.renderer.info;return [i.render.calls,i.render.triangles,G.M.mode,G.cam.position.toArray().map(Math.round)]});
+await p.screenshot({path:'test/agentG/deck_'+(process.argv[2].includes('exp')?'exp':'base')+'.png'});console.log(JSON.stringify(r),errs.join('|')||'ok');await b.close()})();

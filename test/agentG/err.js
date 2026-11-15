@@ -1,0 +1,1 @@
+const {open}=require('../lib');(async()=>{const {b,p,errs}=await open({},process.argv[2]);await p.waitForTimeout(8000);console.log(errs.join('\n')||'none',await p.evaluate(()=>!!window.__G));await b.close()})();

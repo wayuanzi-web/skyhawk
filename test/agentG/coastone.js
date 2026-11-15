@@ -1,0 +1,3 @@
+const {open}=require('../lib');(async()=>{const {b,p,errs}=await open({},process.argv[2]);await p.waitForFunction(()=>window.__G&&__G.PARTS,{timeout:30000});
+await p.evaluate(()=>{for(const e of document.body.children)if(e.id!=='gl'&&e.tagName!=='SCRIPT')e.style.visibility='hidden';const G=__G;G.start('free');G.M.paused=true;G.plane.scale.setScalar(1e-4);const T=G.P.pos.constructor;
+ G.P.pos.set(-1500,60,-5730);window.__CAMO={p:new T(-1500,60,-5580),l:new T(-900,0,-6030),fov:60}});await p.waitForTimeout(1200);await p.screenshot({path:process.argv[3]});console.log(errs.join('|')||'ok');await b.close()})();

@@ -15,7 +15,7 @@ const R=await p.evaluate(()=>{const G=__G,P=G.P,out={};
  lvl(12000,350,1);for(let i=0;i<4000;i++){hold(12000);G.run(.1)}out.vmax12k=P.mach;
  lvl(300,230,1);for(let i=0;i<20;i++){hold(300);G.run(.1)}const v0=P.V;for(let i=0;i<10;i++){hold(300);G.run(.1)}out.climbSL=P.V*(P.V-v0)/1/9.81;
  // 最大持續轉彎率：固定速度下，找速度不掉的最大坡度（水平協調轉彎）
- const sus=(alt,V0,phi)=>{lvl(alt,V0,1);for(let i=0;i<80;i++){const g=Math.asin(Math.max(-1,Math.min(1,P.vel.y/P.vel.length())));P.ovr={bank:phi,n:(Math.cos(g)+Math.max(-.4,Math.min(.4,(alt-P.pos.y)/150-g*3)))/Math.cos(phi)};G.run(.1)}P.ovr=null;return P.V>=V0-1&&Math.abs(P.pos.y-alt)<150};
+ const sus=(alt,V0,phi)=>{lvl(alt,V0,1);/* 15 秒：前段滾入的暫態不影響穩態判斷 */for(let i=0;i<150;i++){const g=Math.asin(Math.max(-1,Math.min(1,P.vel.y/P.vel.length())));P.ovr={bank:phi,n:(Math.cos(g)+Math.max(-.4,Math.min(.4,(alt-P.pos.y)/150-g*3)))/Math.cos(phi)};G.run(.1)}P.ovr=null;return P.V>=V0-1&&Math.abs(P.pos.y-alt)<150};
  let best=0,bv=0;for(const V0 of [170,200,230,260]){let lo=.2,hi=1.37;for(let k=0;k<9;k++){const m=(lo+hi)/2;if(sus(3000,V0,m))lo=m;else hi=m}const rate=9.81*Math.tan(lo)/V0*57.3;if(rate>best){best=rate;bv=V0}}
  out.susTurn=best;out.susV=bv;out.susAlt=3000;
  lvl(3000,300,1);G.inp.stickOn=true;G.inp.sx=0;G.inp.sy=1;let gm=0;G.run(3,()=>{gm=Math.max(gm,P.g)});G.inp.stickOn=false;out.gmax=gm;

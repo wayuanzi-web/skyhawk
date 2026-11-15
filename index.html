@@ -68,7 +68,7 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
 <div class="btn" id="bView">視角</div>
 <div class="panel" id="menu"><div class="box">
   <h1>怒海雄鷹</h1>
-  <div class="sub">試飛版 0.7 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
+  <div class="sub">試飛版 0.8 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
   <div id="resume" class="row" style="display:none"><button class="mb pri" id="mResume">繼續</button><button class="mb" id="mRetry">從檢查點重來</button><button class="mb" id="mHome">回主選單</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操作靈敏度</span><button class="mb" data-s="0" style="min-width:64px">低</button><button class="mb" data-s="1" style="min-width:64px">中</button><button class="mb" data-s="2" style="min-width:64px">高</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">畫質</span><button class="mb" data-q="0" style="min-width:64px">省電</button><button class="mb" data-q="1" style="min-width:64px">標準</button><button class="mb" data-q="2" style="min-width:64px">精緻</button></div>
@@ -127,7 +127,7 @@ function hf(x,z){const u=-z;
   const c=sstep(5650,5950,u)*(1-sstep(20300,21300,u));
   if(c>0){const d=Math.abs(x-xc(u)),fl=floorOf(u)+6*vn(x/90,u/90);
     const w=d<300?fl:fl+(d-300)*1.5+(d-300)*(d-300)*0.0006;
-    base=lerp(base,Math.min(base,w),c)}
+    const sk=70,hh=clamp(.5+.5*(base-w)/sk,0,1);base=lerp(base,lerp(base,w,hh)-sk*hh*(1-hh),c)}
   const db=Math.hypot(x-BOWL.x,u-BOWL.u);
   if(db<1750){const k=1-sstep(800,1700,db);base=lerp(base,BOWL.h+(db/BOWL.r)*(db/BOWL.r)*380,k)}
   return base<=0.5?-30:base}
@@ -174,44 +174,87 @@ setLook(LOOK.q);
   const NRM=new Float32Array(TNX*TNU*3),COL=new Float32Array(TNX*TNU*3),H=(i,j)=>HG[clamp(j,0,TNU-1)*TNX+clamp(i,0,TNX-1)];
   for(let j=0;j<TNU;j++)for(let i=0;i<TNX;i++){const k=j*TNX+i,dx=(H(i+1,j)-H(i-1,j))/(2*TD),dz=(H(i,j+1)-H(i,j-1))/(-2*TD),l=Math.hypot(dx,1,dz),ny=1/l;
     NRM[k*3]=-dx/l;NRM[k*3+1]=ny;NRM[k*3+2]=-dz/l;const h=HG[k],t=hash(i,j)*0.08;let r,gg,bb;
-    if(h<8){r=.78;gg=.72;bb=.55}else if(ny<0.72){r=.47;gg=.43;bb=.40}else if(h>1150){r=.85;gg=.87;bb=.9}
-    else{const m=sstep(150,1000,h);r=lerp(.33,.50,m);gg=lerp(.46,.47,m);bb=lerp(.26,.38,m)}
+    {const m=sstep(150,1000,h);r=lerp(.33,.50,m);gg=lerp(.46,.47,m);bb=lerp(.26,.38,m)}
     COL[k*3]=r+t;COL[k*3+1]=gg+t;COL[k*3+2]=bb+t}
-  const tmat=new THREE.MeshLambertMaterial({vertexColors:true,map:noiseTex(256,.55),color:new THREE.Color(1.12,1.12,1.1)});
+  const LIT=new Float32Array(TNX*TNU*2);{const t0=performance.now(),hl=Math.hypot(SUND.x,SUND.z),sx=SUND.x/hl,sz=SUND.z/hl,tn=SUND.y/hl,AD=[];for(let a=0;a<8;a++)AD.push([Math.cos(a*Math.PI/4),Math.sin(a*Math.PI/4)]);
+    for(let j=0;j<TNU;j++)for(let i=0;i<TNX;i++){const k=j*TNX+i,x=TX0+i*TD,z=-(TU0+j*TD),h=HG[k];if(h<-29){LIT[k*2]=LIT[k*2+1]=1;continue}
+      let oc=0;for(let s=24;s<3000;s*=1.12){const d=groundH(x+sx*s,z+sz*s)-(h+2+s*tn);if(d>0){oc=Math.max(oc,d/(.10*s+6));if(oc>=1)break}}
+      let ao=0;for(const [ax,az] of AD){let m=0;for(let s=40;s<1200;s*=1.6){const t=(groundH(x+ax*s,z+az*s)-h)/s;if(t>m)m=t}ao+=m/Math.hypot(1,m)}
+      LIT[k*2]=1-Math.min(1,oc);LIT[k*2+1]=clamp(1-ao/8*1.1,.3,1)}
+    TERRAIN.bakeMs=Math.round(performance.now()-t0)}
+  const tN=noiseTex(256,0);tN.colorSpace=THREE.NoColorSpace;tN.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+  // 岩石法線貼圖：等向的脊狀雜訊（裂縫感），給陡壁三平面用
+  const rockN=(()=>{const sz=256,h=new Float32Array(sz*sz),p=(a,b,q)=>{const fa=Math.floor(a),fb=Math.floor(b),i0=fa%q,j0=fb%q,i1=(i0+1)%q,j1=(j0+1)%q,fx=a-fa,fy=b-fb,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);return lerp(lerp(hash(i0+7,j0),hash(i1+7,j0),sx),lerp(hash(i0+7,j1),hash(i1+7,j1),sx),sy)};
+    for(let j=0;j<sz;j++)for(let i=0;i<sz;i++){let v=0,f=4,w=1;for(let o=0;o<5;o++){v+=w*(1-Math.abs(2*p(i/sz*f,j/sz*f,f)-1));f*=2;w*=.5}h[j*sz+i]=v}
+    const cv=document.createElement('canvas');cv.width=cv.height=sz;const c=cv.getContext('2d'),im=c.createImageData(sz,sz),d=im.data;
+    for(let j=0;j<sz;j++)for(let i=0;i<sz;i++){const dx=(h[j*sz+(i+1)%sz]-h[j*sz+(i+sz-1)%sz])*4,dy=(h[((j+1)%sz)*sz+i]-h[((j+sz-1)%sz)*sz+i])*4,l=Math.hypot(dx,dy,1),k=(j*sz+i)*4;d[k]=(-dx/l*.5+.5)*255;d[k+1]=(-dy/l*.5+.5)*255;d[k+2]=(1/l*.5+.5)*255;d[k+3]=255}
+    c.putImageData(im,0,0);const t=new THREE.CanvasTexture(cv);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.colorSpace=THREE.NoColorSpace;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return t})();
+  const tmat=new THREE.MeshLambertMaterial({vertexColors:true,color:new THREE.Color(1.12,1.12,1.1)});
   // 地表細節：同一張雜訊貼圖再以約 60 公尺一格疊一次（近看不糊），岩石凹凸法線約 40 公尺一格
-  TERRAIN.mat=tmat;tmat.onBeforeCompile=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#include <map_fragment>',
-    `#ifdef USE_MAP
-      float flatK=smoothstep(.45,.8,abs(dot(normalize(vNormal),normalize((viewMatrix*vec4(0.,1.,0.,0.)).xyz))));
-      vec4 sampledDiffuseColor=texture2D(map,vMapUv)*mix(1.,.55+.9*texture2D(map,vMapUv*11.7+vec2(.37,.11)).r,flatK);
-      diffuseColor*=sampledDiffuseColor;
-    #endif`).replace('#include <normal_fragment_maps>',`#ifdef USE_NORMALMAP_TANGENTSPACE
-      vec3 mapN=texture2D(normalMap,vNormalMapUv*17.).xyz*2.-1.;mapN.xy*=normalScale*flatK;normal=normalize(tbn*mapN);
-    #endif`)};
+  TERRAIN.mat=tmat;tmat.onBeforeCompile=sh=>{sh.uniforms.tN={value:tN};sh.uniforms.tR={value:rockN};
+    sh.vertexShader='attribute vec2 lit;varying vec2 vLit;varying vec3 vWP;varying vec3 vWN;\n'+sh.vertexShader.replace('#include <project_vertex>',
+      '#include <project_vertex>\n vWP=(modelMatrix*vec4(transformed,1.)).xyz;vWN=normalize(mat3(modelMatrix)*objectNormal);vLit=lit;');
+    sh.fragmentShader='uniform sampler2D tN,tR;varying vec2 vLit;varying vec3 vWP;varying vec3 vWN;\nfloat tri3(vec3 p,vec3 w,float s){if(w.y>.97)return texture2D(tN,p.xz*s).r;return texture2D(tN,p.zy*s).r*w.x+texture2D(tN,p.xz*s).r*w.y+texture2D(tN,p.xy*s).r*w.z;}\n'+
+     sh.fragmentShader.replace('#include <map_fragment>','').replace('#include <color_fragment>',`
+      vec3 wn=normalize(vWN);vec3 bw=pow(abs(wn),vec3(6.));bw/=bw.x+bw.y+bw.z;
+      float nL=texture2D(tN,vWP.xz/2300.).r, nM=tri3(vWP,bw,1./170.), nD=tri3(vWP,bw,1./26.);
+      float hgt=vWP.y;
+      vec3 grass=vColor.rgb*mix(.80,1.16,nL)*mix(.86,1.10,nM);
+      grass=mix(grass,grass*vec3(1.15,1.05,.80),smoothstep(.6,.85,nM)*.7);
+      float rockK=1.-smoothstep(.64,.80,wn.y+(nM-.5)*.24+(nD-.5)*.06);
+      rockK=max(rockK,smoothstep(980.,1120.,hgt+(nL-.5)*200.));
+      vec3 rock=vec3(.50,.45,.41)*mix(.80,1.12,nL)*mix(.74,1.14,nM);
+      rock*=mix(.88,1.06,.5+.5*sin(hgt*.07+nM*2.+nL*6.));
+      float sandK=1.-smoothstep(4.,12.,hgt+(nM-.5)*10.);
+      float snowK=smoothstep(1100.,1240.,hgt+(nL-.5)*240.+(nM-.5)*60.)*smoothstep(.74,.86,wn.y+(nM-.5)*.3+(nD-.5)*.08)*smoothstep(.30,.42,nM*.6+nL*.4+(nD-.5)*.08);
+            vec3 cS=mix(grass*mix(.88,1.08,nD),rock*mix(.84,1.10,nD),rockK);
+      cS=mix(cS,vec3(.80,.74,.57)*mix(.9,1.06,nD),sandK);
+      cS=mix(cS,vec3(.86,.88,.91)*mix(.72,1.03,nM)*mix(.86,1.03,nL)*mix(.9,1.04,nD),snowK);
+      diffuseColor.rgb*=cS;
+`).replace('#include <normal_fragment_maps>',`#ifdef USE_NORMALMAP_TANGENTSPACE
+      vec3 mapN=texture2D(normalMap,vNormalMapUv*17.).xyz*2.-1.;mapN.xy*=normalScale*(1.-snowK*.3);normal=normalize(tbn*mapN);
+      if(rockK>.01){vec3 p=vWP/60.,tx=texture2D(tR,p.zy).xyz*2.-1.,ty=texture2D(tR,p.xz).xyz*2.-1.,tz=texture2D(tR,p.xy).xyz*2.-1.;
+        float rs=1.5*(1.-smoothstep(250.,1400.,length(vViewPosition)));tx.xy*=rs;ty.xy*=rs;tz.xy*=rs;
+        vec3 wX=vec3(abs(tx.z)*wn.x,tx.y+wn.y,tx.x+wn.z),wY=vec3(ty.x+wn.x,abs(ty.z)*wn.y,ty.y+wn.z),wZ=vec3(tz.x+wn.x,tz.y+wn.y,abs(tz.z)*wn.z);
+        vec3 nR=normalize((viewMatrix*vec4(normalize(wX*bw.x+wY*bw.y+wZ*bw.z),0.)).xyz);
+        normal=normalize(mix(normal,nR,rockK));}
+      #endif
+      `).replace('#include <lights_fragment_end>',
+      '#include <lights_fragment_end>\n reflectedLight.directDiffuse*=mix(.12,1.,vLit.x);reflectedLight.indirectDiffuse*=vLit.y;\n reflectedLight.indirectDiffuse+=diffuseColor.rgb*vec3(.16,.16,.15)*max(dot(normal,normalize((viewMatrix*vec4(.62,.2,-.45,0.)).xyz)),0.)*vLit.y;')};
   const CX=50,CU=40,STEPS=[[1,0],[2,3500],[5,8000],[10,16000]];TERRAIN.chunks=0;
-  function chunkGeo(i0,j0,st){const nx=CX/st+1,nu=CU/st+1,P=[],N=[],C=[],U=[],I=[];
-    const put=(i,j,dy)=>{const k=j*TNX+i;P.push(TX0+i*TD,HG[k]-dy,-(TU0+j*TD));N.push(NRM[k*3],NRM[k*3+1],NRM[k*3+2]);C.push(COL[k*3],COL[k*3+1],COL[k*3+2]);U.push((TX0+i*TD)/700,-(TU0+j*TD)/700);return P.length/3-1};
+  function chunkGeo(i0,j0,st){const nx=CX/st+1,nu=CU/st+1,P=[],N=[],C=[],U=[],I=[],L=[];
+    const put=(i,j,dy)=>{const k=j*TNX+i;L.push(LIT[k*2],LIT[k*2+1]);P.push(TX0+i*TD,HG[k]-dy,-(TU0+j*TD));N.push(NRM[k*3],NRM[k*3+1],NRM[k*3+2]);C.push(COL[k*3],COL[k*3+1],COL[k*3+2]);U.push((TX0+i*TD)/700,-(TU0+j*TD)/700);return P.length/3-1};
     for(let b=0;b<nu;b++)for(let a=0;a<nx;a++)put(i0+a*st,j0+b*st,0);
-    for(let b=0;b<nu-1;b++)for(let a=0;a<nx-1;a++){const p=b*nx+a,q=p+1,r=p+nx,t=r+1;I.push(p,q,r,q,t,r)}
+    for(let b=0;b<nu-1;b++)for(let a=0;a<nx-1;a++){const p=b*nx+a,q=p+1,r=p+nx,t=r+1;if(Math.abs(P[p*3+1]-P[t*3+1])<Math.abs(P[q*3+1]-P[r*3+1]))I.push(p,q,t,p,t,r);else I.push(p,q,r,q,t,r)}
     const sk=30+st*18,edge=[];for(let a=0;a<nx;a++)edge.push([a,0]);for(let b=1;b<nu;b++)edge.push([nx-1,b]);for(let a=nx-2;a>=0;a--)edge.push([a,nu-1]);for(let b=nu-2;b>0;b--)edge.push([0,b]);
     const low=edge.map(([a,b2])=>put(i0+a*st,j0+b2*st,sk));
     for(let e=0;e<edge.length;e++){const f=(e+1)%edge.length,p=edge[e][1]*nx+edge[e][0],q=edge[f][1]*nx+edge[f][0];I.push(p,low[e],q,q,low[e],low[f])}
     const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(N,3));
-    g.setAttribute('color',new THREE.Float32BufferAttribute(C,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));g.setIndex(I);g.computeBoundingSphere();return g}
+    g.setAttribute('color',new THREE.Float32BufferAttribute(C,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));g.setAttribute('lit',new THREE.Float32BufferAttribute(L,2));g.setIndex(I);g.computeBoundingSphere();return g}
   for(let j0=0;j0+CU<TNU;j0+=CU)for(let i0=0;i0+CX<TNX;i0+=CX){let mx=-99;for(let j=j0;j<=j0+CU;j++)for(let i=i0;i<=i0+CX;i++)mx=Math.max(mx,HG[j*TNX+i]);if(mx<=-29)continue;
     const lod=new THREE.LOD();for(const [st,d] of STEPS){const m=new THREE.Mesh(chunkGeo(i0,j0,st),tmat);m.side=THREE.DoubleSide;m.receiveShadow=st<=2;lod.addLevel(m,d)}
     const c=new THREE.Vector3(TX0+(i0+CX/2)*TD,0,-(TU0+(j0+CU/2)*TD));for(const l of lod.levels){l.object.geometry.translate(-c.x,0,-c.z);l.object.geometry.computeBoundingSphere()}lod.position.copy(c);lod.updateMatrixWorld(true);scene.add(lod);TERRAIN.chunks++}
+  // 峽谷谷底與下坡散佈岩塊／灌木：每 1,500 公尺一段一個 InstancedMesh（可被視錐剔除），每個 20 個三角形
+  {const geo=new THREE.IcosahedronGeometry(1,0),mat=new THREE.MeshLambertMaterial({flatShading:true}),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),e=new THREE.Euler(),sc=new THREE.Vector3(),ps=new THREE.Vector3(),col=new THREE.Color();let sd=11;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;TERRAIN.scatter=0;
+    for(let u0=5900;u0<21000;u0+=1500){const N=260,im=new THREE.InstancedMesh(geo,mat,N),cx=xc(u0+750),cz=-(u0+750);let n=0;
+      for(let k=0;k<N*3&&n<N;k++){const u=u0+rnd()*1500,side=rnd()<.5?-1:1,d=Math.pow(rnd(),.7)*520,x=xc(u)+side*d,z=-u,h=groundH(x,z);if(h<6)continue;
+        const sl=Math.hypot(groundH(x+8,z)-groundH(x-8,z),groundH(x,z+8)-groundH(x,z-8))/16;if(sl>1.2)continue;
+        const bush=sl<.35&&rnd()<.6,s=bush?2+rnd()*3.5:1.5+Math.pow(rnd(),2)*7;
+        sc.set(s*(.8+rnd()*.6),s*(bush?.75:.45+rnd()*.4),s*(.8+rnd()*.6));q.setFromEuler(e.set(rnd()*.4,rnd()*6.28,rnd()*.4));ps.set(x-cx,h+sc.y*(bush?.45:.25)-sl*s*.5,z-cz);
+        im.setMatrixAt(n,m4.compose(ps,q,sc));const v=.85+rnd()*.3;im.setColorAt(n,bush?col.setRGB(.16*v,.24*v,.11*v):col.setRGB(.42*v,.39*v,.36*v));n++}
+      im.count=n;im.computeBoundingSphere();const lo=new THREE.LOD();lo.addLevel(im,0);lo.addLevel(new THREE.Object3D(),3200);lo.position.set(cx,0,cz);scene.add(lo);TERRAIN.scatter+=n}}
   // 海面：兩層波紋法線貼圖往不同方向流動，反射天空與太陽（亮面閃光）
   const waveN=(sz,per,amp)=>{const h=new Float32Array(sz*sz);const p=(a,b,q)=>{const fa=Math.floor(a),fb=Math.floor(b),i0=((fa%q)+q)%q,j0=((fb%q)+q)%q,i1=(i0+1)%q,j1=(j0+1)%q,fx=a-fa,fy=b-fb,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);return lerp(lerp(hash(i0,j0),hash(i1,j0),sx),lerp(hash(i0,j1),hash(i1,j1),sx),sy)};
-    for(let j=0;j<sz;j++)for(let i=0;i<sz;i++){let v=0,f=per,w=1;for(let o=0;o<4;o++){v+=w*p(i/sz*f,j/sz*f*.7,f);f*=2;w*=.5}h[j*sz+i]=v}
+    for(let j=0;j<sz;j++)for(let i=0;i<sz;i++){let v=0,f=per,w=1;for(let o=0;o<4;o++){v+=w*p(i/sz*f,j/sz*f,f);f*=2;w*=.5}h[j*sz+i]=v}
     const cv=document.createElement('canvas');cv.width=cv.height=sz;const c=cv.getContext('2d'),im=c.createImageData(sz,sz),d=im.data;
     for(let j=0;j<sz;j++)for(let i=0;i<sz;i++){const dx=(h[j*sz+(i+1)%sz]-h[j*sz+(i+sz-1)%sz])*amp,dy=(h[((j+1)%sz)*sz+i]-h[((j+sz-1)%sz)*sz+i])*amp,l=Math.hypot(dx,dy,1),k=(j*sz+i)*4;d[k]=(-dx/l*.5+.5)*255;d[k+1]=(-dy/l*.5+.5)*255;d[k+2]=(1/l*.5+.5)*255;d[k+3]=255}
     c.putImageData(im,0,0);const t=new THREE.CanvasTexture(cv);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.colorSpace=THREE.NoColorSpace;t.anisotropy=8;return t};
-  const wn=waveN(256,4,3.2);wn.repeat.set(2600,2600);
+  const wn=waveN(256,4,3.2);wn.repeat.set(2600,2600/.7);
   const seaMat=new THREE.MeshStandardMaterial({color:0x0b3550,roughness:.16,metalness:0,normalMap:wn,normalScale:new THREE.Vector2(.55,.55),envMapIntensity:1});
   seaMat.onBeforeCompile=sh=>{sh.uniforms.uT={value:0};seaMat.userData.sh=sh;sh.fragmentShader='uniform float uT;\n'+sh.fragmentShader.replace('#include <normal_fragment_maps>',
     `vec2 uvA=vNormalMapUv+vec2(uT*.0021,uT*.0013),uvB=vNormalMapUv*.37+vec2(-uT*.0011,uT*.0017);vec3 mapN=normalize((texture2D(normalMap,uvA).xyz*2.-1.)+(texture2D(normalMap,uvB).xyz*2.-1.));mapN.xy*=normalScale;normal=normalize(tbn*mapN);`)};
   window.__SEA=seaMat;
-  {const rn=waveN(256,6,5.5);TERRAIN.mat.normalMap=rn;TERRAIN.mat.normalScale=new THREE.Vector2(.9,.9);TERRAIN.mat.needsUpdate=true}
+  {const rn=waveN(256,6,5.5);rn.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());TERRAIN.mat.normalMap=rn;TERRAIN.mat.normalScale=new THREE.Vector2(.9,.9);TERRAIN.mat.needsUpdate=true}
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(400000,400000),seaMat);sea.receiveShadow=true;
   sea.rotation.x=-Math.PI/2;scene.add(sea);
   // 積雲：柔邊雲片一群群疊起來（貼圖程式畫），2,600–4,000 公尺
@@ -405,7 +448,7 @@ function updCockpit(dt){CKP.g.visible=view===1&&M.mode!=='menu';if(MODEL&&!_glas
 let _glass=null;
 function animParts(dt){const c=P.cmd||{pitch:0,roll:0},k=Math.min(1,dt*6),t=(n,v,kk=k)=>SURF[n]+=(v-SURF[n])*kk;
   t('lef',P.flaps?.21:clamp(P.alpha*.9,0,.42));t('flap',P.flaps?.52:0,Math.min(1,dt*1.5));t('ail',clamp(c.roll,-1,1)*.38);
-  t('stab',-clamp(c.pitch,-1,1)*.3);t('stabR',clamp(c.roll,-1,1)*.12);t('rud',P.brake?.55:0,Math.min(1,dt*2));t('hook',P.hook?.66:0,Math.min(1,dt*2));
+  t('stab',c.aCmd!==undefined?-clamp((P.g-1)/7+(c.aCmd-P.alpha)*2,-.4,1)*.3:-clamp(c.pitch,-1,1)*.3);t('stabR',clamp(c.roll,-1,1)*.12);t('rud',P.brake?.55:0,Math.min(1,dt*2));t('hook',P.hook?.66:0,Math.min(1,dt*2));
   if(!PARTS){if(hookMesh)hookMesh.rotation.x=P.hook?HK[1]:HK[0];return}
   for(const s of ['I','O']){part('lef'+s+'L',-SURF.lef);part('lef'+s+'R',-SURF.lef)}
   part('flapL',SURF.flap+SURF.ail);part('flapR',SURF.flap-SURF.ail);part('ailL',SURF.flap*.6+SURF.ail);part('ailR',SURF.flap*.6-SURF.ail);
@@ -469,8 +512,9 @@ const clOf=a=>{const s=sstep(.5,.95,Math.abs(a));return AC.CLA*a*(1-s)+Math.sin(
 const BANKMAX=1.44;
 function bankG(bankT,nT){const V=Math.max(30,P.vel.length()),rho=1.225*Math.exp(-P.pos.y/8500),qS=Math.max(1,.5*rho*V*V*AC.S),W=mass()*G0,clF=P.flaps?AC.CLFLAP:0;
   const bank=Math.atan2(-right.y,up.y),rate=-P.w.z,e=wrapPi(bankT-bank);
-  const roll=clamp(e*2.4-rate*.55,-1,1);
-  const n=clamp(nT,-1.5,AC.GMAX),aCmd=(n*W/qS-clF)/AC.CLA;return{roll,aCmd,pitch:0,yaw:0,steer:0}}
+  const roll=clamp(e*3-rate*.4,-1,1);
+  if(nT>0)nT=Math.max(Math.min(nT,1),nT*Math.cos(Math.max(0,Math.abs(e)-.15)));   // FIX1：坡度沒到位前不拉滿，避免先拉後滾（轉彎爬升、想俯衝卻先抬頭）
+  const n=clamp(nT,-1.5,P.gear?1.4:AC.GMAX),aCmd=(n*W/qS-clF)/AC.CLA;return{roll,aCmd,pitch:0,yaw:0,steer:0}}
 function levelN(bank,gamma,gdot){const V=Math.max(30,P.vel.length());return(Math.cos(gamma)+V*gdot/G0)/Math.max(.2,Math.cos(bank))}
 function controls(){
   const k=inp.keys,kp=(k.KeyS?1:0)-(k.KeyW?1:0),kr=(k.KeyD?1:0)-(k.KeyA?1:0);
@@ -491,14 +535,18 @@ function controls(){
   // 指向圈（三維）：要轉向的加速度＋抵銷重力的升力 → 升力方向（坡度）與大小（G）
   const vd=ref,ad=P.aim,cs=clamp(vd.dot(ad),-1,1),th=Math.acos(cs);
   _pp.copy(ad).addScaledVector(vd,-cs);const pl=_pp.length();if(pl>1e-6)_pp.multiplyScalar(1/pl);else _pp.set(0,0,0);
-  if(th>1.1){const sd=Math.sign(vd.x*ad.z-vd.z*ad.x)||1;_pp.set(vd.z*sd,0,-vd.x*sd);const hl=Math.hypot(_pp.x,_pp.z)||1;_pp.multiplyScalar(-1/hl);_pp.y=clamp((ad.y-vd.y)*.6,-.5,.5);_pp.normalize()}
+  const hdE=wrapPi(Math.atan2(ad.x,-ad.z)-Math.atan2(vd.x,-vd.z));
+  if(th>1.1&&Math.abs(hdE)>.9){const sd=Math.sign(vd.x*ad.z-vd.z*ad.x)||1;_pp.set(vd.z*sd,0,-vd.x*sd);const hl=Math.hypot(_pp.x,_pp.z)||1;_pp.multiplyScalar(-1/hl);_pp.y=clamp((ad.y-vd.y)*.6,-.5,.5);_pp.normalize()}
   const aMax=AC.GMAX*G0,aTurn=Math.min(.75*th*Math.max(60,V),aMax);
   _gp.set(0,-G0,0).addScaledVector(vd,G0*vd.y);                       // 重力在垂直於速度方向的分量
   _al.copy(_pp).multiplyScalar(aTurn).sub(_gp);
   const nReq=_al.length()/G0;
   _u0.set(0,1,0).addScaledVector(vd,-vd.y);if(_u0.lengthSq()<1e-6)_u0.copy(up);_u0.normalize();_r0.crossVectors(vd,_u0);
   let bD=Math.atan2(_al.dot(_r0),_al.dot(_u0)),nT=nReq;
-  const below=(ad.y<vd.y-.5&&th>.5),bMax=below?2.36:BANKMAX;               // 目標在下方很遠：允許到 135 度
+  const below=(ad.y<vd.y-.5&&th>.5),steep=(Math.asin(clamp(ad.y,-1,1))-Math.asin(clamp(vd.y,-1,1))<-.8&&th>.8);   // 目標在下方 45° 以上：翻背拉下去（真實飛行員的做法），不要長時間推負 G
+  let bMax=steep?Math.PI:below?2.36:BANKMAX;
+  const BS=window.__BS||[.6,2.0],bSoft=(th<.8&&Math.abs(vd.y)<.26&&!(M.mode==="mission"&&M.phase===3))?Math.min(BANKMAX,BS[0]+BS[1]*th):9; // 小修正限制坡度：偏 10° 約 54°、25° 約 79°、45° 以上不限（像真人修航向，不是每次都急轉）
+  if(Math.abs(bD)>bSoft&&Math.abs(bD)<=bMax){const v=_al.dot(_u0)/G0;bD=Math.sign(bD)*bSoft;nT=clamp(v/Math.max(.2,Math.cos(bSoft)),-1.5,nReq)}
   if(Math.abs(bD)>bMax){const b2=wrapPi(bD+Math.PI);if(Math.abs(b2)<=bMax&&_al.dot(_u0)<-.85*_al.length()){bD=b2;nT=-Math.min(nReq,1.5)}else{bD=Math.sign(bD)*bMax}}
   return bankG(bD,nT)}
 const _pp=V3(),_gp=V3(),_al=V3(),_u0=V3(),_r0=V3();
@@ -534,7 +582,7 @@ function simStep(dt){P.simT=(P.simT||0)+dt;
     let aTrim=qS>1?clamp((W*cg/qS-clF)/AC.CLA,-.05,AC.AMAX):AC.AMAX;
     const aPos=Math.max(aTrim,qS>1?Math.min(AC.AMAX,(AC.GMAX*W/qS-clF)/AC.CLA):AC.AMAX),aNeg=qS>1?Math.max(-.25,(AC.GMIN*W/qS-clF)/AC.CLA):-.25;
     const aCmd=c.aCmd!==undefined?clamp(c.aCmd,aNeg,aPos):c.pitch>=0?aTrim+c.pitch*(aPos-aTrim):aTrim-c.pitch*(aNeg-aTrim);
-    const wxT=wx+clamp((aCmd-alpha)*5,-1.3,1.3)*auth-(1-auth)*alpha*1.5,wyT=wy-clamp(beta*4,-1,1)-c.yaw*.15,wzT=-c.roll*(inp.stickOn?2.1*SENS[sens]:2.6)*clamp(qd/9000,.15,1);
+    const wxT=wx+clamp((aCmd-alpha)*5,-1.3,1.3)*auth-(1-auth)*alpha*1.5,wyT=wy-clamp(beta*4,-1,1)-c.yaw*.15+P.w.z*Math.tan(clamp(alpha,-.6,.6)),wzT=-c.roll*(inp.stickOn?2.6*SENS[sens]:3.1)*clamp(qd/9000,.15,1);
     const kx=Math.min(1,dt/.12);P.w.x+=(wxT-P.w.x)*kx;P.w.y+=(wyT-P.w.y)*kx;P.w.z+=(wzT-P.w.z)*Math.min(1,dt/.18);
     const wl=P.w.length();if(wl>1e-6){t1.copy(P.w).multiplyScalar(1/wl);dq.setFromAxisAngle(t1,wl*dt);P.q.multiply(dq).normalize()}}
   const py=P.pos.y;P.pos.addScaledVector(P.vel,dt);
@@ -551,13 +599,13 @@ function simStep(dt){P.simT=(P.simT||0)+dt;
   if(!P.onDeck){const gh=groundH(P.pos.x,P.pos.z);if(P.pos.y<gh+1.5){die('撞山');return}if(P.pos.y<1.5){die('墜海');return}}
   if(P.pos.y>16000||Math.abs(P.pos.x)>70000||Math.abs(P.pos.z)>80000){die(P.pos.y>16000?'超過升限':'飛離作戰區域');return}
 }
-function touchdown(sink){t1.copy(P.pos).sub(LP0);const s=t1.dot(LD),d=t1.x*LD.z-t1.z*LD.x;M.td={s,d,sink};
+function touchdown(sink){thump(.4+Math.min(.5,sink*.06));if(window.__CS)__CS.imp=.012+sink*.002;t1.copy(P.pos).sub(LP0);const s=t1.dot(LD),d=t1.x*LD.z-t1.z*LD.x;M.td={s,d,sink};
   if(P.hook&&s>WIRES[0]-7&&s<WIRES[3]+7&&Math.abs(d)<15){let w=0,b=99;WIRES.forEach((x,i)=>{if(Math.abs(s-x)<b){b=Math.abs(s-x);w=i+1}});M.td.wire=w;P.state='trap';say('鉤住第 '+w+' 條攔阻索！',3)}
   else say(P.hook?'沒鉤到（Bolter）！加滿油門重飛':'沒放尾鉤，加油門重飛',4)}
 function finishTrap(){const w=M.td.wire,off=Math.abs(M.td.d);let pts=w===3?4:(w===2||w===4)?3:2;if(off>7)pts=Math.max(2,pts-1);
   const name={4:'OK（4 分）',3:'尚可（3 分）',2:'偏差大但安全（2 分）'}[pts];
   M.grade=name+'｜第 '+w+' 條索，偏離中線 '+off.toFixed(1)+' 公尺，下沉率 '+M.td.sink.toFixed(1)+' 公尺/秒';
-  P.state='done';M.phase=5;showResult(true)}
+  P.state='done';M.phase=5;M.resT=1.3}
 
 /* ---------- 武器與敵人 ---------- */
 // 炸彈彈道用解析式（無阻力拋物線）：瞄準圈與實際落點用同一個公式，不會有積分誤差
@@ -613,6 +661,7 @@ function updWorld(dt){
     else if(M.stage==='transit'){if(-P.pos.z<9500||M.stT>50){M.stage='bandit';M.stT=0;M.cp=5;spawnEne(DF.eneN[M.diff]);say('敵機從南方接近！鎖定後按「飛彈」，近距離用機砲',7)}}
     else if(M.stage==='bandit'){if(!CB.ene.some(e=>e.alive)){M.stage='rtb';M.cp=4;say('擊落所有敵機！回航著艦',6)}
       else if(M.stT>180){for(const e of CB.ene)if(e.alive){e.alive=false;scene.remove(e.mesh)}M.stage='rtb';say('敵機撤退了，回航著艦',5)}}}
+  if(M.resT>0){M.resT-=dt;if(M.resT<=0)showResult(true)}
   if(M.failT>0){M.failT-=dt;if(M.failT<=0){M.soft=false;showResult(false)}}
 }
 
@@ -726,7 +775,11 @@ function updCombat(dt){updLock(dt);const n=Math.max(1,Math.ceil(dt*60-1e-6)),h=d
 /* ---------- 聲音 ---------- */
 let AX=null,engG,engF;
 function audioOn(){if(AX)return;try{AX=new (window.AudioContext||window.webkitAudioContext)();const n=AX.sampleRate*2,buf=AX.createBuffer(1,n,AX.sampleRate),d=buf.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
-  const s=AX.createBufferSource();s.buffer=buf;s.loop=true;engF=AX.createBiquadFilter();engF.type='lowpass';engG=AX.createGain();engG.gain.value=0;s.connect(engF).connect(engG).connect(AX.destination);s.start();AX._buf=buf}catch(e){AX=null}}
+  const s=AX.createBufferSource();s.buffer=buf;s.loop=true;engF=AX.createBiquadFilter();engF.type='lowpass';engG=AX.createGain();engG.gain.value=0;s.connect(engF).connect(engG).connect(AX.destination);s.start();AX._buf=buf;
+  // 後燃低頻轟鳴、隨動壓的風切聲、渦輪嘯聲
+  const mk=(type,f,q)=>{const src=AX.createBufferSource();src.buffer=buf;src.loop=true;src.playbackRate.value=.7+Math.random()*.3;const fl=AX.createBiquadFilter();fl.type=type;fl.frequency.value=f;if(q)fl.Q.value=q;const g=AX.createGain();g.gain.value=0;src.connect(fl).connect(g).connect(AX.destination);src.start();return g};
+  AX.rum=mk('lowpass',130);AX.wind=mk('bandpass',950,.7);const o=AX.createOscillator(),og=AX.createGain();o.type='sawtooth';og.gain.value=0;const of=AX.createBiquadFilter();of.type='lowpass';of.frequency.value=2500;o.connect(of).connect(og).connect(AX.destination);o.start();AX.tur=o;AX.turG=og}catch(e){AX=null}}
+function thump(v){if(!AX)return;const src=AX.createBufferSource();src.buffer=AX._buf;const f=AX.createBiquadFilter();f.type='lowpass';f.frequency.value=180;const g=AX.createGain(),t=AX.currentTime;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+.6);src.connect(f).connect(g).connect(AX.destination);src.start(t);src.stop(t+.7)}
 function beep(f,d){if(!AX)return;const o=AX.createOscillator(),g=AX.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g).connect(AX.destination);o.start();o.stop(AX.currentTime+d)}
 let gunT=0;function gunSnd(){if(!AX||AX.currentTime<gunT)return;gunT=AX.currentTime+.05;const s=AX.createBufferSource();s.buffer=AX._buf;const g=AX.createGain();g.gain.setValueAtTime(.16,AX.currentTime);g.gain.exponentialRampToValueAtTime(.001,AX.currentTime+.06);s.connect(g).connect(AX.destination);s.start(0,Math.random());s.stop(AX.currentTime+.07)}
 
@@ -736,7 +789,7 @@ function resize(){DPR=Math.min(window.devicePixelRatio||1,1.5);W=innerWidth;H=in
 addEventListener('resize',resize);resize();
 function syncBtns(){$('bGear').classList.toggle('on',P.gear);$('bFlap').classList.toggle('on',P.flaps);$('bHook').classList.toggle('on',P.hook);$('bBrake').classList.toggle('on',P.brake);$('bAT').classList.toggle('on',P.at);$('bBomb').textContent='炸彈 '+P.bombs;$('bMsl').textContent='飛彈 '+((P.m9||0)+(P.m120||0));$('bFlr').textContent='干擾彈 '+(P.cm||0)}
 const act={gear(){if(!P.onDeck){P.gear=!P.gear}},flap(){P.flaps=!P.flaps},hook(){P.hook=!P.hook},brake(){P.brake=!P.brake},at(){P.at=!P.at},view(){view=1-view},
-  launch(){if(P.state!=='cat')return;if(P.thrAct<.8){say('先把油門推到頂');return}P.state='fly';P.catT=2.5;say('彈射！',2)}};
+  launch(){if(P.state!=='cat')return;if(P.thrAct<.8){say('先把油門推到頂');return}P.state='fly';P.catT=2.5;thump(.7);say('彈射！',2)}};
 function tap(id,fn){$(id).addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();audioOn();fn();syncBtns()})}
 tap('bGear',act.gear);tap('bFlap',act.flap);tap('bHook',act.hook);tap('bBrake',act.brake);tap('bAT',act.at);tap('bView',act.view);tap('bLaunch',act.launch);tap('bBomb',dropBomb);tap('bMsl',fireMsl);tap('bFlr',countermeasure);tap('bPause',()=>openMenu(true));
 {const f=$('bFire');f.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();audioOn();inp.fire=true;f.setPointerCapture(e.pointerId)});const offf=()=>inp.fire=false;f.addEventListener('pointerup',offf);f.addEventListener('pointercancel',offf)}
@@ -745,14 +798,14 @@ const thrOf=s=>s<=.78?s/.78*.85:s<.88?.85:.85+(s-.88)/.12*.15,slOf=t=>t<=.85?t/.
 pad.addEventListener('pointerdown',e=>{e.preventDefault();audioOn();pad.setPointerCapture(e.pointerId);const x=e.clientX,y=e.clientY;const SL=parseFloat(getComputedStyle($('thr')).left)||6;let kind=(x<SL+52&&y>H*.2-24&&y<H*.82+24)?'thr':x<W*.45?'stick':'aim';
   if(kind==='stick'&&[...ptr.values()].some(p=>p.kind==='stick'))kind='aim';if(kind==='aim'&&[...ptr.values()].some(p=>p.kind==='aim'))kind='none';
   ptr.set(e.pointerId,{kind,x0:x,y0:y,x,y,s0:slOf(P.thr),mv:false});
-  if(kind==='aim'){P.hold=null;const now=performance.now();if(now-(inp.lastTap||0)<450&&Math.hypot(x-(inp.ltx||0),y-(inp.lty||0))<40){P.aim.copy(P.vel.lengthSq()>900?P.vel:new THREE.Vector3(0,0,-1).applyQuaternion(P.q)).normalize();say('指向圈回正',1);inp.lastTap=0}else{inp.lastTap=now;inp.ltx=x;inp.lty=y}}
+  if(kind==='aim'){P.hold=null;const now=performance.now();if(now-(inp.lastTapUp||0)<350&&Math.hypot(x-(inp.ltx||0),y-(inp.lty||0))<40){P.aim.copy(P.vel.lengthSq()>900?P.vel:new THREE.Vector3(0,0,-1).applyQuaternion(P.q)).normalize();if(Math.abs(P.aim.y)<.34){P.aim.y=0;P.aim.normalize()}say('指向圈回正',1);inp.lastTapUp=0}}
   if(kind==='stick'){inp.stickOn=true;inp.sx=inp.sy=0;const b=$('stickBase'),k=$('stickKnob');b.style.display=k.style.display='block';b.style.left=k.style.left=x+'px';b.style.top=k.style.top=y+'px'}});
 pad.addEventListener('pointermove',e=>{const p=ptr.get(e.pointerId);if(!p)return;const x=e.clientX,y=e.clientY;
   if(p.kind==='thr'){if(Math.abs(y-p.y0)>12)p.mv=true;if(p.mv){P.thr=thrOf(clamp(p.s0-(y-p.y0)/(H*.62),0,1));if(P.at){P.at=false;say('自動油門已解除',2)}syncBtns()}}
   else if(p.kind==='stick'){let dx=(x-p.x0)/95,dy=(y-p.y0)/95;const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}const cv=v=>{const a=Math.abs(v);return a<.08?0:Math.sign(v)*Math.pow((a-.08)/.92,2)};inp.sx=cv(dx);inp.sy=cv(dy);const k=$('stickKnob');k.style.left=p.x0+dx*95+'px';k.style.top=p.y0+dy*95+'px'}
-  else if(p.kind==='aim'){const dx=x-p.x,dy=y-p.y,s=.0045*SENS[sens]*clamp(Math.hypot(dx,dy)/10,.6,1.4),hv=P.vel.lengthSq()>900?Math.atan2(P.vel.x,-P.vel.z):Math.atan2(P.aim.x,-P.aim.z);let yaw=hv+clamp(wrapPi(Math.atan2(P.aim.x,-P.aim.z)-hv)+dx*s,-2.62,2.62),pit=clamp(Math.asin(clamp(P.aim.y,-1,1))-dy*s,-1.22,1.22);P.aim.set(Math.sin(yaw)*Math.cos(pit),Math.sin(pit),-Math.cos(yaw)*Math.cos(pit))}
+  else if(p.kind==='aim'){const dx=x-p.x,dy=y-p.y,s=.0048*SENS[sens],hv=P.vel.lengthSq()>900?Math.atan2(P.vel.x,-P.vel.z):Math.atan2(P.aim.x,-P.aim.z);let yaw=hv+clamp(wrapPi(Math.atan2(P.aim.x,-P.aim.z)-hv)+dx*s,-3.05,3.05),pit=clamp(Math.asin(clamp(P.aim.y,-1,1))-dy*s*.6,-1.22,1.22);P.aim.set(Math.sin(yaw)*Math.cos(pit),Math.sin(pit),-Math.cos(yaw)*Math.cos(pit))}
   p.x=x;p.y=y});
-const pup=e=>{const p=ptr.get(e.pointerId);if(!p)return;ptr.delete(e.pointerId);if(p.kind==='stick'){inp.stickOn=false;$('stickBase').style.display=$('stickKnob').style.display='none';if(!P.onDeck){const r=new THREE.Vector3(1,0,0).applyQuaternion(P.q),u=new THREE.Vector3(0,1,0).applyQuaternion(P.q);P.hold={bank:clamp(Math.atan2(-r.y,u.y),-BANKMAX,BANKMAX)}}}};
+const pup=e=>{const p=ptr.get(e.pointerId);if(!p)return;ptr.delete(e.pointerId);if(p.kind==='aim'){if(Math.hypot(p.x-p.x0,p.y-p.y0)<12){inp.lastTapUp=performance.now();inp.ltx=p.x0;inp.lty=p.y0}else inp.lastTapUp=0}if(p.kind==='stick'){inp.stickOn=false;$('stickBase').style.display=$('stickKnob').style.display='none';if(!P.onDeck){const r=new THREE.Vector3(1,0,0).applyQuaternion(P.q),u=new THREE.Vector3(0,1,0).applyQuaternion(P.q);const b0=Math.atan2(-r.y,u.y);P.hold={bank:Math.abs(b0)<.09?0:clamp(b0,-.52,.52)}}}};
 pad.addEventListener('pointerup',pup);pad.addEventListener('pointercancel',pup);
 addEventListener('keydown',e=>{inp.keys[e.code]=true;if(e.repeat)return;const m={KeyG:act.gear,KeyF:act.flap,KeyH:act.hook,KeyX:act.brake,KeyV:act.view,Enter:act.launch,KeyB:dropBomb,KeyR:fireMsl,KeyC:countermeasure,KeyT:act.at,Escape:()=>openMenu(true)}[e.code];if(m){audioOn();m();syncBtns()}});
 addEventListener('keyup',e=>inp.keys[e.code]=false);
@@ -765,10 +818,10 @@ function gyAngle(){const a=(screen.orientation&&typeof screen.orientation.angle=
 function onMotion(e){const g=e.accelerationIncludingGravity;if(!g||g.x===null||g.x===undefined)return;GY.last=performance.now();if(!GY.ok){GY.ok=true;gyStatus()}
   const a=gyAngle(),c=Math.cos(a),s=Math.sin(a),ux=g.x*c+g.y*s,uy=-g.x*s+g.y*c,uz=g.z;
   if(!GY.f)GY.f={x:ux,y:uy,z:uz};const f=GY.f,k=.18;f.x+=(ux-f.x)*k;f.y+=(uy-f.y)*k;f.z+=(uz-f.z)*k;
-  const steer=Math.atan2(-f.x,Math.hypot(f.y,f.z)),tilt=Math.atan2(f.z,f.y);
+  const steer=Math.atan2(-f.x,f.y),tilt=Math.atan2(f.z,Math.hypot(f.x,f.y));
   if(GY.cal||!GY.n0){GY.n0={s:steer,t:tilt};GY.cal=false}
   const dz=(v,d)=>Math.abs(v)<d?0:(v-Math.sign(v)*d)/(1-d);
-  const r=clamp((steer-GY.n0.s)/.6,-1,1),p=clamp(-(tilt-GY.n0.t)/.45,-1,1)*(GY.inv?-1:1);
+  const r=clamp((steer-GY.n0.s)/.78,-1,1),p=clamp(-(tilt-GY.n0.t)/.45,-1,1)*(GY.inv?-1:1);
   GY.roll=Math.sign(dz(r,.05))*Math.pow(Math.abs(dz(r,.05)),1.3);GY.pitch=dz(p,.06)}
 async function gyEnable(){GY.on=true;GY.ok=false;$('gyMsg').textContent='正在讀取手機感應器…';
   try{if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){const r=await DeviceMotionEvent.requestPermission();if(r!=='granted')throw new Error('denied')}}
@@ -807,6 +860,7 @@ function wpNow(){if(M.mode==='mission'&&M.phase===4&&(M.stage==='sam'||M.stage==
   if(M.phase<=1)return wpP.set(0,floorOf(7500)+60,-7500),'峽谷入口';
   if(M.phase===2){const u=Math.min(CU1-200,(Math.floor(-P.pos.z/1200)+1)*1200+300);return wpP.set(xc(u),floorOf(u)+LIM[M.diff]*.5,-u),''}
   if(M.phase===3)return wpP.copy(tgtPos),'目標';return null}
+const _cqi=new THREE.Quaternion();
 function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(M.mode==='menu'||M.over)return;c.shadowColor='rgba(0,0,0,.9)';c.shadowBlur=3;
   const k=clamp(Math.min(W,H)/420,.8,1.5),G='#7dff9a';c.lineWidth=1.6*k;c.strokeStyle=G;c.fillStyle=G;c.font=`600 ${13*k}px ui-monospace,Menlo,monospace`;c.textBaseline='middle';
   fwd.set(0,0,-1).applyQuaternion(P.q);
@@ -819,7 +873,8 @@ function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,
   // 機頭十字、速度向量、指向圈
   proj(fwd,s1);if(s1.ok){c.beginPath();c.moveTo(s1.x-9*k,s1.y);c.lineTo(s1.x-3*k,s1.y);c.moveTo(s1.x+3*k,s1.y);c.lineTo(s1.x+9*k,s1.y);c.moveTo(s1.x,s1.y-9*k);c.lineTo(s1.x,s1.y-3*k);c.moveTo(s1.x,s1.y+3*k);c.lineTo(s1.x,s1.y+9*k);c.stroke()}
   let fpm=null;if(P.V>30){proj(vh,s2);if(s2.ok){fpm={x:s2.x,y:s2.y};c.beginPath();c.arc(s2.x,s2.y,6*k,0,7);c.moveTo(s2.x-16*k,s2.y);c.lineTo(s2.x-6*k,s2.y);c.moveTo(s2.x+6*k,s2.y);c.lineTo(s2.x+16*k,s2.y);c.moveTo(s2.x,s2.y-6*k);c.lineTo(s2.x,s2.y-12*k);c.stroke()}}
-  if(!inp.stickOn){proj(P.aim,s1);if(s1.ok){const ld=P.gear&&!P.onDeck;c.lineWidth=(ld?1.4:2.4)*k;c.beginPath();c.arc(s1.x,s1.y,(ld?8:17)*k,0,7);c.stroke();c.lineWidth=1.6*k}}
+  if(!inp.stickOn){proj(P.aim,s1);if(s1.ok&&(s1.x<30||s1.x>W-30||s1.y<20||s1.y>H-20))s1.ok=false;if(s1.ok){const ld=P.gear&&!P.onDeck;c.lineWidth=(ld?1.4:2.4)*k;c.beginPath();c.arc(s1.x,s1.y,(ld?8:17)*k,0,7);c.stroke();c.lineWidth=1.6*k}
+    else if(!P.onDeck&&P.state==='fly'){t1.copy(P.aim).applyQuaternion(_cqi.copy(cam.quaternion).invert());const a=Math.atan2(-t1.y,t1.x),R=Math.min(W,H)*.3;c.save();c.translate(W/2+Math.cos(a)*R,H/2+Math.sin(a)*R);c.rotate(a);c.lineWidth=3*k;c.beginPath();c.moveTo(-8*k,-12*k);c.lineTo(6*k,0);c.lineTo(-8*k,12*k);c.stroke();c.restore();c.lineWidth=1.6*k}}
   // 投彈瞄準
   if(P.bombs>0&&P.state==='fly'&&!P.onDeck&&ccip(imp)){projP(imp,s1);if(s1.ok){c.strokeStyle=c.fillStyle='#ffc070';c.beginPath();c.arc(s1.x,s1.y,11*k,0,7);c.stroke();c.beginPath();c.arc(s1.x,s1.y,2*k,0,7);c.fill();if(fpm){c.globalAlpha=.6;c.beginPath();c.moveTo(fpm.x,fpm.y);c.lineTo(s1.x,s1.y);c.stroke();c.globalAlpha=1}c.strokeStyle=c.fillStyle=G}}
   // 目標框與航點
@@ -871,18 +926,42 @@ function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,
   if(warn&&((performance.now()/200)|0)%2){c.fillStyle='#ff5040';c.font=`800 ${24*k}px system-ui,sans-serif`;c.textAlign='center';c.fillText('拉起！',W/2,H*.62)}
   if(P.state==='fly'&&!P.onDeck&&P.alpha>.44&&P.V<110){c.fillStyle='#ffc040';c.font=`700 ${15*k}px system-ui,sans-serif`;c.textAlign='center';c.fillText('速度太慢',W/2,H*.66+20*k)}
   if(M.msgT>0){M.msgT-=dt;c.globalAlpha=clamp(M.msgT,0,1);c.font=`700 ${16*k}px system-ui,sans-serif`;c.textAlign='center';const mw=W*.5;let L=[M.msg];if(c.measureText(M.msg).width>mw){const h=Math.ceil(M.msg.length/2);let cut=M.msg.indexOf('，',h-7);cut=cut<0||cut>h+9?h:cut+1;L=[M.msg.slice(0,cut),M.msg.slice(cut)]}const tw=Math.max(...L.map(z=>c.measureText(z).width))+24,lh=22*k,y0=H*.17;c.shadowBlur=0;c.fillStyle='rgba(0,0,0,.6)';c.fillRect(W/2-tw/2,y0-lh*.7,tw,lh*L.length+lh*.4);c.fillStyle='#fff';L.forEach((z,i)=>c.fillText(z,W/2,y0+i*lh));c.globalAlpha=1}
-  c.shadowBlur=0;const gv=clamp((P.gAvg-6)/2.2,0,.85);if(gv>0){const g=c.createRadialGradient(W/2,H/2,H*.15,W/2,H/2,H*.75);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${gv})`);c.fillStyle=g;c.fillRect(0,0,W,H)}
+  c.shadowBlur=0;const gv=clamp((P.gAvg-5)/2.4,0,.88);if(P.gAvg<-1.2){c.fillStyle=`rgba(160,0,0,${clamp((-P.gAvg-1.2)/2,0,.45)})`;c.fillRect(0,0,W,H)}$('gl').style.filter=gv>.05?`saturate(${(1-gv*.8).toFixed(2)})`:'';if(gv>0){const g=c.createRadialGradient(W/2,H/2,H*.15,W/2,H/2,H*.75);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,`rgba(0,0,0,${gv})`);c.fillStyle=g;c.fillRect(0,0,W,H)}
 }
 
 /* ---------- 主迴圈 ---------- */
 const DT=1/120;let acc=0,last=performance.now();
-function updCam(dt){fwd.set(0,0,-1).applyQuaternion(P.q);up.set(0,1,0).applyQuaternion(P.q);
-  const tgt=inp.stickOn||P.state==='cat'&&false?fwd:P.aim;camDir.lerp(inp.stickOn?fwd:tgt,1-Math.exp(-7*dt)).normalize();
-  if(view===0){cam.up.set(0,1,0);cam.position.copy(P.pos).addScaledVector(camDir,-27);cam.position.y+=8;
+const CS={off:V3(),init:false,roll:0,lag:V3(),gk:0,shk:0,n1:0,n2:0,n3:0,imp:0,base:V3(0,0,-1),vh:V3(),w:V3(),q:new THREE.Quaternion(),ax:V3()};window.__CS=CS;
+function updCam(dt){fwd.set(0,0,-1).applyQuaternion(P.q);up.set(0,1,0).applyQuaternion(P.q);right.set(1,0,0).applyQuaternion(P.q);
+  const V=P.vel.length(),vhc=CS.vh.copy(V>30?P.vel:fwd).normalize();
+  // 1) 看的方向：航跡與機頭之間（看得到攻角），再往指向圈偏，最多偏 25 度；轉向速度有上限
+  const base=CS.base.copy(vhc).lerp(fwd,P.onDeck||P.state==='cat'?1:.3).normalize();
+  let want=CS.w.copy(inp.stickOn?fwd:P.aim);if(P.onDeck||P.state==='cat')want.copy(fwd);
+  {const c=clamp(base.dot(want),-1,1),a=Math.acos(c),MX=.44;if(a>MX){const k=MX/a;want.copy(base).lerp(CS.w,k).normalize()}}
+  {const c=clamp(camDir.dot(want),-1,1),a=Math.acos(c),step=Math.min(a*(1-Math.exp(-3.2*dt)),1.6*dt);if(a>1e-5){CS.ax.crossVectors(camDir,want).normalize();if(CS.ax.lengthSq()>.5)camDir.applyAxisAngle(CS.ax,step)}}
+  if(view===0){
+    const D=26+3*clamp((V-150)/250,0,1),H=5.2;
+    // 2) 理想位置（相對飛機）＋彈簧落後：轉向時看到飛機轉出去
+    t3.copy(camDir).multiplyScalar(-D);t3.y+=H;
+    if(!CS.init){CS.off.copy(t3);CS.init=true}
+    CS.off.lerp(t3,1-Math.exp(-5*dt));
+    // 3) 加速度與 G 的「重量感」：後燃／彈射時飛機往前拉開、減速時靠近；拉 G 時飛機在畫面上浮
+    const along=P.onDeck&&P.catT>0?31:P.onDeck&&P.state==='trap'?-27:P.acc.dot(vhc),gn=(P.onDeck?0:P.g-1);
+    CS.lag.lerp(t1.set(0,0,0).addScaledVector(vhc,-clamp(along,-15,35)*.2).addScaledVector(up,-clamp(gn,-3,8)*.2),1-Math.exp(-3*dt));
+    cam.position.copy(P.pos).add(CS.off).add(CS.lag);
     const gh=Math.max(0,groundH(cam.position.x,cam.position.z))+2;if(cam.position.y<gh)cam.position.y=gh;
-    t1.copy(P.pos).addScaledVector(camDir,160);t1.y+=14;cam.lookAt(t1);plane.visible=P.state!=='dead'}
+    cam.up.set(0,1,0);t1.copy(P.pos).addScaledVector(camDir,160);t1.y+=H;cam.lookAt(t1);
+    // 4) 部分跟著壓坡度（地平線會斜，但不會整個翻過去）
+    const bank=Math.atan2(-right.y,up.y),inv=Math.abs(bank)>Math.PI/2;const rT=P.onDeck?0:clamp(bank,-2,2)*(inv?.3:.45);
+    CS.roll+=(rT-CS.roll)*(1-Math.exp(-4*dt));
+    // 5) 震動：高動壓、大攻角抖振、後燃、觸艦／彈射衝擊
+    const qd=.5*1.225*Math.exp(-P.pos.y/8500)*V*V;
+    const amp=(P.onDeck&&P.catT<=0&&P.state!=='trap'?0:.0006+.0035*sstep(25000,70000,qd)+.006*sstep(.30,.45,P.alpha)*sstep(60,120,V)+.0015*clamp((P.thrAct-.85)/.15,0,1)+(P.catT>0?.004:0))+CS.imp;
+    CS.imp*=Math.exp(-6*dt);const r=()=>Math.random()*2-1;CS.n1+=(r()-CS.n1)*Math.min(1,dt*25);CS.n2+=(r()-CS.n2)*Math.min(1,dt*25);CS.n3+=(r()-CS.n3)*Math.min(1,dt*18);
+    cam.rotateZ(-CS.roll+CS.n3*amp*.6);cam.rotateX(CS.n1*amp);cam.rotateY(CS.n2*amp);
+    plane.visible=P.state!=='dead'}
   else{cam.position.copy(P.pos).addScaledVector(fwd,4.36).addScaledVector(up,1.14);cam.quaternion.copy(P.q);plane.visible=P.state!=='dead'}
-  const ft=(P.gear&&!P.onDeck&&P.state==='fly')?(view===1?38:50):62+clamp((P.V-150)/250,0,1)*8;cam.fov+=(ft-cam.fov)*Math.min(1,dt*3);cam.updateProjectionMatrix()}
+  const ft=(P.gear&&!P.onDeck&&P.state==='fly'&&view===1)?38:(P.gear&&!P.onDeck&&P.state==='fly')?56:58+clamp((P.V-150)/250,0,1)*8+3*clamp((P.thrAct-.85)/.15,0,1);cam.fov+=(ft-cam.fov)*Math.min(1,dt*3);cam.updateProjectionMatrix()}
 function frame(now){requestAnimationFrame(frame);let dt=Math.min(.1,(now-last)/1000);last=now;
   if(!M.paused&&M.mode!=='menu'){acc+=dt;if(inp.keys.ShiftLeft)P.thr=clamp(P.thr+dt*.6,0,1);if(inp.keys.ControlLeft)P.thr=clamp(P.thr-dt*.6,0,1);let n=0;while(acc>=DT&&n<12){simStep(DT);acc-=DT;n++}if(n===12)acc=0;updWorld(dt)}
   plane.position.copy(P.pos);plane.quaternion.copy(P.q);gearGrp.visible=P.gear;animParts(dt);updCockpit(dt);if(M.mode!=='menu')updVortex(dt);
@@ -891,7 +970,8 @@ function frame(now){requestAnimationFrame(frame);let dt=Math.min(.1,(now-last)/1
   if(M.mode==='menu'){const t=now/9000;cam.position.set(Math.sin(t)*420,95,Math.cos(t)*420);cam.up.set(0,1,0);cam.lookAt(0,25,0);plane.visible=false}else updCam(dt);
   drawPool(shells,.07);drawPool(bullets,.02);
   $('thrFill').style.height=(slOf(P.thr)*100)+'%';$('bLaunch').style.display=P.state==='cat'&&!M.paused?'flex':'none';
-  if(AX&&engG){const run=!M.paused&&M.mode!=='menu'&&P.state!=='dead';engG.gain.value=run?.05+.12*P.thrAct:0;engF.frequency.value=300+2600*P.thrAct*P.thrAct}
+  if(AX&&engG){const run=!M.paused&&M.mode!=='menu'&&P.state!=='dead';engG.gain.value=run?.05+.12*P.thrAct:0;engF.frequency.value=300+2600*P.thrAct*P.thrAct;
+    if(AX.rum){const ab=clamp((P.thrAct-.85)/.15,0,1),qd=.5*1.225*Math.exp(-P.pos.y/8500)*P.V*P.V;AX.rum.gain.value=run?.35*ab:0;AX.wind.gain.value=run?Math.min(.18,qd/60000*.12)+(P.alpha>.3?.05:0):0;AX.tur.frequency.value=600+900*P.thrAct;AX.turG.gain.value=run?.008+.01*P.thrAct:0}}
   if(cockpitNode)cockpitNode.visible=view!==1;
   if(window.__SEA&&__SEA.userData.sh)__SEA.userData.sh.uniforms.uT.value=now/1000;
   {const c=M.mode==='menu'?t1.set(0,20,0):P.pos;sun.position.copy(c).addScaledVector(SUND,220);sun.target.position.copy(c);sun.target.updateMatrixWorld();if(window.__SKY)window.__SKY.position.copy(cam.position);renderer.shadowMap.needsUpdate=sun.castShadow}
