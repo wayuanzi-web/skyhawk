@@ -4,13 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>怒海雄鷹 試飛版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#0b1620;color:#e8f0f4;font-family:system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;-webkit-user-select:none;user-select:none;touch-action:none}
 canvas{position:fixed;left:0;top:0;width:100%;height:100%;display:block}
 #hud{pointer-events:none}
 #pad{position:fixed;inset:0}
-.btn{position:fixed;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(190,255,200,.55);background:rgba(10,30,20,.38);color:#d6ffe0;border-radius:10px;font-size:13px;font-weight:600;min-width:52px;min-height:44px;padding:0 8px;box-sizing:border-box}
-.btn.on{background:rgba(60,200,110,.55);color:#fff}
+.btn{position:fixed;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(214,200,150,.6);background:linear-gradient(180deg,rgba(40,46,40,.55),rgba(16,20,18,.6));color:#efe6c8;border-radius:6px;letter-spacing:1px;text-shadow:0 1px 0 #000;font-size:13px;font-weight:600;min-width:52px;min-height:44px;padding:0 8px;box-sizing:border-box}
+.btn.on{background:linear-gradient(180deg,rgba(111,130,54,.8),rgba(74,88,36,.8));border-color:#c9de86;color:#fff}
 .btn.round{border-radius:50%}
 #bFire{right:calc(18px + var(--sr));bottom:calc(22px + var(--sb));width:84px;height:84px;font-size:16px;border-color:#ffb36b;color:#ffe0c0}
 #bBomb{right:calc(116px + var(--sr));bottom:calc(22px + var(--sb));width:64px;height:64px;border-color:#ffb36b;color:#ffe0c0}
@@ -24,27 +25,67 @@ canvas{position:fixed;left:0;top:0;width:100%;height:100%;display:block}
 #col .btn{position:static;min-height:44px;min-width:70px;font-size:12.5px}
 #bCal{left:calc(50% - 116px);top:6px;min-height:44px;min-width:56px}
 #bPause{left:50%;top:6px;transform:translateX(-50%);min-height:44px;min-width:48px}
-#thr{position:fixed;left:calc(6px + var(--sl));top:20%;height:62%;width:34px;border:1.5px solid rgba(190,255,200,.55);border-radius:8px;background:rgba(10,30,20,.38);overflow:hidden;pointer-events:none}
+#thr{position:fixed;left:calc(6px + var(--sl));top:20%;height:62%;width:34px;border:1.5px solid rgba(214,200,150,.6);border-radius:6px;background:rgba(16,20,18,.5);overflow:hidden;pointer-events:none}
 #thrAB{position:absolute;left:0;right:0;top:0;height:12%;background:rgba(255,140,40,.25)}
 #thrFill{position:absolute;left:0;right:0;bottom:0;background:rgba(120,255,150,.55)}
-#thrLbl{position:fixed;left:calc(4px + var(--sl));top:calc(20% - 18px);font-size:11px;color:#d6ffe0;pointer-events:none}
+#thrLbl{position:fixed;left:calc(4px + var(--sl));top:calc(20% - 18px);font-size:11px;color:#efe6c8;pointer-events:none}
 #stickBase,#stickKnob{position:fixed;border-radius:50%;pointer-events:none;display:none}
 #stickBase{width:190px;height:190px;margin:-95px 0 0 -95px;border:1.5px solid rgba(190,255,200,.5)}
 #stickKnob{width:46px;height:46px;margin:-23px 0 0 -23px;background:rgba(120,255,150,.5)}
-.panel{position:fixed;inset:0;background:rgba(6,14,22,.86);display:flex;align-items:center;justify-content:center;z-index:5}
-.box{max-width:620px;width:88%;max-height:92%;overflow:auto;text-align:center}
-h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
-.sub{color:#9fc0d0;font-size:13px;margin-bottom:12px}
+/* ===== 戰爭風格主題：鋼灰底、卡其文字、琥珀強調、橄欖選取 ===== */
+:root{--ink:#e9e3cf;--dim:#a99f84;--kh:#c8b98a;--amb:#e8a23a;--amb2:#ffcf7a;--red:#d24b35;--olv:#55642c;--olv2:#8fa64a;--stl:#151a1d;--stl2:#20272b;--ln:rgba(200,185,138,.28)}
+.panel{position:fixed;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(10,14,12,.35),rgba(6,8,7,.88) 75%),linear-gradient(90deg,rgba(5,7,6,.92) 0%,rgba(5,7,6,.55) 55%,rgba(5,7,6,.35) 100%);display:flex;align-items:center;justify-content:center;z-index:5;touch-action:pan-y}
+.panel::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px),linear-gradient(rgba(200,185,138,.06) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(200,185,138,.06) 1px,transparent 1px) 0 0/48px 48px}
+.box{position:relative;max-width:640px;width:88%;max-height:90%;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;text-align:center;background:linear-gradient(180deg,rgba(28,34,30,.94),rgba(16,20,18,.96));border:1px solid var(--ln);padding:16px 20px;box-sizing:border-box;clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4)}
+h1{margin:0 0 4px;font-size:30px;letter-spacing:6px;color:var(--ink);font-weight:900}
+.sub{color:var(--dim);font-size:12.5px;letter-spacing:1px}
 .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
-.mb{border:1.5px solid #6fb0d0;background:#12324a;color:#e8f6ff;border-radius:10px;padding:11px 16px;font-size:16px;font-weight:600;min-width:120px}
-.mb.pri{background:#c9772a;border-color:#ffc98a}
-.mb.sel{background:#2a7a4c;border-color:#a8ffc8}
-.help{font-size:12.5px;color:#b9d2de;text-align:left;line-height:1.6;margin-top:10px;border-top:1px solid #2a4658;padding-top:8px}
-#rot{position:fixed;inset:0;background:#0b1620;display:none;align-items:center;justify-content:center;z-index:9;font-size:20px}
+.mb{position:relative;border:1px solid rgba(200,185,138,.45);background:linear-gradient(180deg,#2a322d,#1b2120);color:var(--ink);padding:10px 16px;font-size:15px;font-weight:700;letter-spacing:1px;min-width:72px;font-family:inherit;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);cursor:pointer}
+.mb:active{filter:brightness(1.25)}
+.mb.pri{background:linear-gradient(180deg,#e8a23a,#b8741c);border-color:#ffd690;color:#1a1306}
+.mb.sel{background:linear-gradient(180deg,#6f8236,#4a5824);border-color:#c9de86;color:#f4f8e6;box-shadow:inset 0 -3px 0 rgba(232,162,58,.9)}
+.mb.ghost{background:rgba(20,24,22,.6);min-width:0}
+.mb[data-w="3"]{color:#ffb070}.mb.sel[data-w="3"]{background:linear-gradient(180deg,#a03a24,#6a2214);border-color:#ffb070;color:#fff}
+.sl{font-size:11px;letter-spacing:2px;color:var(--amb);font-weight:700;margin:6px 0 6px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}.seg .mb{flex:1 1 auto;padding:9px 10px;font-size:14px}
+/* 首頁 */
+.home{position:relative;width:100%;height:100%;box-sizing:border-box;padding:calc(14px + var(--st)) calc(18px + var(--sr)) calc(12px + var(--sb)) calc(22px + var(--sl));display:grid;grid-template-columns:minmax(230px,38%) 1fr;grid-template-rows:1fr auto;gap:10px 22px;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.stripe{position:absolute;left:0;right:0;top:0;height:6px;background:repeating-linear-gradient(-45deg,var(--amb) 0 12px,#141414 12px 24px);opacity:.85}
+.hL{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.tag{font-size:10.5px;letter-spacing:1.5px;color:var(--dim);display:flex;align-items:center;gap:5px;white-space:nowrap}.tag b{color:var(--red);border:1px solid var(--red);padding:0 4px;letter-spacing:2px;flex:none}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+.logo{font-size:clamp(34px,7.2vw,64px);line-height:1.05;margin:6px 0 0;letter-spacing:10px;color:var(--ink);text-shadow:0 2px 0 #000,0 0 24px rgba(232,162,58,.25);font-weight:900}
+.logoE{font-family:"Black Ops One",Impact,"Arial Black",sans-serif;font-size:clamp(13px,2.1vw,19px);letter-spacing:5px;color:var(--amb);margin:2px 0 4px}
+.diff{max-width:340px}
+.hLinks{display:flex;gap:8px;margin-top:10px}
+.hR{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.card{position:relative;text-align:left;font-family:inherit;color:var(--ink);background:linear-gradient(160deg,rgba(40,48,42,.92),rgba(18,22,20,.94));border:1px solid var(--ln);padding:12px 14px 12px 16px;min-height:86px;display:flex;flex-direction:column;gap:2px;overflow:hidden;cursor:pointer;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--kh);opacity:.6}
+.card.hot::before{background:var(--amb);opacity:1}
+.card:active{filter:brightness(1.3)}
+.card .k{font-family:"Black Ops One",Impact,"Arial Black",sans-serif;font-size:12px;letter-spacing:3px;color:var(--amb)}
+.card .t{font-size:21px;font-weight:900;letter-spacing:3px}
+.card .d{font-size:11.5px;color:var(--dim);line-height:1.4}
+.card .ico{position:absolute;right:12px;bottom:4px;font-size:40px;opacity:.12}
+.card.big{min-height:74px;width:100%}.card.big .t{font-size:24px}
+.foot{grid-column:1/-1;font-size:10.5px;letter-spacing:2px;color:rgba(169,159,132,.6);text-align:center}
+/* 設定 */
+.sheet{position:relative;width:min(760px,94%);max-height:92%;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(28,34,30,.97),rgba(14,17,16,.98));border:1px solid var(--ln);clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px)}
+.sheetH{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--ln);background:repeating-linear-gradient(-45deg,rgba(232,162,58,.07) 0 10px,transparent 10px 20px)}
+.sheetT{font-size:20px;font-weight:900;letter-spacing:4px}
+.sheetB{overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:8px 16px 14px;display:grid;grid-template-columns:1fr 1fr;gap:4px 18px}
+.sg{min-width:0}.sg:first-child{grid-column:1/-1}
+.help{grid-column:1/-1;font-size:12.5px;color:#cfc6ad;text-align:left;line-height:1.6;margin-top:8px;border-top:1px solid var(--ln);padding-top:8px}
+.help b{color:var(--ink)}
+body.inmenu .btn,body.inmenu #thr,body.inmenu #thrLbl,body.inmenu #col{visibility:hidden}
+#rot{position:fixed;inset:0;background:#0e1110;color:#e9e3cf;letter-spacing:3px;display:none;align-items:center;justify-content:center;z-index:9;font-size:20px}
 @media (orientation:portrait) and (max-width:900px){#rot{display:flex}}
 </style>
 </head>
-<body>
+<body class="inmenu">
 <canvas id="gl"></canvas>
 <canvas id="hud"></canvas>
 <div id="pad"></div>
@@ -68,19 +109,47 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
 </div>
 <div class="btn" id="bBrake">減速板</div>
 <div class="btn" id="bView">視角</div>
-<div class="panel" id="menu"><div class="box">
-  <h1>怒海雄鷹</h1>
-  <div class="sub">試飛版 0.20 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
-  <div id="resume" class="row" style="display:none"><button class="mb pri" id="mResume">繼續</button><button class="mb" id="mRetry">從檢查點重來</button><button class="mb" id="mHome">回主選單</button></div>
-  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操作靈敏度</span><button class="mb" data-s="0" style="min-width:64px">低</button><button class="mb" data-s="1" style="min-width:64px">中</button><button class="mb" data-s="2" style="min-width:64px">高</button><span style="font-size:14px;color:#b9d2de;margin-left:10px">轉向</span><button class="mb" data-t="arcade" style="min-width:64px">街機</button><button class="mb" data-t="real" style="min-width:64px">真實</button></div>
-  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">時段</span><button class="mb" data-tod="0" style="min-width:64px">白天</button><button class="mb" data-tod="1" style="min-width:64px">黃昏</button><span style="font-size:14px;color:#b9d2de;margin-left:10px">武器</span><button class="mb" data-w="0" style="min-width:56px">標準</button><button class="mb" data-w="1" style="min-width:56px">加量</button><button class="mb" data-w="2" style="min-width:56px">無限</button><button class="mb" data-w="3" style="min-width:56px;color:#ffb070">狂暴</button></div>
-  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">畫質</span><button class="mb" data-q="0" style="min-width:64px">省電</button><button class="mb" data-q="1" style="min-width:64px">標準</button><button class="mb" data-q="2" style="min-width:64px">精緻</button><button class="mb" id="mQA" style="min-width:64px">自動</button><span style="font-size:14px;color:#b9d2de;margin-left:10px">著艦輔助</span><button class="mb" data-la="1" style="min-width:52px">開</button><button class="mb" data-la="0" style="min-width:52px">關</button></div>
-  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操控方式</span><button class="mb" data-c="0" style="min-width:90px">簡易搖桿</button><button class="mb" data-c="2" style="min-width:80px">指向圈</button><button class="mb" data-c="1" style="min-width:110px">體感（傾斜手機）</button><button class="mb" id="mInv" style="min-width:90px">前後反向</button></div>
-  <div id="gyMsg" style="font-size:12.5px;color:#ffd08a;min-height:0"></div>
-  <div id="mainRows">
-  <div class="row"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
-  <div class="row"><button class="mb pri" id="mMission">第一關試飛</button><button class="mb pri" id="mCombat">實戰演練</button><button class="mb" id="mFree">自由飛行</button><button class="mb" id="mLand">著艦練習</button><button class="mb" id="mHelp">操作說明</button></div>
-  <div class="help">
+<div class="panel" id="menu"><div class="home">
+  <div class="stripe"></div>
+  <div class="hL">
+    <div class="tag"><span class="dot"></span>CVN-09 ◆ 第七艦載機聯隊 ◆ <b>機密</b></div>
+    <h1 class="logo">怒海雄鷹</h1>
+    <div class="logoE">OPERATION&nbsp;SEA&nbsp;HAWK</div>
+    <div class="sub">試飛版 0.21 ｜ F/A-18E 超級大黃蜂</div>
+    <div class="sl" style="margin-top:12px">作戰難度 / DIFFICULTY</div>
+    <div class="seg diff"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
+    <div class="hLinks"><button class="mb ghost" id="mSet">⚙ 設定</button><button class="mb ghost" id="mHelp">操作說明</button></div>
+  </div>
+  <div class="hR">
+    <div id="resume" style="display:none">
+      <div class="sl">任務暫停 / PAUSED</div>
+      <button class="card big" id="mResume"><span class="k">CONTINUE</span><span class="t">繼續任務</span></button>
+      <div class="cards2"><button class="card" id="mRetry"><span class="k">RESTART</span><span class="t">從檢查點重來</span></button><button class="card" id="mHome"><span class="k">RTB</span><span class="t">回主選單</span></button></div>
+    </div>
+    <div id="mainRows">
+      <div class="sl">選擇任務 / SELECT MISSION</div>
+      <div class="cards">
+        <button class="card hot" id="mMission"><span class="k">MISSION 01</span><span class="t">峽谷突襲</span><span class="d">彈射起飛 → 低空穿越峽谷 → 炸毀目標 → 返艦著陸</span><span class="ico">✈</span></button>
+        <button class="card hot" id="mCombat"><span class="k">COMBAT</span><span class="t">實戰演練</span><span class="d">敵機一波波來襲，空戰與對地攻擊</span><span class="ico">✦</span></button>
+        <button class="card" id="mFree"><span class="k">FREE FLIGHT</span><span class="t">自由飛行</span><span class="d">沒有任務壓力，熟悉操控</span><span class="ico">◎</span></button>
+        <button class="card" id="mLand"><span class="k">CARRIER OPS</span><span class="t">著艦練習</span><span class="d">從進場點開始，練習鉤住攔阻索</span><span class="ico">⚓</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="foot">◆ 全為虛構情境與標誌 ◆ 建議橫向遊玩</div>
+</div></div>
+<div class="panel" id="set" style="display:none"><div class="sheet">
+  <div class="sheetH"><div><div class="sl">SETTINGS</div><div class="sheetT">設定</div></div><button class="mb pri" id="setBack">完成</button></div>
+  <div class="sheetB">
+    <div class="sg"><div class="sl">操控方式</div><div class="seg"><button class="mb" data-c="0">簡易搖桿</button><button class="mb" data-c="2">指向圈</button><button class="mb" data-c="1">體感（傾斜手機）</button><button class="mb" id="mInv">前後反向</button></div></div>
+    <div class="sg"><div class="sl">操作靈敏度</div><div class="seg"><button class="mb" data-s="0">低</button><button class="mb" data-s="1">中</button><button class="mb" data-s="2">高</button></div></div>
+    <div class="sg"><div class="sl">轉向</div><div class="seg"><button class="mb" data-t="arcade">街機</button><button class="mb" data-t="real">真實</button></div></div>
+    <div class="sg"><div class="sl">時段</div><div class="seg"><button class="mb" data-tod="0">白天</button><button class="mb" data-tod="1">黃昏</button></div></div>
+    <div class="sg"><div class="sl">武器</div><div class="seg"><button class="mb" data-w="0">標準</button><button class="mb" data-w="1">加量</button><button class="mb" data-w="2">無限</button><button class="mb" data-w="3">狂暴</button></div></div>
+    <div class="sg"><div class="sl">畫質</div><div class="seg"><button class="mb" data-q="0">省電</button><button class="mb" data-q="1">標準</button><button class="mb" data-q="2">精緻</button><button class="mb" id="mQA">自動</button></div></div>
+    <div class="sg"><div class="sl">著艦輔助</div><div class="seg"><button class="mb" data-la="1">開</button><button class="mb" data-la="0">關</button></div></div>
+    <div id="gyMsg" style="font-size:12.5px;color:#ffd08a;min-height:0;grid-column:1/-1"></div>
+    <div class="help">
   <b>輔助飛行（建議）</b>：在畫面右半邊拖曳，移動綠色圓圈，飛機會自己飛過去。<br>
   <b>體感操控</b>：選「體感」後，像轉方向盤一樣左右傾斜手機就壓坡度轉彎，上緣往外推＝機頭向下、往自己拉＝拉起；開始時的拿法就是基準，按「校正」可重設。<br><b>直接操縱</b>：左半邊按住拖曳是搖桿（往下拉＝機頭上仰，左右＝滾轉）。圓圈拖亂了，在右半邊<b>點兩下</b>回到機頭前方。<br>
   <b>轉向</b>：「街機」（預設）簡易搖桿推到底約 9 秒迴轉 180°，機頭附近有敵機時會微幅幫你跟住；「真實」完全照飛行物理。敵機要先鎖定你才會射飛彈：聽到警告音變急、看到「敵機鎖定你」就急轉或準備干擾彈。<br>
@@ -91,8 +160,8 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
   </div>
   </div>
 </div></div>
-<div class="panel" id="tut" style="display:none;background:rgba(4,10,16,.92);z-index:60"><div class="box" style="max-width:640px;text-align:left;font-size:14px;line-height:1.55;background:#0d1b26;border:1px solid #2d5068;border-radius:12px;padding:14px 18px">
-  <div style="font-size:18px;font-weight:700;text-align:center;margin-bottom:6px">操作說明</div>
+<div class="panel" id="tut" style="display:none;z-index:60"><div class="box" style="max-width:660px;text-align:left;font-size:14px;line-height:1.6">
+  <div class="sl" style="text-align:center">PILOT BRIEFING</div><div style="font-size:20px;font-weight:900;letter-spacing:4px;text-align:center;margin-bottom:6px">操作說明</div>
   <div>🕹️ <b>右半邊按住拖曳＝簡易搖桿</b>：往左右推＝壓坡度轉彎（推越多轉越急），往上推＝爬升、往下推＝俯衝；<b>放開手指會自動改平</b>。</div>
   <div>⛽ <b>最左邊滑桿＝油門</b>：推到最上面是後燃器；著艦時開「自動油門」。</div>
   <div>🎯 <b>機頭對準目標就會自動鎖定</b>：敵機出現紅框、地面目標出現菱形，聽到嗶聲後按「飛彈」；炸彈看橘色瞄準圈。</div>
@@ -100,7 +169,7 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
   <div>🛡️ 被飛彈追：按「干擾彈」並急轉；貼地飛到山後能甩掉雷達飛彈。</div>
   <div class="row" style="justify-content:center;margin-top:8px"><button class="mb pri" id="tutOk">知道了，開始</button></div></div></div>
 <div class="panel" id="result" style="display:none"><div class="box">
-  <h1 id="rTitle"></h1><div id="rBody" style="font-size:16px;line-height:1.9;margin:12px 0"></div>
+  <div class="sl">DEBRIEF</div><h1 id="rTitle"></h1><div id="rBody" style="font-size:16px;line-height:1.9;margin:12px 0"></div>
   <div class="row"><button class="mb pri" id="rRetry">從檢查點重來</button><button class="mb" id="rMenu">回選單</button></div>
 </div></div>
 <div id="rot">請把手機橫過來</div>
@@ -1732,10 +1801,10 @@ document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const c=+b.datas
 $('mInv').onclick=()=>{GY.inv=!GY.inv;try{localStorage.setItem('skyhawk_inv',GY.inv?'1':'0')}catch(e){}gyStatus()};
 tap('bCal',()=>{GY.cal=true;say('已校正：現在的拿法是水平飛行',1.5)});
 if(GY.on)window.addEventListener('devicemotion',onMotion);
-function openMenu(pause){M.paused=true;$('menu').style.display='flex';const pz=pause&&M.mode!=='menu'&&!M.over;$('resume').style.display=pz?'flex':'none';$('mainRows').style.display=pz?'none':'block'}
-function start(mode){M.mode=mode;P.ezRel=false;inp.ezOn=false;WIREL.visible=false;GY.cal=true;M.paused=false;plane.visible=true;$('menu').style.display='none';$('result').style.display='none';spawn(mode==='land'?4:0);acc=0;last=performance.now();gyStatus()}
-function retry(){M.paused=false;plane.visible=true;$('menu').style.display='none';$('result').style.display='none';spawn(M.mode==='mission'?M.cp:(M.mode==='land'?4:0));acc=0;last=performance.now()}
-function showResult(win){M.over=true;M.paused=true;$('result').style.display='flex';
+function openMenu(pause){document.body.classList.add('inmenu');M.paused=true;$('menu').style.display='flex';const pz=pause&&M.mode!=='menu'&&!M.over;$('resume').style.display=pz?'block':'none';$('mainRows').style.display=pz?'none':'block';$('set').style.display='none'}
+function start(mode){document.body.classList.remove('inmenu');M.mode=mode;P.ezRel=false;inp.ezOn=false;WIREL.visible=false;GY.cal=true;M.paused=false;plane.visible=true;$('menu').style.display='none';$('set').style.display='none';$('result').style.display='none';spawn(mode==='land'?4:0);acc=0;last=performance.now();gyStatus()}
+function retry(){document.body.classList.remove('inmenu');M.paused=false;plane.visible=true;$('menu').style.display='none';$('result').style.display='none';spawn(M.mode==='mission'?M.cp:(M.mode==='land'?4:0));acc=0;last=performance.now()}
+function showResult(win){document.body.classList.add('inmenu');M.over=true;M.paused=true;$('result').style.display='flex';
   $('rTitle').textContent=M.mode==='combat'?'演練結束':win?(M.mode==='mission'?'任務完成':'著艦成功'):'任務失敗';
   const mm=(M.t/60|0)+' 分 '+(M.t%60|0)+' 秒';
   $('rBody').innerHTML=M.mode==='combat'?((M.why||'')+'<br>存活時間：'+mm+'<br>擊落敵機：'+killTxt()+'　擊毀地面目標：'+GA.kills+'<br>躲過飛彈：'+CB.dodged+' 枚<br>飛彈命中：'+CB.hit+' / '+CB.shot+' 枚<br>分數：'+cbScore()):win?('著艦評分：'+M.grade+(M.mode==='mission'?'<br>任務時間：'+mm+'<br>在峽谷超過高度上限：'+M.expo.toFixed(1)+' 秒<br>擊落敵機：'+killTxt()+'　擊毀地面目標：'+GA.kills+'<br>躲過飛彈：'+CB.dodged+' 枚　飛彈命中：'+CB.hit+' / '+CB.shot+'<br>機體剩餘：'+Math.max(0,P.hp|0)+'%':'')):(M.why||'');
@@ -1750,9 +1819,9 @@ function tfStatus(){document.querySelectorAll('[data-t]').forEach(x=>x.classList
 const sb=()=>document.querySelectorAll('[data-s]').forEach(x=>x.classList.toggle('sel',+x.dataset.s===sens));document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sens=+b.dataset.s;try{localStorage.setItem('skyhawk_sens',sens)}catch(e){}sb()});sb();
 $('mMission').onclick=tutFirst(()=>start('mission'));function showTut(after){$('tut').style.display='flex';M.paused=true;$('tutOk').onclick=()=>{$('tut').style.display='none';try{localStorage.setItem('skyhawk_tut','1')}catch(e){}M.paused=false;last=performance.now();if(after)after()}}
 function tutFirst(f){return()=>{audioOn();let seen=false;try{seen=localStorage.getItem('skyhawk_tut')==='1'}catch(e){}if(seen)f();else showTut(f)}}
-$('mHelp').onclick=()=>showTut(null);
+$('mHelp').onclick=()=>showTut(null);$('mSet').onclick=()=>{$('set').style.display='flex'};$('setBack').onclick=()=>{$('set').style.display='none'};
 $('mFree').onclick=()=>{audioOn();start('free')};$('mCombat').onclick=tutFirst(()=>start('combat'));$('mLand').onclick=()=>{audioOn();start('land')};
-$('mResume').onclick=()=>{M.paused=false;$('menu').style.display='none';acc=0;last=performance.now()};$('mRetry').onclick=retry;$('mHome').onclick=()=>{M.mode='menu';openMenu(false)};$('rRetry').onclick=retry;$('rMenu').onclick=()=>{$('result').style.display='none';M.mode='menu';openMenu(false)};
+$('mResume').onclick=()=>{document.body.classList.remove('inmenu');M.paused=false;$('menu').style.display='none';acc=0;last=performance.now()};$('mRetry').onclick=retry;$('mHome').onclick=()=>{M.mode='menu';openMenu(false)};$('rRetry').onclick=retry;$('rMenu').onclick=()=>{$('result').style.display='none';M.mode='menu';openMenu(false)};
 
 /* ---------- 抬頭顯示器 ---------- */
 const pv=V3();
