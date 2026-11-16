@@ -132,7 +132,7 @@ body.inmenu .btn,body.inmenu #thr,body.inmenu #thrLbl,body.inmenu #col,body.inme
     <div class="tag"><span class="dot"></span>CVN-09 ◆ 第七艦載機聯隊 ◆ <b>機密</b></div>
     <h1 class="logo">怒海雄鷹</h1>
     <div class="logoE">OPERATION&nbsp;SEA&nbsp;HAWK</div>
-    <div class="sub">試飛版 0.25 ｜ F/A-18E 超級大黃蜂</div>
+    <div class="sub">試飛版 0.26 ｜ F/A-18E 超級大黃蜂</div>
     <div class="sl" style="margin-top:12px">作戰難度 / DIFFICULTY</div>
     <div class="seg diff"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
     <div class="hLinks"><button class="mb ghost" id="mSet">⚙ 設定</button><button class="mb ghost" id="mHelp">操作說明</button><button class="mb ghost" id="mStat">★ 戰績</button></div>
@@ -147,7 +147,7 @@ body.inmenu .btn,body.inmenu #thr,body.inmenu #thrLbl,body.inmenu #col,body.inme
       <div class="sl">選擇任務 / SELECT MISSION</div>
       <div class="cards">
         <button class="card rage" id="mArena"><span class="k">BERSERK AIR WAR</span><span class="t">狂暴空戰</span><span class="d">廣闊海域纏鬥，武器無限且最強，敵機一波比一波多</span><span class="ico">☠</span></button>
-        <button class="card sea" id="mYamato"><span class="k">ANTI-SHIP</span><span class="t">擊沉大和</span><span class="d">魚叉打水線讓它進水翻覆，炸彈打掉防空</span><span class="ico">⚓</span></button>
+        <button class="card sea" id="mYamato"><span class="k">ANTI-SHIP</span><span class="t">擊沉大和</span><span class="d">護航航母翔鶴、瑞鶴放零戰迎擊；魚叉打水線讓大和翻覆</span><span class="ico">⚓</span></button>
         <button class="card hot" id="mMission"><span class="k">MISSION 01</span><span class="t">峽谷突襲</span><span class="d">彈射起飛 → 低空穿越峽谷 → 炸毀目標 → 返艦著陸</span><span class="ico">✈</span></button>
         <button class="card hot" id="mCombat"><span class="k">COMBAT</span><span class="t">實戰演練</span><span class="d">敵機一波波來襲，空戰與對地攻擊</span><span class="ico">✦</span></button>
         <button class="card" id="mFree"><span class="k">FREE FLIGHT</span><span class="t">自由飛行</span><span class="d">沒有任務壓力，熟悉操控</span><span class="ico">◎</span></button>
@@ -196,7 +196,8 @@ body.inmenu .btn,body.inmenu #thr,body.inmenu #thrLbl,body.inmenu #col,body.inme
   <div class="row" style="justify-content:center;margin-top:8px"><button class="mb pri" id="tutOk">知道了，開始</button></div></div></div>
 <div class="panel" id="ybrief" style="display:none;z-index:60"><div class="box" style="max-width:660px;text-align:left;font-size:13px;line-height:1.5;padding:12px 18px">
   <div class="sl" style="text-align:center;margin:0 0 2px">STRIKE BRIEFING ◆ 虛構情境</div><div style="font-size:19px;font-weight:900;letter-spacing:4px;text-align:center;margin-bottom:4px">擊沉大和</div>
-  <div>🎯 <b>目標</b>：戰艦大和（263 m）與 3 艘驅逐艦，在南方約 20 km 以 22 節之字航行（雷達上的大方塊）。</div>
+  <div>🎯 <b>目標</b>：戰艦大和（263 m）與 3 艘驅逐艦，在南方約 20 km 以 22 節之字航行（雷達上的大方塊）。兩舷約 3 km 有<b>航空母艦翔鶴、瑞鶴</b>（雷達上帶艦島的扁方塊）隨隊。</div>
+  <div>✈️ <b>零戰</b>：航母每 40–60 秒從甲板滑跑起飛一架迎擊（雷達上的<b>橘色十字</b>）。比你慢很多但轉彎極好、20 mm 機砲很痛，<b>別跟它慢速纏鬥</b>，用速度與飛彈打；機體脆，機砲幾發就著火。炸毀航母<b>前段／中段飛行甲板</b>或擊沉航母就停止起飛，也可以掃射甲板上停放的零戰。</div>
   <div>🚀 <b>魚叉</b>（「魚叉」鍵／E）：機頭對準艦船約 1 秒鎖定，貼海飛行打<b>水線</b>→該舷進水、傾斜減速；同一舷進水過半就翻覆。</div>
   <div>💣 <b>炸彈、對地飛彈</b>：打上層，摧毀機砲座、高角砲、艦橋、煙囪，<b>削弱防空</b>並起火（魚叉較不會被打下）；主砲塔被毀後再重創可能引爆彈藥庫。機砲打不穿裝甲。</div>
   <div>⚠️ <b>防空</b>：25 mm 機砲曳光彈幕、12.7 cm 高角砲黑色破片、主砲三式彈（警告後在你前方炸開，立刻急轉）。<b>貼海</b>或從<b>艦艏／艦艉</b>進入較安全，高空俯衝可避開機砲。</div>
@@ -1657,7 +1658,8 @@ function updGA(dt){const L=GA.lock;
       if(u.pos.y<Math.max(0,groundH(u.pos.x,u.pos.z))+1){boom(u.pos,18);u.wreck=null;u.burn=8}}
     else if(u.sink){u.g.position.y-=dt*.6;u.g.rotation.x=Math.min(.25,u.g.rotation.x+dt*.03);if(u.g.position.y<-10){u.sink=0}}}
   for(const u of GU)if(u.type==='heli'&&u.g.userData.rot){u.g.userData.rot.rotation.y+=dt*(u.alive?28:6);u.g.userData.trot.rotation.x+=dt*(u.alive?60:10)}
-  for(const e of CB.ene)if(e.alive&&e.hp<70&&Math.random()<dt*(e.hp<40?30:14))puff(e.pos,_a.set(0,0,0),1.6,1,5,.5,e.hp<40?0x2a2826:0x8a8a88);
+  for(const e of CB.ene){if(!e.alive)continue;if(e.ty==='zero'){if(e.hp<ETY.zero.hp*.75&&Math.random()<dt*30){puff(e.pos,_a.copy(e.vel).multiplyScalar(.3),2,1.2,7,.6,0x2a2826);if(Math.random()<.6)puff(e.pos,_a.set(0,0,0),.6,.8,2.6,.95,0xff8a30)}continue}   // 零戰：一中彈就冒黑煙起火
+    if(e.hp<70&&Math.random()<dt*(e.hp<40?30:14))puff(e.pos,_a.set(0,0,0),1.6,1,5,.5,e.hp<40?0x2a2826:0x8a8a88)}
   if(CB.wrecks)for(let i=CB.wrecks.length-1;i>=0;i--){const w=CB.wrecks[i];w.t+=dt;w.v.y-=G0*dt;w.v.multiplyScalar(1-dt*.2);w.p.addScaledVector(w.v,dt);w.m.position.copy(w.p);w.m.rotateZ(w.s*dt*2);w.m.rotateX(dt*.4);
     if(Math.random()<dt*35){puff(w.p,_a.set(0,0,0),.9,2,6,.8,0xff8a30);puff(w.p,_a.set(0,1,0),3.5,2.5,11,.55,0x221f1c)}
     if(w.p.y<Math.max(0,groundH(w.p.x,w.p.z))||w.t>25){boom(w.p,26);scene.remove(w.m);CB.wrecks.splice(i,1)}}
@@ -1677,7 +1679,7 @@ const _b=V3();
    損傷分區：主砲塔×3、副砲×2、高角砲（左右舷）、機砲（前／左／右／後）、艦橋、煙囪、水線（左右舷進水）、彈藥庫。
    武器效果：魚叉打水線→該舷進水、傾斜、減速；炸彈／對地飛彈打上層→摧毀砲座、起火；機砲只對 25 mm 機砲座有小效果（舷側裝甲彈開）。
    擊沉：單舷進水過半（傾斜 18° 以上）或總進水過多→翻覆下沉（翻到 100° 左右彈藥庫殉爆）；主砲塔被毀後再被重創→彈藥庫殉爆。 */
-const YM={on:false,ships:[],bb:null,t:0,st:null,res:0,sup:90,bursts:[],mush:null,glb:null,lockS:null,lockT:0,lockOk:false};
+const YM={on:false,ships:[],bb:null,t:0,st:null,res:0,sup:90,bursts:[],mush:null,glb:null,lockS:null,lockT:0,lockOk:false,glbBy:{},wait:{}};
 // 難度（簡單／普通／擬真）：機砲每座每秒發數、機砲誤差（弧度）、高角砲間隔（秒）、高角砲誤差（距離倍率）、高角砲破片傷害、三式彈間隔、機砲每發傷害、魚叉每秒被擊落機率（防空全在時）
 const YDF={aaRate:[.38,.55,.7],aaErr:[.052,.04,.034],haCd:[4.4,3.3,2.7],haErr:[.017,.013,.011],haDmg:[7,10,12],sanCd:[75,55,42],sanDmg:[28,40,52],aaDmg:[2,3,4],hpnSD:[.015,.03,.05]};
 const _y1=V3(),_y2=V3(),_y3=V3(),_y4=V3(),_y5=V3(),_yS=V3(),_yL=V3(),_yq=new THREE.Quaternion(),_ym4=new THREE.Matrix4(),_ym5=new THREE.Matrix4(),_yc=new THREE.Color();
@@ -1688,7 +1690,7 @@ const YDK0=(()=>{const o=[];for(let z=-130;z<=130;z+=4){const t=z/131.5,f=t<0?Ma
 function ydk(S,z){const T=S.dk,i=clamp((z-T[0][0])/4,0,T.length-1.001),j=i|0,f=i-j,a=T[j],b=T[j+1]||a;return [lerp(a[1],b[1],f),lerp(a[2],b[2],f),lerp(a[3],b[3],f)]}
 // 艦體內？（局部座標）：水線下依吃水收窄、水線到甲板依外飄放寬；上層結構另用盒子
 function yIn(S,p){if(Math.abs(p.z)>S.L/2||p.y<-S.T)return false;const d=ydk(S,p.z),hb=p.y<0?d[2]*(1-.35*Math.pow(-p.y/S.T,3)):lerp(d[2],d[1],clamp(p.y/d[0],0,1));
-  if(Math.abs(p.x)<hb&&p.y<d[0]+.4)return true;for(const b of S.boxes)if(Math.abs(p.x)<b[0]&&p.y>b[1]&&p.y<b[2]&&p.z>b[3]&&p.z<b[4])return true;return false}
+  if(Math.abs(p.x)<hb&&p.y<d[0]+.4)return true;for(const b of S.boxes)if(Math.abs(p.x-(b[5]||0))<b[0]&&p.y>b[1]&&p.y<b[2]&&p.z>b[3]&&p.z<b[4])return true;return false}
 // ---- 驅逐艦（陽炎型的簡化外形：長 118.5 m、寬 10.8 m）：艦體放樣＋艦橋、兩根煙囪、三座連裝砲塔、魚雷發射管、桅杆；頂點色一次繪製 ----
 function ddGeo(){const L=118.5,Bm=10.8,T=3.8,pos=[],col=[],c=new THREE.Color(),N=30;
   const w=t=>Bm/2*(t<0?Math.pow(Math.max(0,1-Math.pow(-t,1.7)),.75):Math.max(.42,Math.pow(Math.max(0,1-Math.pow(t,5)),.5))),dh=t=>t<-.38?6.6+Math.max(0,-t-.8)*4:4.4;
@@ -1735,15 +1737,39 @@ YM.bb=(()=>{const S=mkShip({kind:'bb',nm:'大和',sh:'大和',L:263,B:38.9,T:10.
     Z('AF','前部機砲群','aa',V3(),0,0,{grp:'F'}),Z('AL','左舷機砲群','aa',V3(),0,0,{grp:'ML'}),Z('AR','右舷機砲群','aa',V3(),0,0,{grp:'MR'}),Z('AA','後部機砲群','aa',V3(),0,0,{grp:'A'})];
   S.mag=0;S.sanT=30;return S})();
 YM.ships.unshift(YM.bb);
+/* ---- 航空母艦 翔鶴、瑞鶴（翔鶴型：全長 257.5 m、水線寬 26 m、飛行甲板 242×29 m、吃水 8.9 m；assets/shokaku.glb、zuikaku.glb）----
+   在大和左右舷約 2.8 km 隨隊航行（史實輪型陣距離較遠，這裡縮短方便看到）。甲板艉段停放零戰，任務中每艘每 40–60 秒放一架滑跑起飛迎擊（同時在空上限依難度）。
+   損傷：飛行甲板前／中／後段、艦島、煙囪、高角砲（左右舷）、機砲（前／左／右／後）＋艦體耐久（炸彈、飛彈、魚雷、火災慢慢削減）＋水線進水（同大和：單舷進水→傾斜→翻覆）。
+   前段或中段飛行甲板被炸毀（起飛滑跑會經過）、航母被擊沉或翻覆 → 停止起飛。 */
+const CVD={launch:[55,48,40],air:[2,3,4],hp:[7,8,9]};   // 難度：每艘起飛間隔（秒，再加 0–12 秒亂數）、零戰同時在空上限（兩艘合計）、艦體耐久
+const CVDK0=(()=>{const o=[];for(let z=-128;z<=128;z+=4){const t=z/128.75,f=t<0?Math.pow(Math.max(0,1-Math.pow(-t,2.4)),.6):Math.pow(Math.max(0,1-Math.pow(t,3.5)),.45),fd=z>-112&&z<130;o.push([z,fd?15.4:12.5,fd?Math.min(14.5,14.5*Math.max(.4,f)+3):12*f,13*Math.max(0,f-.02)])}return o})();
+YM.cvs=[['shokaku','翔鶴',-2800,500],['zuikaku','瑞鶴',2800,500]].map(([id,nm,ox,oz])=>{const S=mkShip({kind:'cv',id,nm:'航空母艦 '+nm,sh:nm,L:257.5,B:26,T:8.9,dk:CVDK0,hp0:8,off0:[ox,oz],boxes:[[2.9,15,24.5,-48.5,-37.5,12.6]],park:[],scor:[],lT:0,fdY:15.4,launch:[0,44]});
+  const Z=(id,nm,kind,p,r,hp,o)=>Object.assign({id,nm,kind,p,r,hp,hp0:hp,dead:false},o||{});
+  S.zones=[Z('FDF','前段飛行甲板','fdeck',V3(0,15.5,-80),32,3),Z('FDM','中段飛行甲板','fdeck',V3(0,15.5,-18),30,3),Z('FDA','後段飛行甲板','fdeck',V3(0,15.5,62),50,4),
+    Z('IS','艦島','bridge',V3(12.6,20,-43),7,2),Z('FN','煙囪','funnel',V3(16,10,-10),6,2),
+    Z('HL','左舷高角砲','ha',V3(),0,0,{side:-1}),Z('HR','右舷高角砲','ha',V3(),0,0,{side:1}),
+    Z('AF','前部機砲群','aa',V3(),0,0,{grp:'F'}),Z('AL','左舷機砲群','aa',V3(),0,0,{grp:'ML'}),Z('AR','右舷機砲群','aa',V3(),0,0,{grp:'MR'}),Z('AA','後部機砲群','aa',V3(),0,0,{grp:'A'})];
+  // 甲板停放的零戰（模型載入前的預設位置；載入後用 layout.planes）
+  for(const [x,z,a] of [[-8,62,.15],[0,60,0],[8,62,-.15],[-8.5,74,.15],[0,72,0],[8.5,74,-.15],[-8.5,86,.15],[0,84,0],[8.5,86,-.15],[-4.5,97,.1],[4.5,97,-.1]])S.park.push({p:V3(x,0,z),a,alive:true,burnt:false});
+  YM.ships.push(S);return S});
+YM.bb.off0=[0,0];YM.ships.filter(s=>s.kind==='dd').forEach((S,i)=>S.off0=[[-1500,-900],[1500,-900],[0,1700]][i]);
 // 對地鎖定（AGM-65）用：每個損傷分區、每艘驅逐艦都是一個 GU 目標（type 'ship'），位置每幀更新
 for(const S of YM.ships){if(S.kind==='dd'){const u={type:'ship',ship:S,zone:null,nm:S.nm,pos:V3(),alive:false,ghp:Infinity,hp:1};S.gu.push(u);GU.push(u)}
-  else for(const z of S.zones){const u={type:'ship',ship:S,zone:z,nm:'大和 '+z.nm,pos:V3(),alive:false,ghp:Infinity,hp:1};z.u=u;S.gu.push(u);GU.push(u)}}
+  else for(const z of S.zones){const u={type:'ship',ship:S,zone:z,nm:S.sh+' '+z.nm,pos:V3(),alive:false,ghp:Infinity,hp:1};z.u=u;S.gu.push(u);GU.push(u)}}
 // 預設的機砲座／高角砲座位置（模型載入後以 extras「mounts」取代；同一份資料）
 function ymMounts(S,M0){S.aa.length=S.ha.length=0;for(const [x,y,z,a,g] of M0.aa)S.aa.push({p:V3(x,y,z),a,g,alive:true,bh:0});for(const [x,y,z,a,sd] of M0.ha)S.ha.push({p:V3(x,y,z),a,side:sd==='R'?1:-1,alive:true,cd:Math.random()*3})}
 // ---- 大和模型載入 ----
-function loadYamato(){const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);const S=YM.bb;
-  const ok=g=>{const sc=g.scene,L0=sc.getObjectByName('LOD0');if(!L0)return;YM.glb=sc;
+function loadYamato(S=YM.bb,b64=window.__GLB4,url='assets/yamato.glb'){const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);
+  const ok=g=>{let sc=g.scene,L0=sc.getObjectByName('LOD0');if(!L0)return;if(S===YM.bb)YM.glb=sc;
+    // 姊妹艦差分檔（瑞鶴）：借翔鶴的網格（LOD0–2、砲座原型），換自己的甲板貼圖、加專屬零件（extra）、用自己的 layout／mounts
+    const sis=L0.userData.sister;if(sis){const src=YM.glbBy[sis];if(!src){(YM.wait[sis]=YM.wait[sis]||[]).push(()=>ok(g));return}
+      const dc=sc.getObjectByName('deckcard'),map=dc&&(dc.isMesh?dc:dc.children.find(c=>c.isMesh)).material.map,sc2=new THREE.Group(),dm=new Map();
+      for(const o of src){const c=o.clone(true);if(c.name==='LOD0'){c.userData=Object.assign({},L0.userData);const x=sc.getObjectByName('extra');if(x)c.add(x)}sc2.add(c)}
+      if(map)sc2.traverse(m=>{if(m.isMesh&&m.material.name==='deck'){if(!dm.has(m.material)){const q=m.material.clone();q.map=map;dm.set(m.material,q)}m.material=dm.get(m.material)}});
+      sc=sc2;L0=sc.getObjectByName('LOD0')}
+    if(S.kind==='cv'&&!sis){sc.updateMatrixWorld(true);YM.glbBy[S.id]=['LOD0','LOD1','LOD2','AA25','HA127'].map(n=>sc.getObjectByName(n)).filter(Boolean).map(o=>o.clone(true));setTimeout(()=>{for(const f of YM.wait[S.id]||[])f();YM.wait[S.id]=[]},0)}
     const lay=JSON.parse(L0.userData.layout||'{}'),mo=JSON.parse(L0.userData.mounts||'{"aa":[],"ha":[]}');if(lay.deck)S.dk=lay.deck;ymMounts(S,mo);
+    if(S.kind==='cv'){if(lay.planes){S.park.length=0;for(const [x,z,a] of lay.planes)S.park.push({p:V3(x,0,z),a,alive:true,burnt:false})}if(lay.launch)S.launch=lay.launch;if(lay.fdY)S.fdY=lay.fdY;if(lay.fdeck)S.fdZ0=lay.fdeck[0][0]+1;if(lay.boxes)S.boxes=lay.boxes;S.parkIM=null}
     const lv=[L0,sc.getObjectByName('LOD1'),sc.getObjectByName('LOD2')];S.lods=lv;
     for(const o of lv){if(!o)continue;o.parent&&o.parent.remove(o);S.tilt.add(o);o.traverse(m=>{if(m.isMesh){m.castShadow=false;m.receiveShadow=false;if(m.material.map)aniso(m.material.map,8,2)}})}
     // 機砲座、高角砲座：InstancedMesh（一種一次繪製）；被擊毀的那一座變黑、壓扁
@@ -1753,8 +1779,8 @@ function loadYamato(){const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDeco
     // 砲塔：主砲 T1–T3、副砲 S1–S2（旋轉樞紐＋各砲管樞紐）
     for(const z of S.zones)if(z.kind==='main'||z.kind==='sec'){const n=L0.getObjectByName(z.id);if(!n)continue;z.node=n;z.base=n.rotation.y;z.yaw=0;z.el=0;z.guns=[0,1,2].map(k=>n.getObjectByName(z.id+'g'+k)).filter(Boolean);z.mats=[];n.traverse(m=>{if(m.isMesh)z.mats.push(m)})}
     lv[1].visible=lv[2].visible=false};
-  if(window.__GLB4){const bin=atob(window.__GLB4),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn('yamato',e))}else L2.load('assets/yamato.glb',ok,undefined,e=>console.warn('yamato',e))}
-loadYamato();
+  if(b64){const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn(S.sh,e))}else L2.load(url,ok,undefined,e=>console.warn(S.sh,e))}
+loadYamato();loadYamato(YM.cvs[0],window.__GLB5,'assets/shokaku.glb');loadYamato(YM.cvs[1],window.__GLB6,'assets/zuikaku.glb');
 function ymMountSet(S,key,i){const ims=S.inst&&S.inst[key];if(!ims)return;const m=S[key][i];_yq.setFromAxisAngle(_Y,m.a);_ym4.compose(m.p,_yq,_yS.set(1,m.alive?1:.55,1));
   for(const im of ims){im.setMatrixAt(i,_ym5.copy(_ym4).multiply(im.userData.m0));im.setColorAt(i,_yc.setScalar(m.alive?1:.16));im.instanceMatrix.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true}}
 // ---- 局部↔世界 ----
@@ -1762,13 +1788,14 @@ const ymW=(S,lp,o)=>o.copy(lp).applyMatrix4(S.tilt.matrixWorld),ymL=(S,wp,o)=>o.
 function ymXf(S){S.root.position.y=0;S.root.rotation.y=S.hd;S.tilt.rotation.set(S.pitch,0,-S.roll,'YXZ');S.tilt.position.y=-S.sinkY;S.root.updateMatrixWorld(true);S.inv.copy(S.tilt.matrixWorld).invert()}
 // ---- 開局：艦隊位置、航向、狀態歸零 ----
 function ymReset(){const S0=YM.bb;YM.t=0;YM.res=0;YM.sup=90;YM.bursts.length=0;YM.mush=null;YM.lockS=null;YM.lockT=0;YM.lockOk=false;
-  YM.st={hpnF:0,hpnH:0,hpnSD:0,agmF:0,agmH:0,bombF:0,bombH:0,near:0,gunMounts:0,dmg:0,how:'',t:0,ddSunk:0};
+  YM.st={hpnF:0,hpnH:0,hpnSD:0,agmF:0,agmH:0,bombF:0,bombH:0,near:0,gunMounts:0,dmg:0,how:'',t:0,ddSunk:0,cvSunk:0,zeroL:0,parkK:0};
   const crs=Math.PI/2+.25;YM.crs=crs;YM.crsT=70;
-  YM.ships.forEach((S,i)=>{const off=[[0,0],[-1500,-900],[1500,-900],[0,1700]][i];S.hd=crs;S.spd=11.3;S.root.position.set(1800,0,22000);_y1.set(off[0],0,off[1]).applyAxisAngle(_Y,crs);S.root.position.add(_y1);S.off=off;
+  YM.ships.forEach((S,i)=>{const off=S.off0;S.hd=crs;S.spd=11.3;S.root.position.set(1800,0,22000);_y1.set(off[0],0,off[1]).applyAxisAngle(_Y,crs);S.root.position.add(_y1);S.off=off;
     S.alive=true;S.cap=0;S.capT=0;S.roll=S.pitch=S.sinkY=0;S.flL=S.flR=S.frL=S.frR=0;S.fires.length=0;S.hp=S.hp0||1;S.mag=0;S.magd=0;S.rollDir=0;S.sanT=35;S.aaAcc=0;S.root.visible=true;S.smk=0;
     for(const a of S.aa){a.alive=true;a.bh=0}for(const h of S.ha){h.alive=true;h.cd=1+Math.random()*3}
     for(const z of S.zones){z.hp=z.hp0;z.dead=false;if(z.node){z.yaw=0;z.el=0;z.node.rotation.y=z.base;for(const g of z.guns)g.rotation.x=0;for(const m of z.mats)if(m.userData.mat0){m.material=m.userData.mat0}}}
     if(S.inst)for(const k of ['aa','ha'])for(let i=0;i<S[k].length;i++)ymMountSet(S,k,i);
+    if(S.kind==='cv'){for(const m of S.scor)S.tilt.remove(m);S.scor.length=0;S.hp0=CVD.hp[M.diff];S.hp=S.hp0;S.lT=14+YM.cvs.indexOf(S)*9;S.deckSay=0;for(const k of S.park){k.alive=true;k.burnt=false}cvPark(S)}
     for(const u of S.gu)u.alive=true;ymXf(S)})}
 function ymHide(){for(const S of YM.ships){S.root.visible=false;for(const u of S.gu)u.alive=false}YM.on=false}
 // ---- 損傷 ----
@@ -1778,6 +1805,7 @@ function ymKillMount(S,key,i){const m=S[key][i];if(!m.alive)return;m.alive=false
 function ymZoneDie(S,z){z.dead=true;z.hp=0;ymW(S,z.p,_y2);boom(_y2,z.kind==='main'?26:18);S.fires.push({p:z.p.clone(),t:0,T:120,s:z.kind==='main'||z.kind==='funnel'?1.6:1.1});
   if(z.mats)for(const m of z.mats){if(!m.userData.mat0)m.userData.mat0=m.material;m.material=m.material.clone();m.material.color.multiplyScalar(.22)}
   if(z.guns)for(const g of z.guns)g.rotation.x=-.06-Math.random()*.05;
+  if(S.kind==='cv'){say(S.sh+' '+z.nm+'被'+(z.kind==='fdeck'?'炸毀':'摧毀')+'！'+(z.kind==='fdeck'&&z.id!=='FDA'?'零戰無法再起飛':z.kind==='funnel'?'航速下降':z.kind==='bridge'?'防空指揮失靈':''),3,1);return}
   say({main:z.nm+'被摧毀！再重創它附近可能引爆彈藥庫',sec:z.nm+'被摧毀',bridge:'艦橋被摧毀！射擊指揮失靈、三式彈停止',funnel:'煙囪被摧毀！航速下降、冒出濃煙'}[z.kind]||z.nm+'被摧毀',3,1)}
 // wpn：'bomb' | 'agm' | 'hpn' | 'gun'；lp＝命中點（局部）；回傳說明文字
 function ymHit(S,wpn,lp){if(!S.alive||S.cap>=2)return'';lp=_yL.copy(lp);const st=YM.st,rk=WPN.rage?1.4:1;
@@ -1790,15 +1818,55 @@ function ymHit(S,wpn,lp){if(!S.alive||S.cap>=2)return'';lp=_yL.copy(lp);const st
     if(best){const t0=txt?'、'+txt:'';if(!best.dead){best.hp-=(wpn==='bomb'?2:1.4)*rk;txt=best.nm+t0;if(best.hp<=0)ymZoneDie(S,best)}
       else if(best.kind==='main'){S.mag+=(wpn==='bomb'?1:.7)*rk;txt=best.nm+'（彈藥庫受損）';if(S.mag>=2)ymMag(S)}else txt=best.nm+t0}
     if(lp.y>3)S.fires.push({p:lp.clone(),t:0,T:50+Math.random()*40,s:.9+Math.random()*.4})}
-  if(wpn==='hpn'){const sd=lp.x>=0?1:-1,k=rk*(WPN.rage?1.2:1);if(sd>0){S.flR+=7*k;S.frR+=9*k}else{S.flL+=7*k;S.frL+=9*k}txt=(sd>0?'右舷':'左舷')+'水線';S.fires.push({p:lp.clone().setY(3),t:0,T:45,s:1.2})}
+  if(wpn==='hpn'){const sd=lp.x>=0?1:-1,k=rk*(WPN.rage?1.2:1)*(S.kind==='cv'?1.3:1);if(sd>0){S.flR+=7*k;S.frR+=9*k}else{S.flL+=7*k;S.frL+=9*k}txt=(sd>0?'右舷':'左舷')+'水線';S.fires.push({p:lp.clone().setY(3),t:0,T:45,s:1.2})}
   if(wpn==='near'){const sd=lp.x>=0?1:-1;if(sd>0)S.frR+=3.5;else S.frL+=3.5;txt='近失彈・'+(sd>0?'右舷':'左舷')+'進水'}
+  if(S.kind==='cv')txt=cvHit(S,wpn,lp,txt,rk);
   return txt}
+// 航母額外損傷：艦體耐久（歸零＝航空燃料／彈藥誘爆沉沒）、炸到甲板上停放的零戰、機庫火災
+function cvHit(S,wpn,lp,txt,rk){S.hp-=({bomb:.85,agm:.55,hpn:1.4,near:.25}[wpn]||0)*rk;
+  if(wpn==='bomb'||wpn==='agm'){const R=wpn==='bomb'?14:9;let n=0;if(lp.y>12)for(const k of S.park)if(k.alive&&!k.burnt&&Math.hypot(k.p.x-lp.x,k.p.z-lp.z)<R){k.burnt=true;n++;YM.st.parkK++;if(Math.random()<.6)S.fires.push({p:V3(k.p.x,S.fdY+.5,k.p.z),t:0,T:40,s:.8})}
+    if(n){cvPark(S);txt=(txt?txt+'、':'')+'甲板零戰 ×'+n}
+    if(lp.y>S.fdY-1.5&&Math.abs(lp.x)<14&&S.scor.length<14){const m=new THREE.Mesh(CVSC.g,CVSC.m);m.position.set(lp.x,S.fdY+.06+S.scor.length*.004,lp.z);m.rotation.y=Math.random()*6.3;m.scale.setScalar((wpn==='bomb'?6:4)*(.8+Math.random()*.4));m.renderOrder=1;S.tilt.add(m);S.scor.push(m)}   // 飛行甲板彈坑（焦黑破洞）
+    if(lp.y>11&&lp.y<17.5&&Math.random()<.5)S.fires.push({p:lp.clone().setY(13),t:0,T:80+Math.random()*40,s:1.3})}
+  if(S.hp<=0&&S.alive){S.why=1;ymSink(S)}return txt||S.sh}
+// 機砲打到航母：甲板上的零戰可以掃射擊毀（每架 3 發）；艦體只有一點點傷害
+function cvGun(S,lp){if(!S.alive)return;let hit=false;if(lp.y>S.fdY-1)for(const k of S.park){if(!k.alive||k.burnt)continue;if(Math.hypot(k.p.x-lp.x,k.p.z-lp.z)<5.5){k.bh=(k.bh||0)+(WPN.rage?3:1);hit=true;if(k.bh>=3){k.burnt=true;YM.st.parkK++;cvPark(S);ymW(S,_y4.set(k.p.x,S.fdY+1,k.p.z),_y3);boom(_y3,10);S.fires.push({p:V3(k.p.x,S.fdY+.5,k.p.z),t:0,T:30,s:.7});hitMark(true);say('掃射擊毀甲板上的零戰',1.4,1)}else hitMark(false);break}}
+  S.hp-=.0015;return hit}
+// 甲板停放的零戰：零戰模型 LOD2（含起落架、螺旋槳）做 InstancedMesh，尾輪著地（機頭上仰約 12°）；起飛後隱藏、被炸／掃射變焦黑
+// 甲板彈坑：不規則焦黑圓片（中心破洞較黑）
+const CVSC=(()=>{const n=14,pos=[0,0,0],col=[.02,.02,.02],idx=[];for(let i=0;i<n;i++){const a=i/n*6.283,r=.75+.35*Math.sin(i*2.7)+.15*Math.cos(i*5.1);pos.push(Math.cos(a)*r,0,Math.sin(a)*r);col.push(.16,.13,.1);idx.push(0,i+1,(i+1)%n+1)}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));g.setIndex(idx.reverse());g.computeVertexNormals();
+  return {g,m:new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.92,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2})}})();
+const ZTP=.21,ZH0=1.28,ZH1=1.55,_zq=new THREE.Quaternion(),_ZX=V3(1,0,0);
+function cvPark(S){const L2=ENE.zero.lod2;if(!L2||!S.lods)return;
+  if(!S.parkIM){S.parkIM=[];L2.updateWorldMatrix(true,true);L2.traverse(m=>{if(!m.isMesh)return;const im=new THREE.InstancedMesh(m.geometry,(window.__SKM||(q=>q))(m.material),S.park.length);im.userData.m0=m.matrixWorld.clone();im.castShadow=false;im.frustumCulled=false;S.parkIM.push(im);S.tilt.add(im)})}
+  S.park.forEach((k,i)=>{_yq.setFromAxisAngle(_Y,k.a).multiply(_zq.setFromAxisAngle(_ZX,ZTP));_ym4.compose(_y5.set(k.p.x,S.fdY+ZH0,k.p.z),_yq,_yS.set(1,k.alive?(k.burnt?.6:1):0,k.alive?1:0));
+    for(const im of S.parkIM){im.setMatrixAt(i,_ym5.copy(_ym4).multiply(im.userData.m0));im.setColorAt(i,_yc.setScalar(k.burnt?.12:1));im.instanceMatrix.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true}})}
+const cvDeckOk=S=>!S.zones.some(z=>(z.id==='FDF'||z.id==='FDM')&&z.dead);
+// 起飛：甲板最前面一架滑到起飛位置，原地暖車 2.2 秒，再以約 3.4 m/s² 沿甲板加速，滑過甲板前緣離艦
+function cvLaunch(S){const k=S.park.find(k=>k.alive&&!k.burnt);if(!k)return false;k.alive=false;cvPark(S);const T=ETY.zero;
+  const e={ty:'zero',pos:V3(),vel:V3(),hp:T.hp,alive:true,mesh:eneMesh('zero'),gunCd:0,mslN:0,mrN:0,mslCd:99,flN:0,flCd:0,bank:0,t:0,role:'dog',st:'to',stT:0,side:Math.random()<.5?-1:1,thT:0,lbCd:2,lbT:0,cv:S,toT:0,toZ:S.launch[1],toV:0,dep:0};
+  CB.ene.push(e);YM.st.zeroL++;cvTo(e,0);return true}
+function cvTo(e,h){const S=e.cv,U=e.mesh.userData;e.toT+=h;if(!S.alive||S.cap){e.alive=false;scene.remove(e.mesh);return}
+  if(e.toT>2.2){e.toV+=3.4*h;e.toZ-=e.toV*h}if(U.prop)U.prop.rotation.z+=h*(e.toT<.8?18:62);
+  const k=clamp((e.toV-13)/12,0,1),pit=lerp(ZTP,.05,k),hh=lerp(ZH0,ZH1,k);
+  ymW(S,_y1.set(S.launch[0],S.fdY+hh,e.toZ),e.pos);S.tilt.getWorldQuaternion(_yq);e.mesh.quaternion.copy(_yq).multiply(_zq.setFromAxisAngle(_ZX,pit));e.mesh.position.copy(e.pos);
+  _y2.set(0,0,-1).applyQuaternion(_yq);e.vel.copy(S.vel).addScaledVector(_y2,e.toV);
+  if(e.toZ<(S.fdZ0||-111)){e.st='att';e.dep=7;e.t=0;e.vel.addScaledVector(_y2,3);e.vel.y+=1.8;e.bank=0;if(P.pos.distanceTo(e.pos)<16000)say(S.sh+' 的零戰起飛了！',2,1)}}
+// 每幀：起飛排程（甲板完好、還有零戰、在空數沒到上限）
+function cvUpd(S,dt){if(!S.parkIM&&ENE.zero.lod2&&S.lods)cvPark(S);
+  if(!S.alive||S.cap)return;const ok=cvDeckOk(S);if(!ok&&!S.deckSay){S.deckSay=1}
+  if(!ok||P.state!=='fly'||YM.res)return;S.lT-=dt;if(S.lT>0)return;S.lT=CVD.launch[M.diff]+Math.random()*12;
+  if(!ENE.zero.src||CB.ene.some(e=>e.alive&&e.st==='to'&&e.cv===S))return;
+  if(CB.ene.filter(e=>e.alive&&e.ty==='zero').length>=CVD.air[M.diff]){S.lT=6;return}cvLaunch(S)}
 // 彈藥庫殉爆：巨大火球＋蕈狀雲＋碎片，艦體折斷快速下沉
 function ymMag(S){if(S.magd)return;S.magd=1;if(!S.cap){S.cap=2;S.capT=0}S.alive=false;YM.st.how=YM.st.how?YM.st.how+'後彈藥庫殉爆':'彈藥庫殉爆';ymW(S,_y1.set(0,8,-20),_y2);const p=_y2.clone();
   boom(p,120);boom(_y1.copy(p).add(_y3.set(40,20,30)),80);boom(_y1.copy(p).add(_y3.set(-30,10,-60)),70);debris(p,null,30,60);YM.mush={p:p.clone().setY(0),t:0};
   if(window.__CS)__CS.imp=.05;say('彈藥庫殉爆！大和爆沉！',6);for(const u of S.gu)u.alive=false}
 function ymSink(S,why){if(!S.alive)return;S.alive=false;S.cap=S.cap||1;S.capT=0;for(const u of S.gu)u.alive=false;ymW(S,_y1.set(0,6,0),_y2);boom(_y2,S.kind==='dd'?40:60);
-  if(S.kind==='dd'){YM.st.ddSunk++;say(S.nm+'被擊沉！',2.5,1);S.rollDir=Math.random()<.5?-1:1}else{YM.st.how=YM.st.how||'翻覆沉沒';say('大和翻覆了！',5)}}
+  if(S.kind==='dd'){YM.st.ddSunk++;say(S.nm+'被擊沉！',2.5,1);S.rollDir=Math.random()<.5?-1:1}
+  else if(S.kind==='cv'){YM.st.cvSunk++;S.rollDir=S.rollDir||(S.flR>=S.flL?1:-1);boom(_y1.copy(_y2).add(_y3.set(0,20,0)),70);debris(_y2,null,20,40);say(S.nm+(S.why?'航空燃料誘爆，':'')+'被擊沉！'+(YM.st.cvSunk>=2?'兩艘航母都沉了':'零戰停止起飛'),3.5,1)}
+  else{YM.st.how=YM.st.how||'翻覆沉沒';say('大和翻覆了！',5)}}
 // ---- 魚叉（AGM-84）：鎖定艦船 → 落下點火 → 降到海面 5–10 m 貼海飛行 → 最後 1.2 km 對準面向自己那一舷的水線 ----
 const HPN={geo:null,mat:null};
 {const parts=[],col=(g,c)=>{const n=g.attributes.position.count,a=new Float32Array(n*3);const cc=new THREE.Color(c);for(let i=0;i<n;i++){a[i*3]=cc.r;a[i*3+1]=cc.g;a[i*3+2]=cc.b}g.setAttribute('color',new THREE.BufferAttribute(a,3));for(const k of Object.keys(g.attributes))if(k!=='position'&&k!=='normal'&&k!=='color')g.deleteAttribute(k);return g.index?g.toNonIndexed():g};
@@ -1841,21 +1909,22 @@ function updYM(dt){if(!YM.on)return;YM.t+=dt;const st=YM.st,bb=YM.bb,cp=cam.posi
   YM.crsT-=dt;if(YM.crsT<=0){YM.crsT=70+Math.random()*30;const c0=Math.PI/2+.25;let c=c0+(Math.random()-.5)*1.1;const dx=bb.pos.x,dz=bb.pos.z-22000;if(Math.hypot(dx,dz)>12000)c=Math.atan2(dx,dz);YM.crs=c}
   for(const S of YM.ships){
     if(S.alive){const tot=S.flL+S.flR;let want=(S.kind==='bb'?11.3:12)*(1-tot/230)*(S.zones.some(z=>z.kind==='funnel'&&z.dead)?.75:1);let crs=YM.crs;
-      if(S.kind==='dd'){if(bb.alive||bb.cap){_y1.set(S.off[0],0,S.off[1]).applyAxisAngle(_Y,bb.hd).add(bb.pos);_y1.sub(S.pos);const d=Math.hypot(_y1.x,_y1.z);crs=d>120?Math.atan2(-_y1.x,-_y1.z):bb.hd;want=clamp(bb.spd+d*.004,4,17)}}
-      S.hd+=clamp(wrapPi(crs-S.hd),-.018*dt,.018*dt)*(S.kind==='dd'?2.2:1);S.spd+=(want-S.spd)*Math.min(1,dt*.05)}
+      if(S.kind!=='bb'){if(bb.alive||bb.cap){_y1.set(S.off[0],0,S.off[1]).applyAxisAngle(_Y,bb.hd).add(bb.pos);_y1.sub(S.pos);const d=Math.hypot(_y1.x,_y1.z);crs=d>120?Math.atan2(-_y1.x,-_y1.z):bb.hd;want=clamp(bb.spd+d*.004,4,17)}}
+      S.hd+=clamp(wrapPi(crs-S.hd),-.018*dt,.018*dt)*(S.kind==='dd'?2.2:S.kind==='cv'?1.6:1);S.spd+=(want-S.spd)*Math.min(1,dt*.05)}
     else S.spd*=Math.exp(-dt*.08);
     S.vel.set(-Math.sin(S.hd),0,-Math.cos(S.hd)).multiplyScalar(S.spd);S.pos.addScaledVector(S.vel,dt);
     // 進水：命中後持續流入；側傾太大時艦上注水平衡（減少傾斜、總進水增加）
-    if(S.kind==='bb'){const f=Math.min(dt*.7,S.frL);S.frL-=f;S.flL+=f;const g=Math.min(dt*.7,S.frR);S.frR-=g;S.flR+=g;
+    if(S.kind!=='dd'){const f=Math.min(dt*.7,S.frL);S.frL-=f;S.flL+=f;const g=Math.min(dt*.7,S.frR);S.frR-=g;S.flR+=g;
       const as=S.flR-S.flL;if(S.alive&&Math.abs(as)>9&&S.flL+S.flR<60){const k=dt*.08;if(as>0)S.flL+=k;else S.flR+=k}S.flL=Math.min(100,S.flL);S.flR=Math.min(100,S.flR);
       if(!S.cap){S.roll+=((S.flR-S.flL)*.37*Math.PI/180-S.roll)*Math.min(1,dt*.25);S.sinkY+=((S.flL+S.flR)*.035-S.sinkY)*Math.min(1,dt*.2);S.pitch=0;
-        if(Math.abs(S.roll)>17.5*Math.PI/180||S.flL+S.flR>=100){S.rollDir=Math.sign(S.roll)||1;ymSink(S)}}}
+        if(Math.abs(S.roll)>(S.kind==='cv'?15:17.5)*Math.PI/180||S.flL+S.flR>=(S.kind==='cv'?85:100)){S.rollDir=Math.sign(S.roll)||1;ymSink(S)}}}
     if(S.cap===1){S.capT+=dt;const sg=S.rollDir||1;if(S.kind==='bb'){S.roll=clamp(S.roll+sg*dt*(.012+S.capT*.0045),-2.4,2.4);if(Math.abs(S.roll)>1.75&&!S.magd)ymMag(S);S.sinkY+=dt*(.25+S.capT*.02)}else{S.roll=clamp(S.roll+sg*dt*(.02+S.capT*.004),-1.9,1.9);S.pitch+=dt*.006;S.sinkY+=dt*(.35+S.capT*.03)}}
     if(S.cap===2){S.capT+=dt;S.sinkY+=dt*(.6+S.capT*.05);S.pitch+=dt*.01;S.roll+=(S.rollDir||1)*dt*.01}
     if((S.cap)&&S.sinkY>S.T*4+20){S.root.visible=false}
     ymXf(S);
     // 遠近：LOD0 1.6 km 內、LOD1 6 km 內、再遠用 LOD2；看不到的艦就不更新細節
     const dc=S.pos.distanceTo(cp);if(S.lods){const l=dc<1600?0:dc<6000?1:2;S.lods.forEach((o,i)=>{if(o)o.visible=i===l});S.near=l===0}
+    if(S.kind==='cv'){cvUpd(S,dt);if(S.parkIM)for(const im of S.parkIM)im.visible=dc<2600&&S.root.visible}
     S.wake.visible=S.root.visible&&S.spd>1.5&&!S.cap;if(S.wake.visible)S.wake.material.opacity=.9*clamp(S.spd/11,0,1);
     // GU（對地鎖定）位置
     for(const u of S.gu){if(!u.alive)continue;const z=u.zone;if(!z){ymW(S,_y1.set(0,8,-10),u.pos);continue}
@@ -1866,6 +1935,8 @@ function updYM(dt){if(!YM.on)return;YM.t+=dt;const st=YM.st,bb=YM.bb,cp=cam.posi
     for(let i=S.fires.length-1;i>=0;i--){const f=S.fires[i];f.t+=dt;if(f.t>f.T||S.sinkY>S.T*3){S.fires.splice(i,1);continue}if(!nearC)continue;const k=1-f.t/f.T;
       if(Math.random()<dt*3.5*f.s*rk){ymW(S,f.p,_y1);_y1.y+=3;puff(_y1,_y3.set((Math.random()-.5)*3+S.vel.x*.5,10+Math.random()*5,(Math.random()-.5)*3+S.vel.z*.5),6+Math.random()*3,5*f.s,30*f.s,.55*k+.12,0x1d1b19,PUFF.S)}
       if(Math.random()<dt*4*f.s*k*rk&&dc<5000){ymW(S,f.p,_y1);_y1.y+=1.5;puff(_y1,_y3.set(0,5,0),.7,2*f.s,5*f.s,.95,0xff8a30,PUFF.S)}}
+    if(S.kind==='cv'&&S.alive)for(const f of S.fires){S.hp-=dt*.0015*f.s;if(S.hp<=0){S.why=1;ymSink(S);break}}   // 航母火災慢慢削減艦體耐久
+    if(S.kind==='cv'&&S.root.visible&&nearC&&!S.cap){const fd=S.zones.find(z=>z.kind==='funnel');S.smk-=dt;if(S.smk<=0){S.smk=fd.dead?.2:.8;for(const dz of [-14,-6.5]){ymW(S,_y1.set(19,6.5,dz),_y2);puff(_y2,_y3.set(S.vel.x*.5+Math.cos(S.hd)*3,-1,S.vel.z*.5-Math.sin(S.hd)*3),fd.dead?6:4,5,fd.dead?32:18,fd.dead?.55:.2,fd.dead?0x1a1816:0x8d8a86,PUFF.S)}}}   // 向下彎的煙囪：煙從舷側往下、往外冒
     if(S.kind==='bb'&&S.root.visible&&nearC&&!S.cap){const fd=S.zones.find(z=>z.kind==='funnel');S.smk-=dt;if(S.smk<=0){S.smk=fd&&fd.dead?.18:.7;ymW(S,_y1.set(0,35,28),_y2);puff(_y2,_y3.set(S.vel.x*.5,4,S.vel.z*.5),fd&&fd.dead?7:5,6,fd&&fd.dead?40:22,fd&&fd.dead?.6:.22,fd&&fd.dead?0x1a1816:0x8d8a86,PUFF.S)}}
     if(S.alive&&S.kind==='bb')ymTurrets(S,dt);
     if(S.alive&&P.state==='fly'&&!P.onDeck)ymGuns(S,dt,dc)}
@@ -1924,7 +1995,7 @@ function ymBurst(b){const d=b.p.distanceTo(P.pos),dc=b.p.distanceTo(cam.position
 function ymBullet(b,dt){if(!YM.on)return false;for(const S of YM.ships){if(!S.root.visible||S.sinkY>S.T*2)continue;const hr=S.L*.55;if(Math.abs(b.p.x-S.pos.x)>hr||Math.abs(b.p.z-S.pos.z)>hr||b.p.y>60)continue;
     ymL(S,b.p,_y1);_y2.copy(b.p).addScaledVector(b.v,-dt);ymL(S,_y2,_y2);
     if(S.alive)for(let i=0;i<S.aa.length;i++){const a=S.aa[i];if(!a.alive)continue;_y3.copy(a.p);_y3.y+=1;if(segDist(_y2,_y1,_y3)<2.4){ymW(S,_y3,_y4);hitFx(_y4,S.vel,0);hitMark(false);a.bh+=WPN.rage?3:1;if(a.bh>=8){if(S.kind==='bb')ymKillMount(S,'aa',i);else a.alive=false;hitMark(true);say('擊毀機砲座',1.2,1)}return true}}
-    if(yIn(S,_y1)){sparks(b.p,S.vel,3,60);if(S.kind==='dd'&&S.alive){ymHit(S,'gun',_y1);hitMark(false)}else if(!YM.armT||YM.t-YM.armT>8){YM.armT=YM.t;say('機砲打不穿舷側裝甲：用炸彈、飛彈打上層，魚叉打水線',2.2,1)}return true}}
+    if(yIn(S,_y1)){sparks(b.p,S.vel,3,60);if(S.kind==='dd'&&S.alive){ymHit(S,'gun',_y1);hitMark(false)}else if(S.kind==='cv'){if(!cvGun(S,_y1)&&S.alive&&(!YM.armT||YM.t-YM.armT>8)){YM.armT=YM.t;say('機砲傷不了航母艦體：掃射甲板上的零戰，或用炸彈打飛行甲板',2.2,1)}}else if(!YM.armT||YM.t-YM.armT>8){YM.armT=YM.t;say('機砲打不穿舷側裝甲：用炸彈、飛彈打上層，魚叉打水線',2.2,1)}return true}}
   return false}
 function ymBomb(b){if(!YM.on)return false;for(const S of YM.ships){if(!S.root.visible||S.cap>=2)continue;if(Math.abs(b.p.x-S.pos.x)>S.L*.55||Math.abs(b.p.z-S.pos.z)>S.L*.55||b.p.y>60)continue;ymL(S,b.p,_y1);
     if(yIn(S,_y1)){boom(b.p,30);const t=ymHit(S,'bomb',_y1);YM.st.bombH++;mslRes(b.p,'炸彈命中'+(t?' '+t:'')+'！',true);return true}}return false}
@@ -1938,23 +2009,23 @@ function ymHud(c,k){if(!YM.on)return;const fly=P.state==='fly'&&!P.onDeck;
       for(const [sx,sy] of [[-1,-1],[1,-1],[1,1],[-1,1]]){c.beginPath();c.moveTo(s1.x+sx*r,s1.y+sy*(r*.6-q));c.lineTo(s1.x+sx*r,s1.y+sy*r*.6);c.lineTo(s1.x+sx*(r-q),s1.y+sy*r*.6);c.stroke()}
       if(!YM.lockOk){c.beginPath();c.arc(s1.x,s1.y,r*.6+6*k,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,YM.lockT/.9));c.stroke()}
       c.font=`700 ${12*k}px system-ui,sans-serif`;c.textAlign='center';c.fillText((YM.lockOk?'魚叉鎖定 ':'魚叉鎖定中 ')+S.sh+' '+(d/1000).toFixed(1)+'km',s1.x,s1.y-r*.6-10*k);c.restore()}
-    else if(S.kind==='dd'&&d<10000&&!(YM.lockS&&YM.lockS!==S&&YM.lockS.pos.distanceTo(S.pos)<d*.12)){c.save();c.fillStyle='rgba(255,170,130,.85)';c.font=`600 ${10.5*k}px system-ui,sans-serif`;c.textAlign='center';c.fillText('▾ '+S.sh+' '+(d/1000).toFixed(1)+'km',s1.x,s1.y-6*k);c.restore()}}
+    else if((S.kind==='dd'&&d<10000||S.kind==='cv'&&d<18000)&&!(YM.lockS&&YM.lockS!==S&&YM.lockS.pos.distanceTo(S.pos)<d*.12)){c.save();c.fillStyle=S.kind==='cv'?'rgba(255,200,120,.9)':'rgba(255,170,130,.85)';c.font=`600 ${10.5*k}px system-ui,sans-serif`;c.textAlign='center';c.fillText('▾ '+(S.kind==='cv'?'航母 ':'')+S.sh+' '+(d/1000).toFixed(1)+'km'+(S.kind==='cv'&&S.alive&&!cvDeckOk(S)?' 甲板毀':''),s1.x,s1.y-6*k);c.restore()}}
   // 三式彈預警倒數
   if(YM.sanW&&fly){if(((performance.now()/150)|0)%2){c.save();c.font=`800 ${17*k}px system-ui,sans-serif`;c.textAlign='center';c.fillStyle='#ff7040';c.fillText('三式彈 '+Math.max(0,YM.sanW.t).toFixed(1)+' 秒——急轉！',W/2,H*.27);c.restore()}}
   // 狀態列（左下：油門右邊到固定搖桿左邊之間，三行）
   const S=YM.bb,x0=54,x1=W-372,w=Math.min(330*k,x1-x0);if(w<190)return;const x=x0,h=44*k,y=H-h-6;c.save();c.shadowBlur=0;c.fillStyle='rgba(8,12,14,.55)';c.fillRect(x,y,w,h);c.strokeStyle='rgba(200,185,138,.45)';c.lineWidth=1;c.strokeRect(x,y,w,h);
-  const li=S.roll*180/Math.PI,aa=ymAA(S),ha=ymHA(S),mn=S.zones.filter(z=>z.kind==='main'&&!z.dead).length,dd=YM.ships.filter(s=>s.kind==='dd'&&s.alive).length,kn=S.spd*1.944;
+  const li=S.roll*180/Math.PI,aa=ymAA(S),ha=ymHA(S),mn=S.zones.filter(z=>z.kind==='main'&&!z.dead).length,dd=YM.ships.filter(s=>s.kind==='dd'&&s.alive).length,cv=YM.cvs.filter(s=>s.alive).length,kn=S.spd*1.944;
   c.font=`700 ${10.5*k}px system-ui,sans-serif`;c.textAlign='left';c.fillStyle=S.cap?'#ff6a5a':'#ffe08a';const nm=S.cap&&S.magd?'大和 殉爆':S.cap?'大和 翻覆中':'大和';
   c.fillText(nm,x+5*k,y+8*k);const nw=c.measureText(nm).width;c.fillStyle='#e9e3cf';c.fillText('傾斜 '+(Math.abs(li)<.3?'0°':(li>0?'右 ':'左 ')+Math.abs(li).toFixed(1)+'°')+'　'+kn.toFixed(0)+' 節',x+12*k+nw,y+8*k);
   // 進水條（左／右舷；中間刻度＝約翻覆線）
   const bw=(w-14*k)/2,by=y+21*k;for(const [lb,v,bx] of [['左舷進水',S.flL,x+5*k],['右舷進水',S.flR,x+9*k+bw]]){c.fillStyle='rgba(255,255,255,.12)';c.fillRect(bx,by-5*k,bw,10*k);c.fillStyle=v>45?'#ff5a40':v>25?'#ffb040':'#5ac8ff';c.fillRect(bx,by-5*k,bw*Math.min(1,v/100),10*k);c.fillStyle='#fff';c.fillRect(bx+bw*.5,by-6*k,1.5,12*k);
     c.font=`600 ${9*k}px system-ui,sans-serif`;c.fillStyle='#fff';c.fillText(lb+' '+(v|0)+'%',bx+3*k,by+.5*k)}
   const fr=(aa+ha*3)/(S.aa.length+S.ha.length*3||1);c.font=`600 ${9.5*k}px system-ui,sans-serif`;c.fillStyle=fr<.4?'#7dff9a':fr<.75?'#ffd060':'#ff8a70';
-  c.fillText('防空 '+Math.round(fr*100)+'%｜機砲 '+aa+'｜高角 '+ha+'｜主砲 '+mn+'｜驅逐 '+dd,x+5*k,y+35*k);c.restore();c.strokeStyle=c.fillStyle='#7dff9a'}
-function ymRadar(c,pt,rel,q,k){if(!YM.on)return;for(const S of YM.ships){if(!S.root.visible)continue;rel(S.pos,q);if(q.d>RAD.rng*1.4)continue;const s=pt(q),bb=S.kind==='bb',z=(bb?5.5:3.2)*k;
-  c.fillStyle=S.alive?(YM.lockS===S?'#ffffff':bb?'#ff7a50':'#ffa070'):'rgba(150,150,150,.7)';c.fillRect(s.x-z,s.y-z*.7,z*2,z*1.4);
-  if(bb||RAD.near){c.font=`700 ${(bb?10:8.5)*k}px system-ui,sans-serif`;c.textAlign='left';c.fillText(S.sh,s.x+z+2*k,s.y+3*k)}}}
-const ymScore=()=>{const s=YM.st;if(!s)return 0;const win=!YM.bb.alive;return Math.round((win?4000+Math.max(0,900-s.t)*3:0)+s.hpnH*250+s.agmH*120+s.bombH*150+s.gunMounts*40+(s.haK||0)*80+s.ddSunk*500+Math.max(0,P.hp)*8)};
+  c.fillText('防空 '+Math.round(fr*100)+'%｜機砲 '+aa+'｜高角 '+ha+'｜主砲 '+mn+'｜驅逐 '+dd+'｜航母 '+cv,x+5*k,y+35*k);c.restore();c.strokeStyle=c.fillStyle='#7dff9a'}
+function ymRadar(c,pt,rel,q,k){if(!YM.on)return;for(const S of YM.ships){if(!S.root.visible)continue;rel(S.pos,q);if(q.d>RAD.rng*1.4)continue;const s=pt(q),bb=S.kind==='bb',cv=S.kind==='cv',z=(bb?5.5:cv?4.4:3.2)*k;
+  c.fillStyle=S.alive?(YM.lockS===S?'#ffffff':bb?'#ff7a50':cv?'#ffc070':'#ffa070'):'rgba(150,150,150,.7)';if(cv){c.fillRect(s.x-z,s.y-z*.45,z*2,z*.9);c.fillRect(s.x+z*.35,s.y-z*.85,z*.4,z*.45)}else c.fillRect(s.x-z,s.y-z*.7,z*2,z*1.4);   // 航母：扁長方塊＋右上一小塊（艦島）
+  if(bb||cv||RAD.near){c.font=`700 ${(bb?10:cv?9:8.5)*k}px system-ui,sans-serif`;c.textAlign='left';c.fillText(S.sh,s.x+z+2*k,s.y+3*k)}}}
+const ymScore=()=>{const s=YM.st;if(!s)return 0;const win=!YM.bb.alive;return Math.round((win?4000+Math.max(0,900-s.t)*3:0)+s.hpnH*250+s.agmH*120+s.bombH*150+s.gunMounts*40+(s.haK||0)*80+s.ddSunk*500+(s.cvSunk||0)*1500+(CB.kt&&CB.kt.zero||0)*150+(s.parkK||0)*60+Math.max(0,P.hp)*8)};
 function ymGrade(){const s=YM.st,t=s.t,hp=Math.max(0,P.hp);return t<300&&hp>70?'S':t<480&&hp>40?'A':t<720?'B':'C'}
 // 空對空飛彈外形：彈體、尖頭整流罩（深色導引頭）、前翼與尾翼各 4 片（X 形）、噴口；合併成一個網格（機頭朝 +Z）
 const mGeo=(()=>{const parts=[],col=(g,c)=>{const n=g.attributes.position.count,a=new Float32Array(n*3);for(let i=0;i<n;i++){a[i*3]=c[0];a[i*3+1]=c[1];a[i*3+2]=c[2]}g.setAttribute('color',new THREE.BufferAttribute(a,3));g.deleteAttribute('uv');return g};
@@ -2062,24 +2133,32 @@ function stepMsl(m,h){m.t+=h;const sp=m.vel.length();_vh.copy(m.vel).multiplySca
 const eneMat=new THREE.MeshLambertMaterial({color:0x6a5a50});
 // 敵機兩種：MiG-29、Su-27（各自一個模型檔，假想敵塗裝）；還沒載入時先借另一架敵機（都沒有就借 F/A-18 換色）
 // ENE[型號]：src＝LOD1（遠）、near＝LOD0 合併版（450 m 內）、nz＝噴口位置與口徑（從模型噴口頂點算）
-const ENE={mig29:{src:null,near:null,nz:null,name:'MiG-29',sh:'MIG'},su27:{src:null,near:null,nz:null,name:'Su-27',sh:'SU'}};
+const ENE={mig29:{src:null,near:null,nz:null,name:'MiG-29',sh:'MIG'},su27:{src:null,near:null,nz:null,name:'Su-27',sh:'SU'},zero:{src:null,near:null,nz:null,name:'零戰',sh:'零'}};
 // 機型差異：hp 血量、pts 分數、v0 進場速度、tm 轉彎（最大過載、滾轉率）倍率、th 推力倍率、gun 機砲（射程、誤差倍率、每 3 秒開火時間）
 // 敵機 AI（v0.24，依難度 簡單／普通／擬真）：react 發現追來的飛彈到開始防禦機動的反應時間、detD 發現距離；flN／flCd／flD 干擾彈數量、間隔、開始投放的距離；
 // lkBrk 被你鎖定時做閃避機動的機率（簡單不閃）；tok 同時可以鎖定你的敵機數；ext 打帶跑型射完後脫離的秒數；gunW 纏鬥型每 3 秒的開火時間；ld 最後一刻反向急轉的距離（0＝不會）；mCd 敵機兩次發射飛彈的間隔（原本都 12 秒，簡單放寬）
 const EAI={react:[1.1,.5,.3],detD:[2600,3400,4200],flN:[10,16,20],flCd:[1.6,1.1,.8],flD:[1800,2300,2800],lkBrk:[0,.35,.45],tok:[1,1,2],ext:[5,6.5,8],gunW:[1.2,1.6,2],ld:[0,700,1000],mCd:[17,12,12]};
-const ETY={mig29:{hp:100,pts:300,v0:235,tm:1,th:1,gun:[1000,1,1.2]},su27:{hp:125,pts:450,v0:250,tm:.86,th:1.08,gun:[800,1.5,.7]}};
+const ETY={mig29:{hp:100,pts:300,v0:235,tm:1,th:1,gun:[1000,1,1.2]},su27:{hp:125,pts:450,v0:250,tm:.86,th:1.08,gun:[800,1.5,.7]},
+  /* 零戰（A6M5，只在「擊沉大和」從航母起飛）：螺旋槳機另一套推力／阻力（prop）——極速約 560 km/h（vmax 156 m/s，俯衝上限 vne 205 m/s）、
+     翼負荷低（clw＝最大升力係數×翼面積÷質量：低速也拉得出過載）＝轉彎極好；ta 推力加速度、ki 誘導阻力（急轉掉速）；
+     20 mm＋7.7 mm 機槍（射程短、20 mm 較痛）；沒有飛彈、不放干擾彈；機體脆（hp 30，機砲三發左右就起火墜落） */
+  zero:{hp:30,pts:200,v0:140,tm:1.25,th:1,gun:[650,1.25,1.8],prop:{vmax:156,vne:205,ta:2.1,ki:1900,clw:.0115}}};
 function loadEne(ty,b64,url){const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);const D=ENE[ty];
   const ok=g=>{const L=g.scene.getObjectByName('LOD1');if(!L)return;L.visible=true;L.traverse(o=>{if(o.isMesh){o.castShadow=true;o.material=(window.__SKM||(m=>m))(o.material)}});D.src=L;
     // 近距細模型：LOD0（約 1.3 萬三角形）收起落架（輪架與艙門不畫＝收起後的乾淨機腹）、不動的舵面全部依材質合併成少數網格；450 公尺內用它，外面用 LOD1
-    {const L0=g.scene.getObjectByName('LOD0');if(L0){g.scene.updateMatrixWorld(true);const c=L0.clone(true);c.traverse(o=>{if(/^(gear|door|hook|bomb)/.test(o.name))o.visible=false});
+    {const L0=g.scene.getObjectByName('LOD0');if(L0){g.scene.updateMatrixWorld(true);const c=L0.clone(true);c.traverse(o=>{if(/^(gear|door|hook|bomb|prop)/.test(o.name))o.visible=false});
+      // 螺旋槳機：螺旋槳（會轉）與起落架（起飛時放下）另外存，掛在每架敵機上；LOD2 給航母甲板停放用（InstancedMesh）
+      if(ty==='zero'){const rel=o=>{const n=o.clone(true);n.visible=true;new THREE.Matrix4().copy(L.matrixWorld).invert().multiply(o.matrixWorld).decompose(n.position,n.quaternion,n.scale);n.traverse(q=>{if(q.isMesh){q.castShadow=true;q.material=(window.__SKM||(m=>m))(q.material)}});return n};
+        const pr=L0.getObjectByName('prop');if(pr)D.prop=rel(pr);D.gear=['gearML','gearMR','gearT'].map(n=>L0.getObjectByName(n)).filter(Boolean).map(rel);D.lod2=g.scene.getObjectByName('LOD2')}
       const n=mergeDeep(c);n.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=false;o.material=(window.__SKM||(m=>m))(o.material)}});
       new THREE.Matrix4().copy(L.matrixWorld).invert().multiply(L0.matrixWorld).decompose(n.position,n.quaternion,n.scale);D.near=n}}
     // 先前借用別的模型的敵機，換成正確機型
     for(const e of CB.ene){if(!e.mesh||e.mesh.userData.ty===e.ty||!ENE[e.ty].src)continue;const n=eneMesh(e.ty);n.position.copy(e.mesh.position);n.quaternion.copy(e.mesh.quaternion);n.visible=e.mesh.visible;scene.remove(e.mesh);e.mesh=n}};
   if(b64){const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn(ty,e))}else L2.load(url,ok,undefined,e=>console.warn(ty,e))}
-loadEne('mig29',window.__GLB2,'assets/mig29.glb');loadEne('su27',window.__GLB3,'assets/su27.glb');
-function eneMesh(ty='mig29'){let m;const L1=MODEL&&MODEL.getObjectByName('LOD1'),k=ENE[ty].src?ty:ENE.mig29.src?'mig29':ENE.su27.src?'su27':null;
-  if(k){const D=ENE[k];m=D.src.clone(true);m.userData.mig=true;m.userData.ty=k;if(D.near){const far=new THREE.Group(),lod=new THREE.LOD();for(const c of [...m.children])far.add(c);lod.addLevel(D.near.clone(),0);lod.addLevel(far,450);m.add(lod);m.userData.lod=lod}eneFx(m,D)}
+loadEne('mig29',window.__GLB2,'assets/mig29.glb');loadEne('su27',window.__GLB3,'assets/su27.glb');loadEne('zero',window.__GLB7,'assets/a6m5.glb');
+function eneMesh(ty='mig29'){let m;const L1=MODEL&&MODEL.getObjectByName('LOD1'),k=ENE[ty].src?ty:ty!=='zero'&&ENE.mig29.src?'mig29':ty!=='zero'&&ENE.su27.src?'su27':null;
+  if(k){const D=ENE[k];m=D.src.clone(true);m.userData.mig=true;m.userData.ty=k;if(D.near){const far=new THREE.Group(),lod=new THREE.LOD();for(const c of [...m.children])far.add(c);lod.addLevel(D.near.clone(),0);lod.addLevel(far,450);m.add(lod);m.userData.lod=lod}eneFx(m,D);
+    if(D.prop){const p=D.prop.clone(true);m.add(p);m.userData.prop=p}if(D.gear&&D.gear.length){const gg=new THREE.Group();for(const o of D.gear)gg.add(o.clone(true));m.add(gg);m.userData.gear=gg}}
   else if(L1){m=L1.clone(true);m.visible=true;m.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.color=new THREE.Color(.66,.52,.44)}})}
   else{m=new THREE.Mesh(new THREE.ConeGeometry(2,15,6),eneMat);m.geometry.rotateX(-Math.PI/2)}scene.add(m);return m}
 // 敵機細節：雙發後燃器火焰（位置與口徑從各機型模型的噴口頂點算出）、翼尖航行燈
@@ -2099,12 +2178,12 @@ function spawnEne(n,ty,around){const d=around?(()=>{const a=Math.random()*6.283;
     CB.ene.push({ty:t,pos,vel:d.clone().multiplyScalar(-T.v0),hp:T.hp,alive:true,mesh:eneMesh(t),gunCd:0,mslN:su?EMS.suIR[M.diff]:DF.eneMsl[M.diff],mrN:su?EMS.suMR[M.diff]:0,mslCd:7+i*4,flN:EAI.flN[M.diff],flCd:0,bank:0,t:0,
       role,st:role==='flank'?'flank':'att',stT:0,side:i===3?-1:Math.random()<.5?-1:1,thT:0,lbCd:2,lbT:0})}
   if(n>1&&M.mode!=='mission')CB.flankSay=1}
-function eneDie(e,crash){if(!e.alive)return;e.alive=false;{const U=e.mesh&&e.mesh.userData;if(U&&U.ab)for(const o of [...U.ab,...U.nav])o.visible=false}boom(e.pos,30);if(!crash&&e.mesh){CB.wrecks=CB.wrecks||[];CB.wrecks.push({m:e.mesh,p:e.pos.clone(),v:e.vel.clone().multiplyScalar(.7),s:(Math.random()-.5)*4,t:0})}else scene.remove(e.mesh);debris(e.pos,e.vel,20,26);const nm=ENE[e.ty||'mig29'].name;if(crash){CB.crash=(CB.crash||0)+1;say(nm+' 撞山墜毀',2)}else{CB.kills++;CB.kt[e.ty||'mig29']=(CB.kt[e.ty||'mig29']||0)+1;CB.kb+=ETY[e.ty||'mig29'].pts-300;say('擊落 '+nm+'！',2,1);onKill(e)}}
+function eneDie(e,crash){if(!e.alive)return;e.alive=false;{const U=e.mesh&&e.mesh.userData;if(U&&U.ab)for(const o of [...U.ab,...U.nav])o.visible=false}boom(e.pos,30);if(!crash&&e.mesh){CB.wrecks=CB.wrecks||[];CB.wrecks.push({m:e.mesh,p:e.pos.clone(),v:e.vel.clone().multiplyScalar(.7),s:(Math.random()-.5)*4,t:0})}else scene.remove(e.mesh);debris(e.pos,e.vel,20,26);const nm=ENE[e.ty||'mig29'].name;if(crash){CB.crash=(CB.crash||0)+1;say(nm+(e.ty==='zero'?' 墜海':' 撞山墜毀'),2)}else{CB.kills++;CB.kt[e.ty||'mig29']=(CB.kt[e.ty||'mig29']||0)+1;CB.kb+=ETY[e.ty||'mig29'].pts-300;say('擊落 '+nm+'！',2,1);onKill(e)}}
 // 敵機飛行：跟玩家同一組氣動數據（升力、阻力極曲線、推力隨高度與馬赫），升力方向靠坡度、有滾轉率限制
 const _eu=V3(),_er=V3(),_ep=V3(),_el=V3(),_eg=V3(),_em=new THREE.Matrix4();
 function eneFly(e,ad,h,ab){const V=Math.max(40,e.vel.length()),vd=_ev.copy(e.vel).multiplyScalar(1/V),rho=1.225*Math.exp(-e.pos.y/8500),qS=.5*rho*V*V*AC.S,W=AC.M0*G0,mach=V/(340-e.pos.y*.004);
   const cs=clamp(vd.dot(ad),-1,1),th=Math.acos(cs);_ep.copy(ad).addScaledVector(vd,-cs);const pl=_ep.length();if(pl>1e-6)_ep.multiplyScalar(1/pl);
-  const ET=ETY[e.ty]||ETY.mig29,nLim=Math.min((AC.GMAX*DF.turn[M.diff]+.8)*ET.tm,qS*AC.CLA*AC.AMAX/W);
+  const ET=ETY[e.ty]||ETY.mig29,PR=ET.prop,nLim=PR?Math.min((6*DF.turn[M.diff]+.8)*ET.tm,.5*rho*V*V*PR.clw*(e.dep>0?1.6:1)/G0):Math.min((AC.GMAX*DF.turn[M.diff]+.8)*ET.tm,qS*AC.CLA*AC.AMAX/W);
   _eg.set(0,-G0,0).addScaledVector(vd,G0*vd.y);_el.copy(_ep).multiplyScalar(Math.min(.9*th*V,nLim*G0)).sub(_eg);
   _eu.set(0,1,0).addScaledVector(vd,-vd.y);if(_eu.lengthSq()<1e-6)_eu.set(0,0,1);_eu.normalize();_er.crossVectors(vd,_eu);
   let bD=Math.atan2(_el.dot(_er),_el.dot(_eu)),n=Math.min(_el.length()/G0,nLim);if(Math.abs(bD)>2.6){bD=Math.sign(bD)*2.6}
@@ -2112,17 +2191,19 @@ function eneFly(e,ad,h,ab){const V=Math.max(40,e.vel.length()),vd=_ev.copy(e.vel
   const ld=_ep.copy(_eu).multiplyScalar(Math.cos(e.bank)).addScaledVector(_er,Math.sin(e.bank));
   const CL=n*W/Math.max(1,qS),D=qS*(AC.CD0+AC.KI*CL*CL)+(mach>.95?qS*.02*Math.min(1,(mach-.95)*5):0);
   let T=ab||V<220?AC.TAB*(1+.3*mach):AC.TMIL*.9;T*=Math.pow(rho/1.225,.65)*ET.th;
-  e.vel.addScaledVector(vd,(T-D)/AC.M0*h).addScaledVector(ld,n*G0*h);e.vel.y-=G0*h;e.pos.addScaledVector(e.vel,h);e.n=n;e.ab=ab||V<220;{const U=e.mesh.userData;if(U.ab){e.abK=(e.abK||0)+((e.ab?1:0)-(e.abK||0))*Math.min(1,h*3);for(const a of U.ab){a.visible=e.abK>.03;a.userData.set(e.abK)}}}
+  let at=(T-D)/AC.M0;if(PR){const vr=V/PR.vmax;at=PR.ta*Math.min(2.2,1/Math.max(vr,.01))*Math.pow(rho/1.225,.3)-PR.ta*vr*vr-PR.ki*n*n/(V*V);ab=false}   // 螺旋槳：推力≈功率÷速度（低速有上限）、阻力∝V²、急轉誘導阻力
+  e.vel.addScaledVector(vd,at*h).addScaledVector(ld,n*G0*h);e.vel.y-=G0*h;if(PR){const v2=e.vel.length();if(v2>PR.vne)e.vel.multiplyScalar(PR.vne/v2)}e.pos.addScaledVector(e.vel,h);e.n=n;e.ab=ab||(!PR&&V<220);{const U=e.mesh.userData;if(U.ab){e.abK=(e.abK||0)+((e.ab?1:0)-(e.abK||0))*Math.min(1,h*3);for(const a of U.ab){a.visible=e.abK>.03;a.userData.set(e.abK)}}}
   // 姿態：機頭沿速度（加一點攻角），機背朝升力方向
-  const al=CL/AC.CLA;_eg.copy(vd).addScaledVector(ld,Math.sin(al));_eg.normalize();_el.crossVectors(_eg,ld).normalize();_eu.crossVectors(_el,_eg);
-  _em.makeBasis(_el,_eu,_ep.copy(_eg).negate());e.mesh.quaternion.setFromRotationMatrix(_em);e.mesh.position.copy(e.pos)}
+  const al=PR?.24*Math.min(1,n*G0/Math.max(1,.5*rho*V*V*PR.clw)):CL/AC.CLA;_eg.copy(vd).addScaledVector(ld,Math.sin(al));_eg.normalize();_el.crossVectors(_eg,ld).normalize();_eu.crossVectors(_el,_eg);
+  _em.makeBasis(_el,_eu,_ep.copy(_eg).negate());e.mesh.quaternion.setFromRotationMatrix(_em);e.mesh.position.copy(e.pos);{const U=e.mesh.userData;if(U.prop)U.prop.rotation.z+=h*(46+V*.12)}}
 const _ev=V3();
 const _ef=V3(),_es=V3();
-function updEne(e,h){e.t+=h;const D=M.diff,sp=e.vel.length();_vh.copy(e.vel).multiplyScalar(1/sp);_r.copy(P.pos).sub(e.pos);const dist=_r.length();
+function updEne(e,h){if(e.st==='to'){cvTo(e,h);return}e.t+=h;const D=M.diff,sp=e.vel.length();_vh.copy(e.vel).multiplyScalar(1/sp);_r.copy(P.pos).sub(e.pos);const dist=_r.length();
   _d.copy(P.pos).addScaledVector(P.vel,Math.min(2.5,dist/800)).sub(e.pos).normalize();let ab=dist<2500;
   const agl0=e.pos.y-Math.max(0,groundH(e.pos.x,e.pos.z));
   // 攻擊型態（v0.24）：flank 包夾＝先繞到你側後方 2.8 km 再咬上；ext 打帶跑＝射完背對你拉開、略爬升，時間到再回頭（這時換你追牠）
-  if(e.st==='flank'){_ef.set(P.vel.x,0,P.vel.z);if(_ef.lengthSq()<1)_ef.set(0,0,-1);_ef.normalize();
+  if(e.dep>0){e.dep-=h;_d.set(e.vel.x,0,e.vel.z).normalize();_d.y=e.vel.length()>70?.2:.08;_d.normalize();ab=false;const U=e.mesh.userData;if(U.gear&&e.dep<5)U.gear.visible=false}   // 零戰剛離艦：先直線爬升、收起落架
+  else if(e.st==='flank'){_ef.set(P.vel.x,0,P.vel.z);if(_ef.lengthSq()<1)_ef.set(0,0,-1);_ef.normalize();
     _a.set(-_ef.z,0,_ef.x).multiplyScalar(e.side*2800).addScaledVector(_ef,-1500).add(P.pos);_a.y=P.pos.y+150;const df=_a.distanceTo(e.pos);_d.copy(_a).sub(e.pos).normalize();ab=true;
     e.stT+=h;if(df<1400||dist<2000||e.stT>30||(dist<5000&&-_r.dot(_ef)/dist<-.2)){e.st='att';e.stT=0}}
   else if(e.st==='ext'){_d.copy(_r).negate();_d.y=0;_d.normalize();_d.y=.12;_d.normalize();ab=true;e.stT-=h;if((e.stT<=0&&dist>4500)||e.stT<-6){e.st='att';e.stT=0}}
@@ -2141,14 +2222,17 @@ function updEne(e,h){e.t+=h;const D=M.diff,sp=e.vel.length();_vh.copy(e.vel).mul
       if(D===2&&e.flN>0){e.flN-=2;dropFlare(e,e.pos,e.vel,e.mesh.quaternion);e.flT=CB.clk;CB.eFl=(CB.eFl||0)+1}}}
     if(e.lbT>0){e.lbT-=h;_a.copy(_r).multiplyScalar(1/dist);_d.crossVectors(_a,V3UP);if(_d.lengthSq()<1e-6)_d.set(1,0,0);_d.normalize().multiplyScalar(e.lbS);_d.y=-.15;_d.normalize();ab=true;e.dfT=CB.clk}}
   let agl=e.pos.y-Math.max(0,groundH(e.pos.x,e.pos.z));for(const tt of [1.5,3,5,8]){const x=e.pos.x+e.vel.x*tt,z=e.pos.z+e.vel.z*tt,y=e.pos.y+e.vel.y*tt;agl=Math.min(agl,y-Math.max(0,groundH(x,z)))}
-  if(agl<600){_d.y=Math.max(_d.y,agl<250?.8:.45);_d.normalize()}if(e.pos.y>9000&&_d.y>0){_d.y=0;_d.normalize()}
+  if(e.ty==='zero'){if(agl<220&&!(e.dep>0)){_d.y=Math.max(_d.y,agl<90?.35:.15);_d.normalize()}}   // 零戰：低空只輕輕拉起（猛拉會失速）
+  else if(agl<600){_d.y=Math.max(_d.y,agl<250?.8:.45);_d.normalize()}if(e.pos.y>9000&&_d.y>0){_d.y=0;_d.normalize()}
   eneFly(e,_d,h,ab||!!th);
   _vh.copy(e.vel).normalize();
   if(e.pos.y<Math.max(0,groundH(e.pos.x,e.pos.z))+3){eneDie(e,true);return}
   if(!TP.alive||P.onDeck)return;
   const ao=Math.acos(clamp(_vh.dot(_r)/dist,-1,1));
   const EG=(ETY[e.ty]||ETY.mig29).gun;e.gunCd-=h;if(dist<EG[0]&&ao<.08&&e.gunCd<=0&&(e.t%3)<(e.role==='dog'?Math.max(EG[2],EAI.gunW[D]):EG[2])&&shells.items.length<shells.n){e.gunCd=.09;const tt=dist/1000;_a.copy(P.pos).addScaledVector(P.vel,tt).sub(e.pos).normalize();const er=DF.gunErr[M.diff]*EG[1];
-    _a.x+=(Math.random()-.5)*2*er;_a.y+=(Math.random()-.5)*2*er;_a.z+=(Math.random()-.5)*2*er;_a.normalize();shells.items.push({p:e.pos.clone().addScaledVector(_vh,12),v:_a.clone().multiplyScalar(1000).add(e.vel),t:2,src:e.pos,sn:'敵機'})}
+    _a.x+=(Math.random()-.5)*2*er;_a.y+=(Math.random()-.5)*2*er;_a.z+=(Math.random()-.5)*2*er;_a.normalize();
+    if(e.ty==='zero'){e.gN=(e.gN||0)+1;const c20=e.gN%3===0;shells.items.push({p:e.pos.clone().addScaledVector(_vh,6),v:_a.clone().multiplyScalar(c20?600:750).add(e.vel),t:1.6,src:e.pos,sn:'零戰',dmg:ADMG[M.diff]*(c20?1.5:.6)})}   // 九九式 20 mm（每 3 發一發，較痛、較慢）＋九七式 7.7 mm
+    else shells.items.push({p:e.pos.clone().addScaledVector(_vh,12),v:_a.clone().multiplyScalar(1000).add(e.vel),t:2,src:e.pos,sn:'敵機'})}
   // 敵機發射飛彈前要先「鎖定」一段時間（雷達警告音變急、畫面提示），太近不射：玩家看得到警告、有時間轉向或放干擾彈
   // Su-27 中程飛彈：6–9 公里、機頭對著你才鎖定；鎖定時間較長（警告較早），射出後是雷達導引：干擾彈效果較差，要轉到飛彈在 3 點或 9 點（側飛）才甩得掉
   const mr=e.mrN>0&&dist>EMS.mrD[0]&&dist<EMS.mrD[1]&&ao<.35;let lkOk=mr||(e.mslN>0&&dist>EMS.minD[M.diff]&&dist<6000&&ao<.4);
@@ -2202,7 +2286,7 @@ function thump(v){if(!AX)return;const src=AX.createBufferSource();src.buffer=AX.
 function lockTone(dt){if(!AX)return;if(!AX.lk){const o=AX.createOscillator(),g=AX.createGain();o.type='square';o.frequency.value=700;g.gain.value=0;const f=AX.createBiquadFilter();f.type='lowpass';f.frequency.value=2200;o.connect(f).connect(g).connect(AX.destination);o.start();AX.lk={o,g,t:0}}
   const L=AX.lk;L.t+=dt;const fly=P.state==='fly'&&!P.onDeck&&!M.paused;const ok=fly&&((LOCK.ok&&LOCK.e)||GA.lock.ok),acq=fly&&!ok&&((LOCK.w&&LOCK.t>0)||(GA.lock.u&&GA.lock.t>0));
   L.o.frequency.value=ok?1250:640;L.g.gain.value=ok?.022:acq?((L.t*6)%1<.5?.016:0):0;
-  const rwr=fly&&(CB.ene.some(e=>e.alive&&e.pos.distanceTo(P.pos)<9000)||(M.mode==='mission'&&M.stage==='sam'));if(rwr){AX.rwT=(AX.rwT||0)-dt;if(AX.rwT<=0){AX.rwT=CB.ene.some(e=>e.alive&&e.lk>0)?.4:2.2;beep(1900,.05);setTimeout(()=>beep(1900,.05),120)}}}
+  const rwr=fly&&(CB.ene.some(e=>e.alive&&e.ty!=='zero'&&e.pos.distanceTo(P.pos)<9000)||(M.mode==='mission'&&M.stage==='sam'));if(rwr){AX.rwT=(AX.rwT||0)-dt;if(AX.rwT<=0){AX.rwT=CB.ene.some(e=>e.alive&&e.lk>0)?.4:2.2;beep(1900,.05);setTimeout(()=>beep(1900,.05),120)}}}
 function beep(f,d){if(!AX)return;const o=AX.createOscillator(),g=AX.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g).connect(AX.destination);o.start();o.stop(AX.currentTime+d)}
 // ---- 武器音效（全部經過 AX.sfx 壓縮器，避免爆音；同類聲音限制同時發聲數）----
 function sfxOut(){if(!AX.sfx){const c=AX.createDynamicsCompressor();c.threshold.value=-12;c.knee.value=8;c.ratio.value=8;c.attack.value=.003;c.release.value=.25;const g=AX.createGain();g.gain.value=.9;c.connect(g).connect(AX.destination);AX.sfx=c}return AX.sfx}
@@ -2320,7 +2404,7 @@ function retry(){document.body.classList.remove('inmenu');M.paused=false;plane.v
 function showResult(win){document.body.classList.add('inmenu');M.over=true;M.paused=true;$('result').style.display='flex';
   const rec=stResult(win),sm=stM(stKey()),sc=cbScore(),stk=CB.best?'　最高連殺 '+CB.best+(CB.sb?'（+'+CB.sb+'）':''):'';
   if(M.mode==='yamato'){const s=YM.st,mm=(YM.t/60|0)+' 分 '+(YM.t%60|0)+' 秒',S=YM.bb;$('rTitle').innerHTML=(win?'大和擊沉　評價 '+ymGrade():'任務失敗')+(rec?' <span class="rec">新紀錄！</span>':'');
-    $('rBody').innerHTML=(win?'擊沉方式：'+s.how+'　時間 '+mm:(M.why||'')+'　大和進水 左 '+(S.flL|0)+'% 右 '+(S.flR|0)+'%')+'<br>分數 <b style="color:var(--amb2)">'+sc+'</b><span style="color:var(--dim);font-size:13px">（本模式最高 '+sm.best+'）</span><br>魚叉 命中 '+s.hpnH+' / '+s.hpnF+(s.hpnSD?'（被擊落 '+s.hpnSD+'）':'')+'　對地飛彈命中 '+s.agmH+' / '+Math.max(0,CB.shot-s.hpnF)+'　炸彈命中 '+s.bombH+' / '+s.bombF+'<br>摧毀 機砲座 '+s.gunMounts+'　高角砲 '+(s.haK||0)+'　擊沉驅逐艦 '+s.ddSunk+' / 3<br>機體剩餘 '+Math.max(0,P.hp|0)+'%　承受防空傷害 '+(s.dmg|0);
+    $('rBody').innerHTML=(win?'擊沉方式：'+s.how+'　時間 '+mm:(M.why||'')+'　大和進水 左 '+(S.flL|0)+'% 右 '+(S.flR|0)+'%')+'<br>分數 <b style="color:var(--amb2)">'+sc+'</b><span style="color:var(--dim);font-size:13px">（本模式最高 '+sm.best+'）</span><br>魚叉 命中 '+s.hpnH+' / '+s.hpnF+(s.hpnSD?'（被擊落 '+s.hpnSD+'）':'')+'　對地飛彈命中 '+s.agmH+' / '+Math.max(0,CB.shot-s.hpnF)+'　炸彈命中 '+s.bombH+' / '+s.bombF+'<br>摧毀 機砲座 '+s.gunMounts+'　高角砲 '+(s.haK||0)+'　擊沉驅逐艦 '+s.ddSunk+' / 3<br>擊沉航母 '+(s.cvSunk||0)+' / 2（'+(YM.cvs.map(c=>c.sh+(c.alive?'':' 擊沉')).join('、'))+'）　擊落零戰 '+(CB.kt.zero||0)+' / '+(s.zeroL||0)+'　甲板上擊毀 '+(s.parkK||0)+'<br>機體剩餘 '+Math.max(0,P.hp|0)+'%　承受防空傷害 '+(s.dmg|0);
     $('rRetry').textContent=win?'再打一次':'重新出擊';if(win)M.cp=0;return}
   $('rTitle').innerHTML=(M.mode==='combat'?(M.arena?'狂暴空戰結束':'演練結束'):win?(M.mode==='mission'?'任務完成':'著艦成功'):'任務失敗')+(rec?' <span class="rec">新紀錄！</span>':'');
   const mm=(M.t/60|0)+' 分 '+(M.t%60|0)+' 秒',best='<span style="color:var(--dim);font-size:13px">（本模式最高 '+sm.best+'）</span>';
@@ -2399,8 +2483,10 @@ function drawRadar(c,k,inc){const now=performance.now(),NR=RAD.near;
   for(const m of CB.msl){if(!m.alive||!m.decoyed||m.orig!==TP)continue;rel(m.pos,q);if(q.d>RAD.rng)continue;const s=pt(q);bar(s,m.vel,(NR?7:5)*k,'#9aa0a6','rgba(150,150,150,.5)');
     c.strokeStyle='#c8ccd0';c.lineWidth=1.2*k;c.beginPath();c.moveTo(s.x-3*k,s.y-3*k);c.lineTo(s.x+3*k,s.y+3*k);c.moveTo(s.x+3*k,s.y-3*k);c.lineTo(s.x-3*k,s.y+3*k);c.stroke()}
   for(const e of CB.ene){if(!e.alive)continue;rel(e.pos,q);const s=pt(q),w=rv(e.vel),hd=Math.atan2(w.r,w.f),L=LOCK.e===e,dy=e.pos.y-P.pos.y;
-    const su=e.ty==='su27';c.save();c.translate(s.x,s.y);c.rotate(hd);c.fillStyle=c.strokeStyle=L?'#ffffff':'#ff5040';c.lineWidth=1.4*k;const z=(NR?1.25:1)*(su?1.35:1);c.beginPath();c.moveTo(0,-6*k*z);c.lineTo(4.5*k*z,4.5*k*z);c.lineTo(-4.5*k*z,4.5*k*z);c.closePath();s.out?c.stroke():c.fill();c.restore();
-    if(su){c.fillStyle=L?'#ffffff':'#ffb0a0';c.font=`700 ${7.5*k}px ui-monospace,Menlo,monospace`;c.textAlign='right';c.fillText('SU',s.x-6*k,s.y-4*k)}
+    const su=e.ty==='su27',zr=e.ty==='zero';c.save();c.translate(s.x,s.y);c.rotate(hd);c.fillStyle=c.strokeStyle=L?'#ffffff':zr?'#ffb030':'#ff5040';c.lineWidth=1.4*k;const z=(NR?1.25:1)*(su?1.35:zr?.85:1);c.beginPath();
+    if(zr){c.moveTo(0,-6*k*z);c.lineTo(1.6*k*z,-1*k*z);c.lineTo(6*k*z,0);c.lineTo(1.6*k*z,1.5*k*z);c.lineTo(0,5*k*z);c.lineTo(-1.6*k*z,1.5*k*z);c.lineTo(-6*k*z,0);c.lineTo(-1.6*k*z,-1*k*z)}   // 零戰：橘色十字形（直翼螺旋槳機），一眼和噴射敵機的紅三角分開
+    else{c.moveTo(0,-6*k*z);c.lineTo(4.5*k*z,4.5*k*z);c.lineTo(-4.5*k*z,4.5*k*z)}c.closePath();s.out?c.stroke():c.fill();c.restore();
+    if(su||zr){c.fillStyle=L?'#ffffff':zr?'#ffd080':'#ffb0a0';c.font=`700 ${(zr?8.5:7.5)*k}px ui-monospace,Menlo,monospace`;c.textAlign='right';c.fillText(zr?'零':'SU',s.x-6*k,s.y-4*k)}
     if(NR&&!s.out){c.fillStyle='#ff9080';c.font=`600 ${9.5*k}px ui-monospace,Menlo,monospace`;c.textAlign='left';c.fillText((q.d/1000).toFixed(1)+(Math.abs(dy)>100?(dy>0?' +':' ')+Math.round(dy/100)/10:''),s.x+6*k,s.y+1*k)}
     else if(Math.abs(dy)>300){c.fillStyle='#ff8070';c.font=`700 ${9*k}px sans-serif`;c.textAlign='left';c.fillText(dy>0?'▲':'▼',s.x+5*k,s.y-4*k)}}
   const bl=((now/160)|0)%2;
@@ -2411,7 +2497,7 @@ function drawRadar(c,k,inc){const now=performance.now(),NR=RAD.near;
   c.font=`700 ${12*k}px system-ui,sans-serif`;c.textAlign='left';let ty=cy+R+14*k;const tx=cx-R;
   if(nm){c.fillStyle=bl?'#ffb020':'#ff4030';const t=nm.vc>0?nm.d/nm.vc:0;c.fillText('飛彈 '+(nm.d/1000).toFixed(1)+'km '+clock(nm)+(nm.vc>0?' '+Math.round(nm.vc)+'m/s '+t.toFixed(1)+'秒':''),tx,ty);ty+=16*k;
     if(nm.d<FLR_R&&P.cm>0&&bl){c.fillStyle='#ffe060';c.fillText('▶ 放干擾彈＋急轉',tx,ty);ty+=16*k}}
-  if(ne){c.fillStyle='#ff6a5a';c.fillText((ne.e.ty==='su27'?'Su-27 ':'敵機 ')+(ne.d/1000).toFixed(1)+'km '+clock(ne)+(Math.abs(ne.dy)>300?(ne.dy>0?' 高':' 低'):''),tx,ty)}
+  if(ne){c.fillStyle=ne.e.ty==='zero'?'#ffb040':'#ff6a5a';c.fillText((ne.e.ty==='su27'?'Su-27 ':ne.e.ty==='zero'?'零戰 ':'敵機 ')+(ne.d/1000).toFixed(1)+'km '+clock(ne)+(Math.abs(ne.dy)>300?(ne.dy>0?' 高':' 低'):''),tx,ty)}
   c.restore()}
 function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(M.mode==='menu'||M.over)return;c.shadowColor='rgba(0,0,0,.9)';c.shadowBlur=3;
   const k=clamp(Math.min(W,H)/420,.8,1.5),G='#7dff9a';c.lineWidth=1.6*k;c.strokeStyle=G;c.fillStyle=G;c.font=`600 ${13*k}px ui-monospace,Menlo,monospace`;c.textBaseline='middle';
@@ -2663,6 +2749,7 @@ requestAnimationFrame(frame);
 /* 測試用掛鉤 */
 window.__G={ACAM,BLT,shells,PUFF,YM,fireHpn,ymHit,ymMag,ymReset,EAI,ST,SLO,HM,HURT,KF,LA,lsoZone,wpNow,get wpP(){return wpP},TP,WPN,RAD,setTF,get TF(){return TF},TFP,guKill,reviveGU,fireAgm,bunker,bunkerRuin,FIRES,GSHD,SCAR,boom,trick,GU,GA,inp,plane,cam,sun,LOOK,setLook,GY,bankG,CB,LOCK,SAMS,fireMsl,countermeasure,spawnEne,launch,TERRAIN,renderer,scene,SURF,get PARTS(){return PARTS},get modelSrc(){return modelSrc},plane,ccip,AAA,P,M,AC,start,simStep,updWorld,spawn,act,dropBomb,groundH,floorOf,xc,LP0,LD,tgtPos,inp,DT,
   run(sec,fn){const n=Math.round(sec/DT);for(let i=0;i<n;i++){if(fn)fn(i*DT);simStep(DT);if(i%2===0)updWorld(DT*2)}}};
+Object.assign(window.__G,{CVD,cvLaunch,cvDeckOk,ENE,ETY,eneDie});   // 航母／零戰（測試用）
 </script>
 </body>
 </html>
