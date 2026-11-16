@@ -70,11 +70,11 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
 <div class="btn" id="bView">視角</div>
 <div class="panel" id="menu"><div class="box">
   <h1>怒海雄鷹</h1>
-  <div class="sub">試飛版 0.19 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
+  <div class="sub">試飛版 0.20 ｜ F/A-18E ｜ 第一關「峽谷突襲」雛形</div>
   <div id="resume" class="row" style="display:none"><button class="mb pri" id="mResume">繼續</button><button class="mb" id="mRetry">從檢查點重來</button><button class="mb" id="mHome">回主選單</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操作靈敏度</span><button class="mb" data-s="0" style="min-width:64px">低</button><button class="mb" data-s="1" style="min-width:64px">中</button><button class="mb" data-s="2" style="min-width:64px">高</button><span style="font-size:14px;color:#b9d2de;margin-left:10px">轉向</span><button class="mb" data-t="arcade" style="min-width:64px">街機</button><button class="mb" data-t="real" style="min-width:64px">真實</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">時段</span><button class="mb" data-tod="0" style="min-width:64px">白天</button><button class="mb" data-tod="1" style="min-width:64px">黃昏</button><span style="font-size:14px;color:#b9d2de;margin-left:10px">武器</span><button class="mb" data-w="0" style="min-width:56px">標準</button><button class="mb" data-w="1" style="min-width:56px">加量</button><button class="mb" data-w="2" style="min-width:56px">無限</button><button class="mb" data-w="3" style="min-width:56px;color:#ffb070">狂暴</button></div>
-  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">畫質</span><button class="mb" data-q="0" style="min-width:64px">省電</button><button class="mb" data-q="1" style="min-width:64px">標準</button><button class="mb" data-q="2" style="min-width:64px">精緻</button><button class="mb" id="mQA" style="min-width:64px">自動</button></div>
+  <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">畫質</span><button class="mb" data-q="0" style="min-width:64px">省電</button><button class="mb" data-q="1" style="min-width:64px">標準</button><button class="mb" data-q="2" style="min-width:64px">精緻</button><button class="mb" id="mQA" style="min-width:64px">自動</button><span style="font-size:14px;color:#b9d2de;margin-left:10px">著艦輔助</span><button class="mb" data-la="1" style="min-width:52px">開</button><button class="mb" data-la="0" style="min-width:52px">關</button></div>
   <div class="row" style="align-items:center"><span style="font-size:14px;color:#b9d2de">操控方式</span><button class="mb" data-c="0" style="min-width:90px">簡易搖桿</button><button class="mb" data-c="2" style="min-width:80px">指向圈</button><button class="mb" data-c="1" style="min-width:110px">體感（傾斜手機）</button><button class="mb" id="mInv" style="min-width:90px">前後反向</button></div>
   <div id="gyMsg" style="font-size:12.5px;color:#ffd08a;min-height:0"></div>
   <div id="mainRows">
@@ -86,6 +86,7 @@ h1{margin:0 0 4px;font-size:30px;letter-spacing:4px}
   <b>轉向</b>：「街機」（預設）簡易搖桿推到底約 9 秒迴轉 180°，機頭附近有敵機時會微幅幫你跟住；「真實」完全照飛行物理。敵機要先鎖定你才會射飛彈：聽到警告音變急、看到「敵機鎖定你」就急轉或準備干擾彈。<br>
   <b>武器</b>：「標準」照真實掛載數量；「加量」（預設）飛彈 14、對地 10、干擾彈 120；「無限」都不會用完；「狂暴」無限＋鎖定更快、飛彈更猛、機砲威力三倍、干擾彈更有效。<br><b>雷達</b>（左上）：點一下放大看近距離細節（敵機距離高低、飛彈接近速度與幾秒到），再點一下縮回遠距。<br><b>油門</b>：按住最左邊直條上下拖，推過卡點進橘色那段是後燃器。<br>
   <b>任務</b>：推滿油門按「彈射」→ 低空飛進峽谷（太高會被雷達鎖定）→ 翻過山脊，把<b style="color:#ffc070">橘色小圈</b>對到紅框按「炸彈」→ 出谷時躲防空飛彈（按「干擾彈」、急轉、貼地）→ 擊落攔截的敵機（對準約 1 秒會鎖定，按「飛彈」；近距離用機砲）→ 回航，放起落架、襟翼、尾鉤著艦。<br>
+  <b>著艦輔助</b>（預設開，簡易搖桿／體感，擬真難度不提供）：起落架、尾鉤放下並在艦尾後方對正進場時，放開搖桿就會沿 3.5° 下滑道、對正中線、自動油門；這時上下推是「比下滑道高一點／低一點」，拉桿到底或油門推滿＝重飛。<br>
   電腦：滑鼠拖曳＝圓圈；W/S 俯仰、A/D 滾轉、Shift/Ctrl 油門、空白鍵機砲、B 炸彈、R 飛彈、C 干擾彈、G 起落架、F 襟翼、H 尾鉤、X 減速板、V 視角、Enter 彈射。
   </div>
   </div>
@@ -718,7 +719,7 @@ function updCockpit(dt){CKP.g.visible=view===1&&M.mode!=='menu';if(MODEL&&!_glas
   {const x=L.c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,256,256);x.strokeStyle=G1;x.fillStyle=G1;x.lineWidth=2;x.font='bold 18px monospace';x.fillText('雷達 40km',8,24);
     x.beginPath();x.moveTo(128,240);x.arc(128,240,210,-Math.PI*.83,-Math.PI*.17);x.closePath();x.stroke();for(const r of [70,140])x.beginPath(),x.arc(128,240,r,-Math.PI*.83,-Math.PI*.17),x.stroke();
     const hd=Math.atan2(P.vel.x,-P.vel.z);for(const e of CB.ene){if(!e.alive)continue;const dx=e.pos.x-P.pos.x,dz=e.pos.z-P.pos.z,d=Math.hypot(dx,dz),b=Math.atan2(dx,-dz)-hd,r=d/40000*210;if(r>210||Math.abs(wrapPi(b))>1.05)continue;
-      x.fillStyle=LOCK.e===e?'#ff5050':G1;x.fillRect(128+Math.sin(b)*r-6,240-Math.cos(b)*r-6,12,12)}
+      x.fillStyle=LOCK.e===e?'#ff5050':G1;const z=e.ty==='su27'?8:6;x.fillRect(128+Math.sin(b)*r-z,240-Math.cos(b)*r-z,2*z,2*z);if(z>6)x.fillText('SU',128+Math.sin(b)*r+10,240-Math.cos(b)*r+6)}
     for(const m of CB.msl){if(!m.alive||m.tgt!==m.orig||!m.orig.isP)continue;x.fillStyle='#ff5050';x.fillText('飛彈',180,24)}}
   {const x=R.c.getContext('2d');x.fillStyle=bg;x.fillRect(0,0,256,256);x.fillStyle=G1;x.font='bold 20px monospace';
     const kt=Math.round(P.V*1.944),L2=[['速度',kt+' 節'],['高度',Math.round(P.pos.y*3.281)+' 呎'],['G',P.g.toFixed(1)],['油門',Math.round(P.thrAct*100)+'%'+(P.thrAct>.86?' 後燃':'')],['機體',Math.max(0,P.hp|0)+'%'],['短程／中程',P.m9+'／'+P.m120],['炸彈',P.bombs+''],['干擾彈',P.cm+''],['起落架',P.gear?'放下':'收起']];
@@ -963,12 +964,12 @@ const mass=()=>AC.M0+P.bombs*AC.BOMB;
 function clockOf(p){const f=V3(0,0,-1).applyQuaternion(P.q),dx=p.x-P.pos.x,dz=p.z-P.pos.z;let a=Math.atan2(dx,-dz)-Math.atan2(f.x,-f.z);a=((a%6.2832)+6.2832)%6.2832;const h=Math.round(a/.5236)%12||12;return h+' 點鐘方向'+(p.y<P.pos.y-150?'下方':'')}
 function say(s,t=4,lo){if(lo&&M.msgT>.6&&!M.msgLo&&M.msg!==s){M.sub=s;M.subT=Math.max(1.4,t);return}M.msg=s;M.msgT=t;M.msgLo=!!lo}   // lo＝回報類（發射、擊毀…）：任務指示還在畫面上時改用下方小字，不會把「下一步做什麼」蓋掉
 function setAtt(psi,th){P.psi=psi;P.th=th;eul.set(th,psi,0);P.q.setFromEuler(eul)}
-function spawn(cp){M.cp=cp;P.hold=null;P.man=null;P.manCd=0;P.ovr=null;P.bt=0;P.simT=0;clearCombat();P.m9=2;P.m120=2;P.agm=4;P.cm=30;M.stage=null;M.stT=0;M.samL=0;M._r1=0;if(cp===0){CB.kills=0;CB.dodged=0;CB.shot=CB.hit=0;resetGU()}if(cp>=3&&M.mode==='mission'){M.tgt=false;beam.visible=bunker.visible=ring.visible=false}M.msgT=0;M._l=0;M.sam=0;M.gate=0;M.reG=0;M._rw=0;M._o=0;P.w.set(0,0,0);P.acc.set(0,0,0);P.hp=100;P.ammo=578;P.onDeck=false;P.catT=0;P.state='fly';P.brake=false;P.g=P.gAvg=1;M.lock=0;M.over=false;M.failT=0;
+function spawn(cp){M.cp=cp;P.negT=0;P.gcasN=0;P.gcas=false;P.gcasB=null;P.lsoA=null;P.hold=null;P.man=null;P.manCd=0;P.ovr=null;P.bt=0;P.simT=0;clearCombat();P.m9=2;P.m120=2;P.agm=4;P.cm=30;M.stage=null;M.stT=0;M.samL=0;M._r1=0;if(cp===0){CB.kills=0;CB.kt={};CB.kb=0;CB.dodged=0;CB.shot=CB.hit=0;resetGU()}if(cp>=3&&M.mode==='mission'){M.tgt=false;beam.visible=bunker.visible=ring.visible=false}M.msgT=0;M._l=0;M.sam=0;M.gate=0;M.reG=0;M._rw=0;M._o=0;P.w.set(0,0,0);P.acc.set(0,0,0);P.hp=100;P.ammo=578;P.onDeck=false;P.catT=0;P.state='fly';P.brake=false;P.g=P.gAvg=1;M.lock=0;M.over=false;M.failT=0;
   shells.items.length=0;bullets.items.length=0;for(const b of bombs)scene.remove(b.m);bombs.length=0;
   const air=(x,y,z,psi,v,th=0)=>{P.pos.set(x,y,z);setAtt(psi,th);P.vel.set(0,0,-1).applyQuaternion(P.q).multiplyScalar(v);P.thr=P.thrAct=.8;P.gear=P.flaps=P.hook=false;P.at=false};
   const lim=LIM[M.diff];
   if(M.mode==='free'){air(0,1500,-1500,0,230);P.bombs=4;M.tgt=true;beam.visible=bunker.visible=ring.visible=true}   // v0.19：任務／自由飛行炸過目標後，再進自由飛行目標要回來
-  else if(M.mode==='combat'){const u=5200;air(xc(u),2400,-u,0,240);P.bombs=4;P.agm=6;P.m9=2;P.m120=4;P.cm=60;M.t=0;M.waveT=6;M.supT=50;M.reviveT=0;M.samT=20;CB.kills=0;CB.dodged=0;CB.shot=CB.hit=0;resetGU();say('實戰演練：敵機會一波波飛來；山谷裡有戰車車隊、高砲、防空飛彈陣地。機頭對準目標會自動鎖定，按「飛彈」發射',8)}
+  else if(M.mode==='combat'){const u=5200;air(xc(u),2400,-u,0,240);P.bombs=4;P.agm=6;P.m9=2;P.m120=4;P.cm=60;M.t=0;M.waveT=6;M.supT=50;M.reviveT=0;M.samT=20;M.wN=0;CB.kills=0;CB.kt={};CB.kb=0;CB.dodged=0;CB.shot=CB.hit=0;resetGU();say('實戰演練：敵機會一波波飛來；山谷裡有戰車車隊、高砲、防空飛彈陣地。機頭對準目標會自動鎖定，按「飛彈」發射',8)}
   else if(M.mode==='land'||cp===4){const d=3500,x=LP0.x-LD.x*d,z=LP0.z-LD.z*d;air(x,DECK_Y+AC.GH+Math.tan(0.061)*(d+AIMS),z,0.157,74,0.08);
     P.vel.y=-74*Math.sin(0.061);P.gear=P.flaps=P.hook=true;P.thr=P.thrAct=.14;P.at=true;P.bombs=0;if(M.mode==='mission'){M.phase=4;M.stage='rtb';M.gate=1;M._l=1}}   // 檢查點已在最後進場上：不要再指向身後 6 公里的進場點
   else if(cp===0){P.pos.set(-10,DECK_Y+AC.GH,-55);setAtt(0,0.02);P.vel.set(0,0,0);P.thr=P.thrAct=0;P.gear=P.flaps=true;P.hook=false;P.onDeck=true;P.state='cat';P.bombs=4;if(window.__CV&&__CV.userData.jbd)__CV.userData.jbd[0].a=1;M.phase=0;M.t=0;M.expo=0;M.tgt=true;beam.visible=bunker.visible=ring.visible=true;
@@ -976,7 +977,7 @@ function spawn(cp){M.cp=cp;P.hold=null;P.man=null;P.manCd=0;P.ovr=null;P.bt=0;P.
   else if(cp===1){air(0,floorOf(7000)+lim*.6+10,-7000,0,225);P.bombs=4;M.phase=2;say('檢查點：峽谷入口。壓低高度！')}
   else if(cp===2){const u=19000,tx=dxc(u);air(xc(u),floorOf(u)+lim*.6+10,-u,Math.atan2(-tx,1),225);P.bombs=4;M.phase=2;say('檢查點：接近目標')}
   else if(cp===3){air(BOWL.x,1900,-BOWL.u+1500,Math.PI,220);P.bombs=0;M.phase=4;M.stage='sam';say('檢查點：目標已炸毀，準備閃避防空飛彈',5)}
-  else if(cp===5){air(xc(9500),2000,-9500,Math.PI,230);P.bombs=0;M.phase=4;M.stage='bandit';spawnEne(DF.eneN[M.diff]);say('檢查點：敵機從南方接近！',5)}
+  else if(cp===5){air(xc(9500),2000,-9500,Math.PI,230);P.bombs=0;M.phase=4;M.stage='bandit';spawnEne(DF.eneN[M.diff],M.diff?['mig29','su27']:'mig29');say('檢查點：敵機從南方接近！',5)}
   applyLoadout();
   if(P.vel.lengthSq()>1)P.aim.copy(P.vel).normalize();else P.aim.set(0,Math.sin(.17),-Math.cos(.17));view=(M.mode==='land'||cp===4)?1:0;if(view===1)say('座艙視角：讓黃球對齊綠線，按「視角」可切回機外',7);
   camDir.copy(P.aim);P.gearT=P.gear?1:0;syncBtns()}
@@ -1000,9 +1001,9 @@ function bankG(bankT,nT,o){const V=Math.max(30,P.vel.length()),rho=1.225*Math.ex
   const roll=rollTo(e,(o&&o.p)||1.75,o);
   if(o&&o.rf){if(nT>1){const gm=Math.asin(clamp(vh.y,-1,1)),nL=Math.min(nT,Math.max(1,levelN(bank,gm,0))),k=clamp(1-(Math.abs(e)-.1)/.45,0,1);nT=Math.max(nL,1+(nT-1)*k)}}   // 先滾再拉：坡度差 30° 以上只拉到保持高度所需，到位前才拉滿
   else if(nT>0)nT=Math.max(Math.min(nT,1),nT*Math.cos(Math.max(0,Math.abs(e)-.15)));   // FIX1：坡度沒到位前不拉滿，避免先拉後滾（轉彎爬升、想俯衝卻先抬頭）
-  let n=clamp(nT,-1.5,P.gear?1.4:AC.GMAX);
+  const nLo=(o&&o.nMin)||-1.5;let n=clamp(nT,nLo,P.gear?1.4:AC.GMAX);   // o.nMin：簡易搖桿前推到底的短時負 G（最多 -3G，見 controls）
   // G 建立時間（v0.18）：指令 G 有變化率上限——加 G 約 7 G/s（1→7.5G 約 0.9 秒，像真飛機的 G onset）、卸 G 約 12 G/s；自動拉起（o.fast）不受限
-  if(!(o&&o.fast)){if(!(P.nCT>=P.simT-.05))P.nC=clamp(P.g||1,-1.5,AC.GMAX);P.nCT=P.simT;P.nC+=clamp(n-P.nC,-12*DT,(P.nC<2?9:7)*DT);n=P.nC}else{P.nC=n;P.nCT=P.simT}
+  if(!(o&&o.fast)){if(!(P.nCT>=P.simT-.05))P.nC=clamp(P.g||1,Math.min(nLo,-1.5),AC.GMAX);P.nCT=P.simT;P.nC+=clamp(n-P.nC,-(nLo<-1.6?16:12)*DT,(P.nC<2?9:7)*DT);n=P.nC}else{P.nC=n;P.nCT=P.simT}
   const aCmd=(n*W/qS-clF)/AC.CLA;return{roll,aCmd,pitch:0,yaw:0,steer:0}}
 /* 轉向手感方案（簡易搖桿）：real＝真實（原本：推桿只拉到保持高度所需的 G）、arcade＝街機（推多少＝要多少 G，坡度跟著 G 走、仍不超過 82°，低速急轉自動後燃、對準附近敵機時微幅追蹤輔助）。
    nTop＝滿推要的 G（再受這個速度拉得出的 G×gk 限制）、ge＝推桿→G 曲線、bMax＝最大坡度、rp＝滾轉率（°/s，基本＋推桿量×增益）、abV＝低於這速度（m/s）急轉自動後燃、ast＝追蹤輔助強度 */
@@ -1041,7 +1042,45 @@ function manCtl(bank,gamma,ref){const m=P.man,rate=-P.w.z;m.acc+=rate*m.dir*DT;P
   return{roll:rollTo(0,1),aCmd:aOfN(AC.GMAX*.85),pitch:0,yaw:0,steer:0}}
 function aOfN(n){const V=Math.max(30,P.vel.length()),qS=Math.max(1,.5*1.225*Math.exp(-P.pos.y/8500)*V*V*AC.S);return(clamp(n,-1.5,AC.GMAX)*mass()*G0/qS-(P.flaps?AC.CLFLAP:0))/AC.CLA}
 function levelN(bank,gamma,gdot){const V=Math.max(30,P.vel.length());return(Math.cos(gamma)+V*gdot/G0)/Math.max(.2,Math.cos(bank))}
-function controls(){P.ezAct=false;
+const gyA0=()=>GY.on&&GY.ok&&!inp.ezOn;
+/* 著艦輔助（v0.20，簡易搖桿／體感；擬真難度不提供）：起落架＋尾鉤放下、在艦尾後方 6 公里內、航向對正 ±25° 時，
+   「上下」不再是航跡升降率，而是「相對下滑道（3.5°，對準助降鏡）的修正」（推到底約 ±3°）；「左右」是相對中線的修正（約 ±11°）。
+   放開搖桿＝自動維持下滑道與中線（不是改平飛），並自動開「自動油門」維持進場攻角（約 8°）。大力拉／推或左右推到底、或油門推到底＝暫停輔助（重飛），搖桿回中再恢復 */
+const LA={on:(()=>{try{return localStorage.getItem('skyhawk_la')!=='0'}catch(e){return true}})()};
+function lsoZone(V){if(!LA.on||M.diff>=2||!P.gear||!P.hook||P.onDeck||P.state!=='fly'||V<40)return null;
+  const ax=LP0.x+LD.x*AIMS,az=LP0.z+LD.z*AIMS,rx=P.pos.x-ax,rz=P.pos.z-az,along=-(rx*LD.x+rz*LD.z),lat=rx*LD.z-rz*LD.x;
+  const eng=!!P.lsoA;if(!eng&&along<300)return null;if(along<-150||along>6200||Math.abs(lat)>Math.max(0,along)*(eng?.3:.15)+(eng?200:80)||P.pos.y>750)return null;   // 橫向偏太多（修不回來）就不接手；已接手的放寬（修不回來會在最後 500 公尺叫重飛）
+  const hdg=Math.atan2(vh.x,-vh.z),LDh=Math.atan2(LD.x,-LD.z),he=wrapPi(hdg-LDh);if(Math.abs(he)>(eng?.7:.44))return null;
+  return{along,lat,hdg,LDh,hE:P.pos.y-DECK_Y-AC.GH-Math.tan(.061)*Math.max(0,along)}}   // 過了落點仍照 3.5° 下沉（航母著艦不拉平）
+function lsoCtl(Z,EX,EY,on,bank,gamma,gR,V){const A=P.lsoA;
+  if(on&&(Math.abs(EY)>.75||Math.abs(EX)>.85)){A.sus=(A.sus||0)+DT;if(A.sus>.3)A.off=1}else A.sus=0;
+  if(A.off&&(!on||(Math.abs(EY)<.15&&Math.abs(EX)<.15)))A.off=0;
+  if(!A.wo&&Z.along<500&&Z.along>0&&(Math.abs(Z.lat)>14+Z.along*.03||Z.hE<-9||Z.hE>25)){A.wo=1;P.at=false;P.thr=1;syncBtns();say('重飛！偏離下滑道／中線太多：加滿油門爬升，繞回艦尾再進場',5)}   // 像 LSO 打重飛燈：最後 500 公尺還偏很多就不硬落（避免撞艦尾、側傾觸艦）
+  if(A.wo){P.lsoOn=false;if(on&&(Math.abs(EY)>.3||Math.abs(EX)>.3))return null;return bankG(0,levelN(bank,gamma,clamp((.1-gamma)*1.2,-.1,.1)),{p:.9})}
+  if(A.off||(!P.at&&P.thr>.95))return null;
+  A.k=Math.min(1,(A.k||0)+DT/1.5);const au=.35+.65*sstep(150,800,Z.along),ey=on?clamp(EY/.75,-1,1)*au:0,ex=on?clamp(EX/.85,-1,1)*au:0;   // 最後 800 公尺搖桿修正量漸減（手抖不會把飛機推離下滑道）
+  const gd0=-.061-clamp(Z.hE/(Math.max(V,50)*5),-.045,.045)-ey*.052;            // 下滑道：偏高就多降一點（約 5 秒修回），推／拉＝在下滑道上下 ±3°
+  const gd=clamp((gd0-gamma)*1.6,-.12,.12)*(.3+.7*A.k)-gR*.2;
+  const iM=.2+.15*sstep(800,2500,Z.along),hd=Z.LDh+clamp(Z.lat/(V*5+Math.max(0,Z.along)*.03),-iM,iM)+ex*.2,bL=.14+.3*sstep(150,1200,Z.along);   // 中線：偏多少就斜切回來；越靠近甲板坡度越小（觸艦時不會側傾）
+  const bT=clamp(wrapPi(hd-Z.hdg)*V/(G0*1.8),-bL,bL);P.lsoOn=true;P.lsoHE=Z.hE;
+  return bankG(bT,clamp(levelN(bank,gamma,gd),.3,1.7),{p:.7})}
+/* 自動防撞地的逃脫路線：幾種「坡度＋G」的候選，各自用簡單質點模型往前推 3.5 秒（前 0.3 秒當作還在滾轉／建立 G），
+   要求全程離地 ≥12 公尺；能避開的裡面挑「爬升最少＋坡度小」的；第一關峽谷段（雷達鎖定區）爬過上限 85% 另外扣分。都避不開就挑離地最多的。
+   每 0.1 秒重算一次，上一個選擇還安全且差不多好就沿用（不會左右抖） */
+const _gc=[[0,AC.GMAX],[0,4],[.6,AC.GMAX],[-.6,AC.GMAX],[1.05,AC.GMAX],[-1.05,AC.GMAX],[1.3,AC.GMAX],[-1.3,AC.GMAX],[.6,4.5],[-.6,4.5]],_gqP=V3(),_gqV=V3(),_gqU=V3(),_gqR=V3(),_gqW=V3();
+function gcasPlan(V,bank){if(P.gcasB&&P.simT<P.gcasRT)return P.gcasB;P.gcasRT=P.simT+.1;
+  const canyon=M.mode==='mission'&&M.phase===2&&-P.pos.z<19300,cap=canyon?floorOf(-P.pos.z)+LIM[M.diff]*.85:1e9;let best=null,safest=null,pvNow=null;
+  for(const [b,nc] of _gc){const n=Math.min(nc,gAvail(V)*.95);_gqP.copy(P.pos);_gqV.copy(P.vel);let clr=1e9,peak=P.pos.y,top=0;const h=.25;
+    const tE=Math.max(3.5,P.gcasH||0)+.01;for(let t=h;t<=tE;t+=h){const vv=_gqV.length(),vd=_gqU.copy(_gqV).multiplyScalar(1/vv);
+      if(t>.3){const u0=_gqW.set(0,1,0).addScaledVector(vd,-vd.y);if(u0.lengthSq()<1e-6)u0.set(0,1,0);u0.normalize();_gqR.crossVectors(vd,u0);
+        const ax=n*G0*(u0.x*Math.cos(b)+_gqR.x*Math.sin(b)),ay=n*G0*(u0.y*Math.cos(b)+_gqR.y*Math.sin(b))-G0,az=n*G0*(u0.z*Math.cos(b)+_gqR.z*Math.sin(b));_gqV.x+=ax*h;_gqV.y+=ay*h;_gqV.z+=az*h;_gqV.setLength(vv)}
+      _gqP.addScaledVector(_gqV,h);const c=_gqP.y-Math.max(0,groundH(_gqP.x,_gqP.z))-12;clr=Math.min(clr,c);peak=Math.max(peak,_gqP.y);if(_gqP.y>cap)top+=h}
+    const sc=(peak-P.pos.y)+60*Math.abs(b)+40*Math.abs(wrapPi(b-bank))+300*top+(nc<AC.GMAX?20:0),r={b,n,clr,sc};
+    if(clr>=0&&(!best||sc<best.sc))best=r;if(!safest||clr>safest.clr)safest=r;if(P.gcasB&&P.gcasB.b===b&&P.gcasB.nc===nc){r.prev=1;pvNow=r}r.nc=nc}
+  let e=best||safest;if(pvNow&&pvNow.clr>=0&&best&&pvNow.sc<=best.sc+50)e=pvNow;
+  P.gcasB=e;return e}
+function lsoEnd(){if(P.lsoA){if(!P.lsoA.at0)P.at=false;P.lsoA=null;syncBtns()}}   // 離開進場區（觸艦、重飛、轉出去）：自動油門回到玩家原本的設定
+function controls(){P.ezAct=false;P.lsoOn=false;if(P.lsoA&&(P.onDeck||P.state!=='fly'||!P.gear||!P.hook||inp.stickOn))lsoEnd();
   const k=inp.keys,kp=(k.KeyS?1:0)-(k.KeyW?1:0),kr=(k.KeyD?1:0)-(k.KeyA?1:0);
   const V=P.vel.length(),ref=V>30?vh:fwd,bank=Math.atan2(-right.y,up.y),gamma=Math.asin(clamp(ref.y,-1,1));
   if(P.ovr)return bankG(P.ovr.bank,P.ovr.n);
@@ -1051,28 +1090,46 @@ function controls(){P.ezAct=false;
     return{pitch:P.ps,roll:rc,yaw:0,steer:inp.stickOn?inp.sx:kr}}
   P.ps=0;
   // 自動防撞地（輔助操控才有；手動搖桿不介入；困難模式沒有）：預測 4 秒內會撞地就改平拉起
-  if(M.diff<2&&!P.onDeck&&!P.gear&&V>60){let hit=false;for(let t=.5;t<=2.01;t+=.5){const x=P.pos.x+P.vel.x*t,y=P.pos.y+P.vel.y*t,z=P.pos.z+P.vel.z*t;if(y-Math.max(0,groundH(x,z))<8+3*t){hit=true;break}}
-    if(hit||(P.gcas&&P.vel.y<5)){if(!P.gcas)say('自動拉起',1.5);P.gcas=true;P.hold=null;P.man=null;return bankG(0,Math.abs(bank)>1.3?1:AC.GMAX,{p:2.6,fast:1})}
-    P.gcas=false}
+  // v0.20：原本一觸發就「改平＋7.5G 拉到爬升為止」——峽谷彎道裡飛向山壁時，等於對著山壁一路往上爬（實測爬到離谷底 1,000 公尺以上），
+  // 第一關就被雷達鎖定、防空飛彈打下來。改成：(1) 預測沿「目前的彎曲航跡」（含轉彎加速度），玩家正在轉彎順著峽谷飛就不會誤觸發；
+  // (2) 觸發後挑一條「避得開、爬最少」的逃脫路線（改平拉起，或帶坡度沿峽谷轉開），第一關峽谷段爬過雷達上限的路線要加重扣分；
+  // (3) 一離開危險就把爬升收回平飛（離地安全高度即停），不會一路爬上去
+  if(M.diff<2&&!P.onDeck&&!P.gear&&V>60){const ax=clamp(P.acc.x,-40,40),ay=clamp(P.acc.y,-40,40),az=clamp(P.acc.z,-40,40);let hit=false;
+    const agl0=P.pos.y-Math.max(0,groundH(P.pos.x,P.pos.z)),tH=Math.min(5,2.5+clamp(-P.vel.y/60,0,1)+(agl0>250?2:0));P.gcasH=tH;   /* 離地高（>250 m）時看遠一點：高速衝向比自己高的山壁，2 秒才反應來不及 */
+    for(let t=.5;t<=tH+.01;t+=.5){const k=.5*Math.min(t,1.5)**2*.8+(t>1.5?1.2*(t-1.5)*.8:0),x=P.pos.x+P.vel.x*t+ax*k,y=P.pos.y+P.vel.y*t+ay*k,z=P.pos.z+P.vel.z*t+az*k;if(y-Math.max(0,groundH(x,z))<8+3*t){hit=true;break}}
+    if(hit||P.gcas){if(!P.gcas){if(!(P.simT-(P.gcasSay||-9)<4)||P.simT<(P.gcasSay||0)){say('自動拉起',1.5);P.gcasSay=P.simT}P.gcasN=(P.gcasN||0)+1;P.gcasB=null;P.gcasT=0}P.gcas=true;P.hold=null;P.man=null;P.gcasT+=DT;
+      if(!hit&&gamma>-.03){const pull=(inp.ezOn&&inp.ey<-.3)||(gyA0()&&GY.pitch>.3);   // 已脫離危險：爬升角收回平飛再交還
+        if(gamma<.06||pull||P.gcasT>6){P.gcas=false;P.gcasB=null}else return bankG(0,Math.max(.3,levelN(bank,gamma,-gamma*1.2)),{p:2.6})}
+      if(P.gcas){const e=gcasPlan(V,bank);return bankG(e.b,e.n,{p:2.6,fast:1})}}
+    else P.gcas=false}
   if(P.man){if(inp.stickOn||P.onDeck||P.state!=='fly')P.man=null;else{const c=manCtl(bank,gamma,ref);if(c)return c}}
   if(P.onDeck){const hE=wrapPi(Math.atan2(P.aim.x,-P.aim.z)-Math.atan2(ref.x,-ref.z));return{pitch:clamp((Math.asin(clamp(P.aim.y,-1,1))-P.th)*4,0,1),roll:0,yaw:0,steer:clamp(hE*2,-1,1)}}
   // 體感操控：傾斜手機＝坡度，前後傾＝拉起／推下
   // 簡易搖桿：左右＝坡度（最大 80°，自動拉桿保持高度）、上下＝航跡往上／往下（每秒最多約 30°）；放開＝自動改平
   // 體感（v0.18）：手機傾斜當成「一直按著的簡易搖桿」走同一套控制律（左右＝坡度／G、前後＝航跡升降率），所以有同樣的爬升角上限、先滾再拉、G 建立時間，不會一路拉到垂直再翻過去
   const gyA=GY.on&&GY.ok&&!inp.ezOn;if(!gyA)P.gyF=null;
+  // 著艦輔助（簡易搖桿或體感；按著或放開都算）
+  {const Z=(inp.ezOn||gyA||CT.ez||GY.on)?lsoZone(V):null;if(Z){const gR=(P.lastG!==undefined)?(gamma-P.lastG)*120:0;
+      if(!P.lsoA){P.lsoA={at0:P.at};if(!P.at){P.at=true;syncBtns()}say('著艦輔助：放開搖桿就會沿下滑道、對正中線，自動油門；拉桿到底或油門推滿＝重飛',5)}
+      let EX=0,EY=0;const on=inp.ezOn||gyA;if(inp.ezOn){EX=inp.ex;EY=inp.ey}else if(gyA){if(!P.gyF)P.gyF={x:0,y:0};const kf=Math.min(1,DT/.12);P.gyF.x+=(clamp(GY.roll,-1,1)-P.gyF.x)*kf;P.gyF.y+=(clamp(-GY.pitch,-1,1)-P.gyF.y)*kf;EX=P.gyF.x;EY=P.gyF.y}
+      const c=lsoCtl(Z,EX,EY,on,bank,gamma,gR,V);if(c){P.lastG=gamma;P.aim.copy(ref);if(on){P.ezAct=true;P.ezX=0}return c}}else lsoEnd()}
   if(inp.ezOn||gyA||(P.ezRel&&CT.ez&&!GY.on)){P.aim.copy(ref);const gR=(P.lastG!==undefined)?(gamma-P.lastG)*120:0;P.lastG=gamma;
     if(inp.ezOn||gyA){let EX=inp.ex,EY=inp.ey;
       if(gyA){if(!P.gyF)P.gyF={x:0,y:0};const kf=Math.min(1,DT/.12);P.gyF.x+=(clamp(GY.roll,-1,1)-P.gyF.x)*kf;P.gyF.y+=(clamp(-GY.pitch,-1,1)-P.gyF.y)*kf;EX=P.gyF.x;EY=P.gyF.y}
       P.ezAct=true;P.ezX=EX;/* 推多少＝坡度多大（0.2≈19°、0.4≈34°、0.7≈55°、滿推≈75°），再受「這個速度拉得出的 G」限制；滾轉率 0.2≈70°/s、滿推≈120°/s */
       const ax=Math.abs(EX),ey=EY,ar=TF.nTop>0,bF=ar?TF.bMax:ey<-.7?1.4:1.31;let bM=Math.min(bF,ar?Math.acos(1/Math.max(1.05,gAvail(V)*TF.gk)):bankCap(V));     // 真實：推 0.2≈29°、0.5≈50°、0.7≈61°、滿推 75°；同時往上拉 >0.7 才到 80°
-      if(ey>.08)bM=Math.min(bM,bF-(bF-.52)*sstep(.08,.35,ey));             // 往下推：先把坡度收到 30° 左右再俯衝，不會在大坡度推負 G 翻出去
+      {const eyD=ey-.8*ax;if(eyD>.08)bM=Math.min(bM,bF-(bF-.52)*sstep(.08,.35,eyD))}   // 往下推：先把坡度收到 30° 左右再俯衝，不會在大坡度推負 G 翻出去（v0.20：左右推得比往下多＝要轉彎（例如峽谷彎道邊轉邊下降），不再把坡度鎖在 30°；大坡度本來就不給負 G）
       // 街機：推多少＝要多少 G（0.2≈1.1G/30°、0.5≈3G/70°、滿推≈6.5G/81°；再加水平轉彎輔助，滿推 180° 約 9 秒），坡度＝這個 G 水平轉彎需要的坡度；小推桿跟真實差不多，好微調
       let bT=Math.sign(EX)*Math.min(bM,ar?Math.max(bF*.75*Math.pow(ax,.6)*Math.min(1,ax/.25),Math.acos(1/(1+(TF.nTop-1)*Math.pow(ax,TF.ge)))):bF*Math.pow(ax,.6));
       if(ar&&ey<.08)bT=clamp(trackBank(bT,ax,Math.sign(EX)),-bM,bM);let gd=-ey*(gyA?.35:.55);
       // 航跡角上限（v0.18）：爬升最多約 65°（速度低就更小，不會拉到失速、垂直）、俯衝最多約 -65°；超過就慢慢把機頭帶回來——不再一路拉過頂、在垂直時坡度失去意義而突然翻 180°
       {const gU=.35+.78*sstep(85,170,V),gL=-1.13;if(gd>0)gd*=clamp((gU-gamma)/.3,0,1);if(gamma>gU)gd=Math.min(gd,(gU-gamma)*.7);if(gd<0)gd*=clamp((gamma-gL)/.3,0,1);if(gamma<gL)gd=Math.max(gd,(gL-gamma)*.7)}
-      let nT=levelN(bank,gamma,gd-gR*.15+(Math.abs(ey)<.05?-gR*.2:0));nT=Math.max(nT,-1+1.4*sstep(.55,.8,Math.abs(bank)));   // 坡度 30° 以內最多 -1G；大於 45° 不推負 G（不會從側面翻出去）
-      return bankG(bT,nT,{p:(TF.rp[0]+TF.rp[1]*Math.max(ax,Math.abs(ey)*.5))/57.3,rf:1})}
+      // 俯衝（v0.20）：原本前推最多 -1G，225 m/s 時航跡每秒只下壓約 5°，翻過山脊來不及對準目標。
+      // 前推越多允許的負 G 越大：推 0.45 以下照舊 -1G，推到底 -3G（F/A-18 的負 G 限制）；連續推超過 3 秒後慢慢收回 -2G（短時負 G）。
+      // 坡度 30° 以內才給負 G、45° 以上不推負 G（同原本），不滾轉翻背，所以不會從側面翻出去
+      const kN=sstep(.45,.95,ey);P.negT=kN>.5&&P.g<-1.3?(P.negT||0)+DT:Math.max(0,(P.negT||0)-DT*2);const nNeg=-1-2*kN*(1-.5*sstep(3,4.5,P.negT));
+      let nT=levelN(bank,gamma,gd-gR*.15+(Math.abs(ey)<.05?-gR*.2:0));nT=Math.max(nT,nNeg+(.4-nNeg)*sstep(.55,.8,Math.abs(bank)));   // 坡度 30° 以內最多 nNeg；大於 45° 不推負 G
+      return bankG(bT,nT,{p:(TF.rp[0]+TF.rp[1]*Math.max(ax,Math.abs(ey)*.5))/57.3,rf:1,nMin:Math.min(-1.5,nNeg)})}
     const gd=clamp(-gamma*.6,-.14,.14)-gR*.3;return bankG(0,Math.max(-.5+.9*sstep(.55,.8,Math.abs(bank)),levelN(bank,gamma,gd)),{p:.96,rf:1})}   // 放開：約 55°/s 平順改平（75° 約 1.7 秒）
   // 放開搖桿後：維持當下坡度、保持高度，直到再碰畫面
   if(P.hold){P.aim.copy(ref);const bT=P.hold.bank;return bankG(bT,levelN(bank,gamma,-gamma*.6))}
@@ -1209,7 +1266,7 @@ function updWorld(dt){
     if(M.phase===4&&M.stage==='rtb'&&P.pos.z>-6000&&!M._l){M._l=1;say('接近航母：放起落架、襟翼、尾鉤，繞到艦尾（南邊）進場；按「視角」用座艙看',9)}}
   updCombat(dt);updGA(dt);updTarget();
   if(M.mode==='combat'&&P.state==='fly'){M.t+=dt;M.waveT-=dt;M.supT-=dt;M.reviveT+=dt;M.samT-=dt;const live=CB.ene.filter(e=>e.alive).length,want=[2,3,4][M.diff];
-    if(live<want&&M.waveT<=0){spawnEne(1);M.waveT=[14,10,8][M.diff];say('敵機接近！',2)}
+    if(live<want&&M.waveT<=0){const su=M.wN>=1&&(M.wN-1)%[4,3,2][M.diff]===0;M.wN++;spawnEne(1,su?'su27':'mig29');M.waveT=[14,10,8][M.diff];say(su?'Su-27 接近！會在遠距離先射中程飛彈':'敵機接近！',2.5)}
     if(M.supT<=0){M.supT=60;P.bombs=4;applyLoadout();syncBtns();say('空中補給完成：飛彈、炸彈、干擾彈補滿',3)}
     if(M.reviveT>120){M.reviveT=0;let n=0;for(const u of GU)if(!guAlive(u)){reviveGU(u);n++}if(n)say('敵方地面部隊增援',2.5)}
     if(M.samT<=0){M.samT=[30,22,16][M.diff];const st=SAMS.filter(q=>q.alive&&q.pos.distanceTo(P.pos)<11000&&losClear(q.pos,P.pos))[0];if(st){launch({pos:st.pos.clone(),vel:V3(0,70,0).addScaledVector(_d.copy(P.pos).sub(st.pos).normalize(),80),tgt:TP,orig:TP,owner:'sam',site:st,vsP:true,seeker:'radar',N:3,maxG:22,boost:190,burn:5,drag:2.4e-5,life:24,fuze:14});say('防空飛彈來襲！放干擾彈、急轉',3)}}}
@@ -1219,7 +1276,7 @@ function updWorld(dt){
         launch({pos:st.pos.clone(),vel:V3(0,70,0).addScaledVector(_d.copy(P.pos).sub(st.pos).normalize(),80),tgt:TP,orig:TP,owner:'sam',site:st,vsP:true,seeker:'radar',N:3,maxG:22,boost:190,burn:5,drag:2.4e-5,life:24,fuze:14});M.samL++;
         say('飛彈來襲！按「干擾彈」，急轉、貼地躲到山後',3)}
       if(M.samL>=n&&!CB.msl.some(m=>m.alive&&m.owner==='sam')&&M.stT>8+n*3+1.5){M.stage='transit';M.stT=0;say('躲過防空飛彈！往南飛出山區',5)}}
-    else if(M.stage==='transit'){if(-P.pos.z<13000||M.stT>25){/* v0.19：原本 9.5 公里／50 秒，出山區後有將近一分鐘沒事做 */M.stage='bandit';M.stT=0;M.cp=5;spawnEne(DF.eneN[M.diff]);say('敵機從南方接近！鎖定後按「飛彈」，近距離用機砲',7)}}
+    else if(M.stage==='transit'){if(-P.pos.z<13000||M.stT>25){/* v0.19：原本 9.5 公里／50 秒，出山區後有將近一分鐘沒事做 */M.stage='bandit';M.stT=0;M.cp=5;spawnEne(DF.eneN[M.diff],M.diff?['mig29','su27']:'mig29');say(M.diff?'敵機從南方接近：MiG-29 與 Su-27！Su-27 會在 6–9 公里先射中程飛彈':'敵機從南方接近！鎖定後按「飛彈」，近距離用機砲',7)}}
     else if(M.stage==='bandit'){if(!CB.ene.some(e=>e.alive)){M.stage='rtb';M.cp=4;M._l=1;say('擊落所有敵機！回航著艦：跟著藍色「進場點」繞到艦尾，再放起落架、襟翼、尾鉤',8)}   /* 原本緊接著被「接近航母…」蓋掉，玩家看不到任務完成 */
       else if(M.stT>180){for(const e of CB.ene)if(e.alive){e.alive=false;scene.remove(e.mesh)}M.stage='rtb';M._l=1;say('敵機撤退了，回航著艦：跟著藍色「進場點」繞到艦尾，再放起落架、襟翼、尾鉤',8)}}}
   if(M.resT>0){M.resT-=dt;if(M.resT<=0)showResult(true)}
@@ -1227,10 +1284,14 @@ function updWorld(dt){
 }
 
 /* ---------- 戰鬥：飛彈、干擾彈、防空陣地、敵機 ---------- */
-const CB={msl:[],flr:[],ene:[],tr:[],kills:0,dodged:0,res:[],shot:0,hit:0};
+const CB={msl:[],flr:[],ene:[],tr:[],kills:0,dodged:0,res:[],shot:0,hit:0,kt:{},kb:0};
+// 分數：擊落 MiG-29 300、Su-27 450（kb＝機型加分）、地面目標 100、躲過飛彈 50
+const cbScore=()=>CB.kills*300+CB.kb+GA.kills*100+CB.dodged*50;
+const killTxt=()=>CB.kills+' 架'+(CB.kills?'（'+Object.keys(ENE).filter(k=>CB.kt[k]).map(k=>ENE[k].name+' '+CB.kt[k]).join('、')+'）':'');
 // 玩家飛彈結果（HUD 用）：p＝位置、s＝文字、ok＝命中；顯示 2 秒
 function mslRes(p,s,ok){CB.res.push({p:p.clone(),s,ok,t:CB.clk});if(CB.res.length>6)CB.res.shift();if(ok)CB.hit++}
-const EMS={minD:[1600,1400,1200],lkT:[2.5,1.8,1]};   // 敵機飛彈：最近發射距離（公尺）、發射前鎖定時間（秒）；依難度
+const EMS={minD:[1600,1400,1200],lkT:[2.5,1.8,1],   // 敵機飛彈：最近發射距離（公尺）、發射前鎖定時間（秒）；依難度
+  suMR:[1,1,2],suIR:[0,0,0],mrD:[6000,9000],lkR:[4.5,3.5,2.8],notch:[1,1.5,2.2]};   // Su-27：中程（雷達導引）／短程（紅外線）飛彈數、中程發射距離、中程鎖定時間、玩家側飛（飛彈在 3／9 點）幾秒能甩掉中程飛彈
 // 武器量：0 標準（照真實掛載）1 加量（預設）2 無限 3 狂暴（無限＋所有武器最強）
 const WPN={mode:(()=>{try{const v=localStorage.getItem('skyhawk_wpn');return v==null?1:+v}catch(e){return 1}})(),
   get inf(){return this.mode>=2},get rage(){return this.mode===3}};
@@ -1441,8 +1502,8 @@ const _r=V3(),_vr=V3(),_om=V3(),_a=V3(),_u=V3(),_vh=V3(),_p0=V3(),_d=V3(),_ax=V3
 function segDist(a,b,p){_sa.copy(b).sub(a);const l2=_sa.lengthSq();const t=l2>0?clamp(_su.copy(p).sub(a).dot(_sa)/l2,0,1):0;return _su.copy(a).addScaledVector(_sa,t).distanceTo(p)}
 function detonate(m,hit){if(!m.alive)return;m.alive=false;scene.remove(m.mesh);if(m.tr){trailPt(m.tr,m.pos,m.tr.hw);m.tr.on=false}boom(m.pos,hit?14:8);
   if(m.owner===TP){const T=m.orig;if(hit&&hit.hp!==undefined)mslRes(hit.pos,'擊落！',true);else mslRes(T&&T.pos?T.pos:m.pos,T&&T.alive===false?'目標已被擊落':'未命中・'+(m.decoyed?'被干擾彈騙走':m.lost?'目標甩開了':'沒追上'),false)}
-  if(hit===TP){P.hp-=DF.mdmg[M.diff];say('被飛彈擊中！',1.5);beep(120,.25);if(P.hp<=0)die('被飛彈擊落')}
-  else if(hit&&hit.hp!==undefined){hit.hp-=100;if(hit.hp<=0&&hit.alive)eneDie(hit)}
+  if(hit===TP){P.hp-=DF.mdmg[M.diff];const on=m.owner&&m.owner.ty?ENE[m.owner.ty].name+(m.sarh?' 中程':' '):'';CB.mh=CB.mh||{};const hk=m.owner&&m.owner.ty?m.owner.ty+(m.sarh?'MR':'IR'):'sam';CB.mh[hk]=(CB.mh[hk]||0)+1;say('被'+on+'飛彈擊中！',1.5);beep(120,.25);if(P.hp<=0)die('被'+on+'飛彈擊落')}
+  else if(hit&&hit.hp!==undefined){hit.hp-=m.seeker==='active'?130:100;/* 中程飛彈彈頭較大：一發打下 Su-27（血量 125）；短程飛彈要再補機砲或第二發 */if(hit.hp<=0&&hit.alive)eneDie(hit);else if(hit.alive&&hit.ty==='su27')say('Su-27 受損！再補一發或用機砲',1.8)}
   else if(m.orig===TP&&TP.alive){CB.dodged++;if(M.mode==='mission')say(m.decoyed?'飛彈被干擾彈騙走了！':'躲過飛彈！',1.6,1)}}
 function stepMsl(m,h){m.t+=h;const sp=m.vel.length();_vh.copy(m.vel).multiplyScalar(1/sp);const T=m.tgt;
   m.chk-=h;if(m.chk<=0&&T&&!m.lost){m.chk=.1;_r.copy(T.pos).sub(m.pos);const dT=_r.length();_u.copy(_r).multiplyScalar(1/dT);
@@ -1450,6 +1511,8 @@ function stepMsl(m,h){m.t+=h;const sp=m.vel.length();_vh.copy(m.vel).multiplySca
     if(T===m.orig)for(const f of CB.flr){const fk=f.owner===TP?f:f.sid;if(f.age>2.6||f.owner!==m.orig||(m.ts||(m.ts=new Set())).has(fk))continue;_a.copy(f.pos).sub(m.pos);const df=_a.length();if(df>dT*1.4||df<1||df>FLR_R)continue;_a.multiplyScalar(1/df);if(_a.dot(_u)<Math.cos(.35))continue;
       m.ts.add(fk);let p=m.vsP?(WPN.rage?.8:DF.decoy[M.diff]):DF.eneDecoy[M.diff];if(m.seeker!=='ir'){p*=.6;const beam=Math.abs(T.vel.dot(_u))/(T.vel.length()+1);if(beam<.3)p*=2.2}
       if(Math.random()<p){m.tgt=f;m.decoyed=true;m.decT=CB.clk;if(m.vsP){CB.decoyN=(CB.decoyN||0)+1;say('干擾成功！飛彈被騙走',1.8);beep(1800,.08)}break}}
+    if(m.notch&&m.tgt===m.orig&&T.isP){const bm=Math.abs(T.vel.dot(_u))/(T.vel.length()+1);m.nt=bm<.3&&dT>1200?(m.nt||0)+.1:Math.max(0,(m.nt||0)-.05);
+      if(m.nt>=m.notch||(m.sarh&&m.owner.alive===false)){m.lost=true;m.notched=m.nt>=m.notch;say(m.notched?'側飛甩開中程飛彈！':'發射的敵機被擊落，中程飛彈失去導引',1.8,1)}}
     if(m.seeker==='radar'&&m.site&&m.tgt===m.orig){if(!losClear(m.site.pos,T.pos)){m.mask+=.1;if(m.mask>1.5)m.lost=true}else m.mask=0}}
   const Tg=m.tgt;
   if(Tg&&!m.lost&&Tg.alive!==false&&!(m.mask>0)){_r.copy(Tg.pos).sub(m.pos);const R2=Math.max(1,_r.lengthSq());_vr.copy(Tg.vel).sub(m.vel);_om.copy(_r).cross(_vr).multiplyScalar(1/R2);_u.copy(_r).normalize();
@@ -1466,43 +1529,51 @@ function stepMsl(m,h){m.t+=h;const sp=m.vel.length();_vh.copy(m.vel).multiplySca
   m.mesh.position.copy(m.vp);t1.copy(m.vp).add(m.vel);m.mesh.lookAt(t1);m.plume.visible=lit&&m.t<m.burn;m.plume.scale.set(.9+.2*Math.random(),.9+.2*Math.random(),.8+.45*Math.random());
   const tw=!lit?0:m.t<m.burn?1:Math.max(0,1-(m.t-m.burn)/1.5)*.6;m.tr.hw=tw;m.tr.k+=h;if(m.tr.k>.035&&tw>0){m.tr.k=0;trailPt(m.tr,m.vp,tw)}}
 const eneMat=new THREE.MeshLambertMaterial({color:0x6a5a50});
-// 敵機：MiG-29 假想敵塗裝（另一個模型檔）；還沒載入時借 F/A-18 換色
-let ENE_SRC=null,ENE_NEAR=null;{const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);const ok=g=>{const L=g.scene.getObjectByName('LOD1');if(!L)return;L.visible=true;L.traverse(o=>{if(o.isMesh){o.castShadow=true;o.material=(window.__SKM||(m=>m))(o.material)}});ENE_SRC=L;
-    // 近距細模型：LOD0（約 1.5 萬三角形）收起落架（輪架與艙門不畫＝收起後的乾淨機腹）、不動的舵面全部依材質合併成少數網格；450 公尺內用它，外面用 LOD1
+// 敵機兩種：MiG-29、Su-27（各自一個模型檔，假想敵塗裝）；還沒載入時先借另一架敵機（都沒有就借 F/A-18 換色）
+// ENE[型號]：src＝LOD1（遠）、near＝LOD0 合併版（450 m 內）、nz＝噴口位置與口徑（從模型噴口頂點算）
+const ENE={mig29:{src:null,near:null,nz:null,name:'MiG-29',sh:'MIG'},su27:{src:null,near:null,nz:null,name:'Su-27',sh:'SU'}};
+// 機型差異：hp 血量、pts 分數、v0 進場速度、tm 轉彎（最大過載、滾轉率）倍率、th 推力倍率、gun 機砲（射程、誤差倍率、每 3 秒開火時間）
+const ETY={mig29:{hp:100,pts:300,v0:235,tm:1,th:1,gun:[1000,1,1.2]},su27:{hp:125,pts:450,v0:250,tm:.86,th:1.08,gun:[800,1.5,.7]}};
+function loadEne(ty,b64,url){const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);const D=ENE[ty];
+  const ok=g=>{const L=g.scene.getObjectByName('LOD1');if(!L)return;L.visible=true;L.traverse(o=>{if(o.isMesh){o.castShadow=true;o.material=(window.__SKM||(m=>m))(o.material)}});D.src=L;
+    // 近距細模型：LOD0（約 1.3 萬三角形）收起落架（輪架與艙門不畫＝收起後的乾淨機腹）、不動的舵面全部依材質合併成少數網格；450 公尺內用它，外面用 LOD1
     {const L0=g.scene.getObjectByName('LOD0');if(L0){g.scene.updateMatrixWorld(true);const c=L0.clone(true);c.traverse(o=>{if(/^(gear|door|hook|bomb)/.test(o.name))o.visible=false});
       const n=mergeDeep(c);n.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=false;o.material=(window.__SKM||(m=>m))(o.material)}});
-      new THREE.Matrix4().copy(L.matrixWorld).invert().multiply(L0.matrixWorld).decompose(n.position,n.quaternion,n.scale);ENE_NEAR=n}}
-    for(const e of CB.ene){if(!e.mesh||e.mesh.userData.mig)continue;const n=eneMesh();n.position.copy(e.mesh.position);n.quaternion.copy(e.mesh.quaternion);scene.remove(e.mesh);e.mesh=n}};
-  if(window.__GLB2){const bin=atob(window.__GLB2),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn('mig',e))}else L2.load('assets/mig29.glb',ok,undefined,e=>console.warn('mig',e))}
-function eneMesh(){let m;const L1=MODEL&&MODEL.getObjectByName('LOD1');
-  if(ENE_SRC){m=ENE_SRC.clone(true);m.userData.mig=true;if(ENE_NEAR){const far=new THREE.Group(),lod=new THREE.LOD();for(const c of [...m.children])far.add(c);lod.addLevel(ENE_NEAR.clone(),0);lod.addLevel(far,450);m.add(lod);m.userData.lod=lod}eneFx(m)}
+      new THREE.Matrix4().copy(L.matrixWorld).invert().multiply(L0.matrixWorld).decompose(n.position,n.quaternion,n.scale);D.near=n}}
+    // 先前借用別的模型的敵機，換成正確機型
+    for(const e of CB.ene){if(!e.mesh||e.mesh.userData.ty===e.ty||!ENE[e.ty].src)continue;const n=eneMesh(e.ty);n.position.copy(e.mesh.position);n.quaternion.copy(e.mesh.quaternion);n.visible=e.mesh.visible;scene.remove(e.mesh);e.mesh=n}};
+  if(b64){const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn(ty,e))}else L2.load(url,ok,undefined,e=>console.warn(ty,e))}
+loadEne('mig29',window.__GLB2,'assets/mig29.glb');loadEne('su27',window.__GLB3,'assets/su27.glb');
+function eneMesh(ty='mig29'){let m;const L1=MODEL&&MODEL.getObjectByName('LOD1'),k=ENE[ty].src?ty:ENE.mig29.src?'mig29':ENE.su27.src?'su27':null;
+  if(k){const D=ENE[k];m=D.src.clone(true);m.userData.mig=true;m.userData.ty=k;if(D.near){const far=new THREE.Group(),lod=new THREE.LOD();for(const c of [...m.children])far.add(c);lod.addLevel(D.near.clone(),0);lod.addLevel(far,450);m.add(lod);m.userData.lod=lod}eneFx(m,D)}
   else if(L1){m=L1.clone(true);m.visible=true;m.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.color=new THREE.Color(.66,.52,.44)}})}
   else{m=new THREE.Mesh(new THREE.ConeGeometry(2,15,6),eneMat);m.geometry.rotateX(-Math.PI/2)}scene.add(m);return m}
-// 敵機細節：雙發後燃器火焰（位置從模型噴口頂點算出）、翼尖航行燈
-let ENE_NZ=null;
-function eneFx(m){if(!ENE_NZ){const q0=ENE_SRC.quaternion.clone(),p0=ENE_SRC.position.clone(),par=ENE_SRC.parent;ENE_SRC.position.set(0,0,0);ENE_SRC.quaternion.identity();if(par)par.remove(ENE_SRC);ENE_SRC.updateMatrixWorld(true);
-    let zm=-99,tip=V3(0,0,0);const v=V3(),pts=[];ENE_SRC.traverse(o=>{if(!o.isMesh)return;const pa=o.geometry.attributes.position;for(let i=0;i<pa.count;i++){v.fromBufferAttribute(pa,i).applyMatrix4(o.matrixWorld);if(v.x>tip.x)tip.copy(v);if(o.material.name==='nozzle'){pts.push(v.clone());zm=Math.max(zm,v.z)}}});
+// 敵機細節：雙發後燃器火焰（位置與口徑從各機型模型的噴口頂點算出）、翼尖航行燈
+function eneFx(m,D){const SRC=D.src;if(!D.nz){const q0=SRC.quaternion.clone(),p0=SRC.position.clone(),par=SRC.parent;SRC.position.set(0,0,0);SRC.quaternion.identity();if(par)par.remove(SRC);SRC.updateMatrixWorld(true);
+    let zm=-99,tip=V3(0,0,0);const v=V3(),pts=[];SRC.traverse(o=>{if(!o.isMesh)return;const pa=o.geometry.attributes.position;for(let i=0;i<pa.count;i++){v.fromBufferAttribute(pa,i).applyMatrix4(o.matrixWorld);if(v.x>tip.x)tip.copy(v);if(o.material.name==='nozzle'){pts.push(v.clone());zm=Math.max(zm,v.z)}}});
     const S=[1,-1].map(sg=>{const L=pts.filter(p=>p.z>zm-.12&&p.x*sg>.2);const c=V3();L.forEach(p=>c.add(p));if(L.length)c.multiplyScalar(1/L.length);let r=0;L.forEach(p=>r=Math.max(r,Math.hypot(p.x-c.x,p.y-c.y)));return{c,r}});
-    ENE_NZ={S,tip,s:ENE_SRC.scale.x||1};ENE_SRC.position.copy(p0);ENE_SRC.quaternion.copy(q0);if(par)par.add(ENE_SRC)}
-  const s=ENE_NZ.s,ab=[];for(const {c,r} of ENE_NZ.S){if(!r)continue;const a=mkAB();a.position.copy(c).multiplyScalar(1/s);a.position.z-=.05/s;a.scale.setScalar(r/.46/s);a.visible=false;m.add(a);ab.push(a)}
-  const nav=[];for(const [sg,c] of [[-1,0xff2a20],[1,0x30ff60]]){const sp=new THREE.Sprite(glowMat(c));sp.position.set(ENE_NZ.tip.x*sg*.985,ENE_NZ.tip.y,ENE_NZ.tip.z).multiplyScalar(1/s);sp.scale.setScalar(.75/s);m.add(sp);nav.push(sp)}
+    D.nz={S,tip,s:SRC.scale.x||1};SRC.position.copy(p0);SRC.quaternion.copy(q0);if(par)par.add(SRC)}
+  const NZ=D.nz,s=NZ.s,ab=[];for(const {c,r} of NZ.S){if(!r)continue;const a=mkAB();a.position.copy(c).multiplyScalar(1/s);a.position.z-=.05/s;a.scale.setScalar(r/.46/s);a.visible=false;m.add(a);ab.push(a)}
+  const nav=[];for(const [sg,c] of [[-1,0xff2a20],[1,0x30ff60]]){const sp=new THREE.Sprite(glowMat(c));sp.position.set(NZ.tip.x*sg*.985,NZ.tip.y,NZ.tip.z).multiplyScalar(1/s);sp.scale.setScalar(.75/s);m.add(sp);nav.push(sp)}
   m.userData.ab=ab;m.userData.nav=nav}
-function spawnEne(n){const d=V3(LP0.x-P.pos.x,0,LP0.z-P.pos.z).normalize(),pr=V3(-d.z,0,d.x);
+// ty：機型字串、陣列（第 i 架用第 i 個）或省略（MiG-29）
+function spawnEne(n,ty){const d=V3(LP0.x-P.pos.x,0,LP0.z-P.pos.z).normalize(),pr=V3(-d.z,0,d.x);
   for(let i=0;i<n;i++){const pos=P.pos.clone().addScaledVector(d,9000).addScaledVector(pr,(i-(n-1)/2)*900);pos.y=Math.max(2800,Math.max(0,groundH(pos.x,pos.z))+900);
-    CB.ene.push({pos,vel:d.clone().multiplyScalar(-235),hp:100,alive:true,mesh:eneMesh(),gunCd:0,mslN:DF.eneMsl[M.diff],mslCd:7+i*4,flN:16,flCd:0,bank:0,t:0})}}
-function eneDie(e,crash){if(!e.alive)return;e.alive=false;{const U=e.mesh&&e.mesh.userData;if(U&&U.ab)for(const o of [...U.ab,...U.nav])o.visible=false}boom(e.pos,30);if(!crash&&e.mesh){CB.wrecks=CB.wrecks||[];CB.wrecks.push({m:e.mesh,p:e.pos.clone(),v:e.vel.clone().multiplyScalar(.7),s:(Math.random()-.5)*4,t:0})}else scene.remove(e.mesh);if(crash){CB.crash=(CB.crash||0)+1;say('敵機撞山墜毀',2)}else{CB.kills++;say('擊落敵機！',2,1)}}
+    const t=(Array.isArray(ty)?ty[i%ty.length]:ty)||'mig29',T=ETY[t],su=t==='su27';
+    CB.ene.push({ty:t,pos,vel:d.clone().multiplyScalar(-T.v0),hp:T.hp,alive:true,mesh:eneMesh(t),gunCd:0,mslN:su?EMS.suIR[M.diff]:DF.eneMsl[M.diff],mrN:su?EMS.suMR[M.diff]:0,mslCd:7+i*4,flN:16,flCd:0,bank:0,t:0})}}
+function eneDie(e,crash){if(!e.alive)return;e.alive=false;{const U=e.mesh&&e.mesh.userData;if(U&&U.ab)for(const o of [...U.ab,...U.nav])o.visible=false}boom(e.pos,30);if(!crash&&e.mesh){CB.wrecks=CB.wrecks||[];CB.wrecks.push({m:e.mesh,p:e.pos.clone(),v:e.vel.clone().multiplyScalar(.7),s:(Math.random()-.5)*4,t:0})}else scene.remove(e.mesh);const nm=ENE[e.ty||'mig29'].name;if(crash){CB.crash=(CB.crash||0)+1;say(nm+' 撞山墜毀',2)}else{CB.kills++;CB.kt[e.ty||'mig29']=(CB.kt[e.ty||'mig29']||0)+1;CB.kb+=ETY[e.ty||'mig29'].pts-300;say('擊落 '+nm+'！',2,1)}}
 // 敵機飛行：跟玩家同一組氣動數據（升力、阻力極曲線、推力隨高度與馬赫），升力方向靠坡度、有滾轉率限制
 const _eu=V3(),_er=V3(),_ep=V3(),_el=V3(),_eg=V3(),_em=new THREE.Matrix4();
 function eneFly(e,ad,h,ab){const V=Math.max(40,e.vel.length()),vd=_ev.copy(e.vel).multiplyScalar(1/V),rho=1.225*Math.exp(-e.pos.y/8500),qS=.5*rho*V*V*AC.S,W=AC.M0*G0,mach=V/(340-e.pos.y*.004);
   const cs=clamp(vd.dot(ad),-1,1),th=Math.acos(cs);_ep.copy(ad).addScaledVector(vd,-cs);const pl=_ep.length();if(pl>1e-6)_ep.multiplyScalar(1/pl);
-  const nLim=Math.min(AC.GMAX*DF.turn[M.diff]+.8,qS*AC.CLA*AC.AMAX/W);
+  const ET=ETY[e.ty]||ETY.mig29,nLim=Math.min((AC.GMAX*DF.turn[M.diff]+.8)*ET.tm,qS*AC.CLA*AC.AMAX/W);
   _eg.set(0,-G0,0).addScaledVector(vd,G0*vd.y);_el.copy(_ep).multiplyScalar(Math.min(.9*th*V,nLim*G0)).sub(_eg);
   _eu.set(0,1,0).addScaledVector(vd,-vd.y);if(_eu.lengthSq()<1e-6)_eu.set(0,0,1);_eu.normalize();_er.crossVectors(vd,_eu);
   let bD=Math.atan2(_el.dot(_er),_el.dot(_eu)),n=Math.min(_el.length()/G0,nLim);if(Math.abs(bD)>2.6){bD=Math.sign(bD)*2.6}
-  const rr=(2.2+1.6*DF.turn[M.diff])*h;e.bank+=clamp(wrapPi(bD-e.bank),-rr,rr);
+  const rr=(2.2+1.6*DF.turn[M.diff])*ET.tm*h;e.bank+=clamp(wrapPi(bD-e.bank),-rr,rr);
   const ld=_ep.copy(_eu).multiplyScalar(Math.cos(e.bank)).addScaledVector(_er,Math.sin(e.bank));
   const CL=n*W/Math.max(1,qS),D=qS*(AC.CD0+AC.KI*CL*CL)+(mach>.95?qS*.02*Math.min(1,(mach-.95)*5):0);
-  let T=ab||V<220?AC.TAB*(1+.3*mach):AC.TMIL*.9;T*=Math.pow(rho/1.225,.65);
+  let T=ab||V<220?AC.TAB*(1+.3*mach):AC.TMIL*.9;T*=Math.pow(rho/1.225,.65)*ET.th;
   e.vel.addScaledVector(vd,(T-D)/AC.M0*h).addScaledVector(ld,n*G0*h);e.vel.y-=G0*h;e.pos.addScaledVector(e.vel,h);e.n=n;e.ab=ab||V<220;{const U=e.mesh.userData;if(U.ab){e.abK=(e.abK||0)+((e.ab?1:0)-(e.abK||0))*Math.min(1,h*3);for(const a of U.ab){a.visible=e.abK>.03;a.userData.set(e.abK)}}}
   // 姿態：機頭沿速度（加一點攻角），機背朝升力方向
   const al=CL/AC.CLA;_eg.copy(vd).addScaledVector(ld,Math.sin(al));_eg.normalize();_el.crossVectors(_eg,ld).normalize();_eu.crossVectors(_el,_eg);
@@ -1520,12 +1591,15 @@ function updEne(e,h){e.t+=h;const sp=e.vel.length();_vh.copy(e.vel).multiplyScal
   if(e.pos.y<Math.max(0,groundH(e.pos.x,e.pos.z))+3){eneDie(e,true);return}
   if(!TP.alive||P.onDeck)return;
   const ao=Math.acos(clamp(_vh.dot(_r)/dist,-1,1));
-  e.gunCd-=h;if(dist<1000&&ao<.08&&e.gunCd<=0&&(e.t%3)<1.2&&shells.items.length<shells.n){e.gunCd=.09;const tt=dist/1000;_a.copy(P.pos).addScaledVector(P.vel,tt).sub(e.pos).normalize();const er=DF.gunErr[M.diff];
+  const EG=(ETY[e.ty]||ETY.mig29).gun;e.gunCd-=h;if(dist<EG[0]&&ao<.08&&e.gunCd<=0&&(e.t%3)<EG[2]&&shells.items.length<shells.n){e.gunCd=.09;const tt=dist/1000;_a.copy(P.pos).addScaledVector(P.vel,tt).sub(e.pos).normalize();const er=DF.gunErr[M.diff]*EG[1];
     _a.x+=(Math.random()-.5)*2*er;_a.y+=(Math.random()-.5)*2*er;_a.z+=(Math.random()-.5)*2*er;_a.normalize();shells.items.push({p:e.pos.clone().addScaledVector(_vh,12),v:_a.clone().multiplyScalar(1000).add(e.vel),t:2,src:e.pos,sn:'敵機'})}
   // 敵機發射飛彈前要先「鎖定」一段時間（雷達警告音變急、畫面提示），太近不射：玩家看得到警告、有時間轉向或放干擾彈
-  const lkOk=e.mslN>0&&dist>EMS.minD[M.diff]&&dist<6000&&ao<.4;e.lk=lkOk?(e.lk||0)+h:Math.max(0,(e.lk||0)-h*.5);
-  if(lkOk&&!e.lkSay&&e.mslCd<EMS.lkT[M.diff]){e.lkSay=1;say(ao<1&&_r.dot(P.vel)>0?'敵機在後方鎖定你！急轉甩開，或準備干擾彈':'敵機鎖定你！急轉甩開，或準備干擾彈',2.2)}if(!e.lk)e.lkSay=0;
-  e.mslCd-=h;if(lkOk&&e.mslCd<=0&&e.lk>=EMS.lkT[M.diff]){e.mslN--;e.mslCd=12;e.lk=0;e.lkSay=0;launch({pos:e.pos.clone().addScaledVector(_vh,6),vel:e.vel.clone(),tgt:TP,orig:TP,owner:e,vsP:true,seeker:'ir',N:4,maxG:32,boost:280,burn:2.5,drag:3e-5,life:16,fuze:10});say('敵機發射飛彈！放干擾彈、急轉',2.5)}}
+  // Su-27 中程飛彈：6–9 公里、機頭對著你才鎖定；鎖定時間較長（警告較早），射出後是雷達導引：干擾彈效果較差，要轉到飛彈在 3 點或 9 點（側飛）才甩得掉
+  const mr=e.mrN>0&&dist>EMS.mrD[0]&&dist<EMS.mrD[1]&&ao<.35,lkOk=mr||(e.mslN>0&&dist>EMS.minD[M.diff]&&dist<6000&&ao<.4),lkT=mr?EMS.lkR[M.diff]:EMS.lkT[M.diff],nm=ENE[e.ty].name;e.lk=lkOk?(e.lk||0)+h:Math.max(0,(e.lk||0)-h*.5);e.lkMR=mr;
+  if(lkOk&&!e.lkSay&&e.mslCd<lkT){e.lkSay=1;say(mr?nm+' 雷達鎖定你（'+(dist/1000).toFixed(1)+' km）！中程飛彈要來了：準備轉 90° 側飛':ao<1&&_r.dot(P.vel)>0?nm+' 在後方鎖定你！急轉甩開，或準備干擾彈':nm+' 鎖定你！急轉甩開，或準備干擾彈',2.6)}if(!e.lk)e.lkSay=0;
+  e.mslCd-=h;if(lkOk&&e.mslCd<=0&&e.lk>=lkT){e.mslCd=12;e.lk=0;e.lkSay=0;
+    if(mr){e.mrN--;launch({pos:e.pos.clone().addScaledVector(_vh,6).add(_a.set(0,-1.2,0)),vel:e.vel.clone(),tgt:TP,orig:TP,owner:e,vsP:true,seeker:'radar',sarh:true,notch:EMS.notch[M.diff],N:3,maxG:24,boost:230,burn:4,drag:2.3e-5,life:32,fuze:12});say(nm+' 發射中程飛彈！轉 90° 側飛甩開，3 公里內放干擾彈',3.2)}
+    else{e.mslN--;launch({pos:e.pos.clone().addScaledVector(_vh,6),vel:e.vel.clone(),tgt:TP,orig:TP,owner:e,vsP:true,seeker:'ir',N:4,maxG:32,boost:280,burn:2.5,drag:3e-5,life:16,fuze:10});say(nm+' 發射飛彈！放干擾彈、急轉',2.5)}}}
 const LOCK={e:null,t:0,ok:false,w:null};
 function updLock(dt){fwd.set(0,0,-1).applyQuaternion(P.q);let best=null,ba=9;
   for(const e of CB.ene){if(!e.alive)continue;_a.copy(e.pos).sub(P.pos);const d=_a.length(),ang=Math.acos(clamp(_a.dot(fwd)/d,-1,1));if(d<25000&&ang<1.05&&ang<ba){ba=ang;best=e;e._d=d;e._ang=ang}}
@@ -1664,13 +1738,14 @@ function retry(){M.paused=false;plane.visible=true;$('menu').style.display='none
 function showResult(win){M.over=true;M.paused=true;$('result').style.display='flex';
   $('rTitle').textContent=M.mode==='combat'?'演練結束':win?(M.mode==='mission'?'任務完成':'著艦成功'):'任務失敗';
   const mm=(M.t/60|0)+' 分 '+(M.t%60|0)+' 秒';
-  $('rBody').innerHTML=M.mode==='combat'?((M.why||'')+'<br>存活時間：'+mm+'<br>擊落敵機：'+CB.kills+' 架　擊毀地面目標：'+GA.kills+'<br>躲過飛彈：'+CB.dodged+' 枚<br>飛彈命中：'+CB.hit+' / '+CB.shot+' 枚<br>分數：'+(CB.kills*300+GA.kills*100+CB.dodged*50)):win?('著艦評分：'+M.grade+(M.mode==='mission'?'<br>任務時間：'+mm+'<br>在峽谷超過高度上限：'+M.expo.toFixed(1)+' 秒<br>擊落敵機：'+CB.kills+' 架　擊毀地面目標：'+GA.kills+'<br>躲過飛彈：'+CB.dodged+' 枚　飛彈命中：'+CB.hit+' / '+CB.shot+'<br>機體剩餘：'+Math.max(0,P.hp|0)+'%':'')):(M.why||'');
+  $('rBody').innerHTML=M.mode==='combat'?((M.why||'')+'<br>存活時間：'+mm+'<br>擊落敵機：'+killTxt()+'　擊毀地面目標：'+GA.kills+'<br>躲過飛彈：'+CB.dodged+' 枚<br>飛彈命中：'+CB.hit+' / '+CB.shot+' 枚<br>分數：'+cbScore()):win?('著艦評分：'+M.grade+(M.mode==='mission'?'<br>任務時間：'+mm+'<br>在峽谷超過高度上限：'+M.expo.toFixed(1)+' 秒<br>擊落敵機：'+killTxt()+'　擊毀地面目標：'+GA.kills+'<br>躲過飛彈：'+CB.dodged+' 枚　飛彈命中：'+CB.hit+' / '+CB.shot+'<br>機體剩餘：'+Math.max(0,P.hp|0)+'%':'')):(M.why||'');
   $('rRetry').textContent=win?'再飛一次':'從檢查點重來';if(win)M.cp=0}
 {const sel=()=>document.querySelectorAll('[data-w]').forEach(x=>x.classList.toggle('sel',+x.dataset.w===WPN.mode));sel();
   document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{WPN.mode=+b.dataset.w;try{localStorage.setItem('skyhawk_wpn',WPN.mode)}catch(e){}sel();if(M.mode!=='menu'){applyLoadout();syncBtns()}})}
 document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{M.diff=+b.dataset.d;document.querySelectorAll('[data-d]').forEach(x=>x.classList.toggle('sel',x===b))});
 document.querySelectorAll('[data-tod]').forEach(x=>{x.classList.toggle('sel',+x.dataset.tod===TOD);x.onclick=()=>{if(+x.dataset.tod===TOD)return;try{localStorage.setItem('skyhawk_tod',x.dataset.tod)}catch(e){}location.reload()}});
 const qb=()=>{document.querySelectorAll('[data-q]').forEach(x=>x.classList.toggle('sel',+x.dataset.q===LOOK.q));$('mQA').classList.toggle('sel',LOOK.auto!==false)};window.qb=qb;$('mQA').onclick=()=>{LOOK.auto=LOOK.auto===false;try{localStorage.setItem('skyhawk_qa',LOOK.auto?'1':'0')}catch(e){}qb()};document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{setLook(+b.dataset.q);qb()});qb();
+{const laS=()=>document.querySelectorAll('[data-la]').forEach(x=>x.classList.toggle('sel',(x.dataset.la==='1')===LA.on));laS();document.querySelectorAll('[data-la]').forEach(b=>b.onclick=()=>{LA.on=b.dataset.la==='1';try{localStorage.setItem('skyhawk_la',LA.on?'1':'0')}catch(e){}laS()})}   // 著艦輔助（預設開；擬真難度不作用）
 function tfStatus(){document.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('sel',TFP[x.dataset.t]===TF))}document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>setTF(b.dataset.t));tfStatus();   // 轉向手感：街機（預設）／真實
 const sb=()=>document.querySelectorAll('[data-s]').forEach(x=>x.classList.toggle('sel',+x.dataset.s===sens));document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sens=+b.dataset.s;try{localStorage.setItem('skyhawk_sens',sens)}catch(e){}sb()});sb();
 $('mMission').onclick=tutFirst(()=>start('mission'));function showTut(after){$('tut').style.display='flex';M.paused=true;$('tutOk').onclick=()=>{$('tut').style.display='none';try{localStorage.setItem('skyhawk_tut','1')}catch(e){}M.paused=false;last=performance.now();if(after)after()}}
@@ -1731,7 +1806,8 @@ function drawRadar(c,k,inc){const now=performance.now(),NR=RAD.near;
   for(const m of CB.msl){if(!m.alive||!m.decoyed||m.orig!==TP)continue;rel(m.pos,q);if(q.d>RAD.rng)continue;const s=pt(q);bar(s,m.vel,(NR?7:5)*k,'#9aa0a6','rgba(150,150,150,.5)');
     c.strokeStyle='#c8ccd0';c.lineWidth=1.2*k;c.beginPath();c.moveTo(s.x-3*k,s.y-3*k);c.lineTo(s.x+3*k,s.y+3*k);c.moveTo(s.x+3*k,s.y-3*k);c.lineTo(s.x-3*k,s.y+3*k);c.stroke()}
   for(const e of CB.ene){if(!e.alive)continue;rel(e.pos,q);const s=pt(q),w=rv(e.vel),hd=Math.atan2(w.r,w.f),L=LOCK.e===e,dy=e.pos.y-P.pos.y;
-    c.save();c.translate(s.x,s.y);c.rotate(hd);c.fillStyle=c.strokeStyle=L?'#ffffff':'#ff5040';c.lineWidth=1.4*k;const z=NR?1.25:1;c.beginPath();c.moveTo(0,-6*k*z);c.lineTo(4.5*k*z,4.5*k*z);c.lineTo(-4.5*k*z,4.5*k*z);c.closePath();s.out?c.stroke():c.fill();c.restore();
+    const su=e.ty==='su27';c.save();c.translate(s.x,s.y);c.rotate(hd);c.fillStyle=c.strokeStyle=L?'#ffffff':'#ff5040';c.lineWidth=1.4*k;const z=(NR?1.25:1)*(su?1.35:1);c.beginPath();c.moveTo(0,-6*k*z);c.lineTo(4.5*k*z,4.5*k*z);c.lineTo(-4.5*k*z,4.5*k*z);c.closePath();s.out?c.stroke():c.fill();c.restore();
+    if(su){c.fillStyle=L?'#ffffff':'#ffb0a0';c.font=`700 ${7.5*k}px ui-monospace,Menlo,monospace`;c.textAlign='right';c.fillText('SU',s.x-6*k,s.y-4*k)}
     if(NR&&!s.out){c.fillStyle='#ff9080';c.font=`600 ${9.5*k}px ui-monospace,Menlo,monospace`;c.textAlign='left';c.fillText((q.d/1000).toFixed(1)+(Math.abs(dy)>100?(dy>0?' +':' ')+Math.round(dy/100)/10:''),s.x+6*k,s.y+1*k)}
     else if(Math.abs(dy)>300){c.fillStyle='#ff8070';c.font=`700 ${9*k}px sans-serif`;c.textAlign='left';c.fillText(dy>0?'▲':'▼',s.x+5*k,s.y-4*k)}}
   const bl=((now/160)|0)%2;
@@ -1742,7 +1818,7 @@ function drawRadar(c,k,inc){const now=performance.now(),NR=RAD.near;
   c.font=`700 ${12*k}px system-ui,sans-serif`;c.textAlign='left';let ty=cy+R+14*k;const tx=cx-R;
   if(nm){c.fillStyle=bl?'#ffb020':'#ff4030';const t=nm.vc>0?nm.d/nm.vc:0;c.fillText('飛彈 '+(nm.d/1000).toFixed(1)+'km '+clock(nm)+(nm.vc>0?' '+Math.round(nm.vc)+'m/s '+t.toFixed(1)+'秒':''),tx,ty);ty+=16*k;
     if(nm.d<FLR_R&&P.cm>0&&bl){c.fillStyle='#ffe060';c.fillText('▶ 放干擾彈＋急轉',tx,ty);ty+=16*k}}
-  if(ne){c.fillStyle='#ff6a5a';c.fillText('敵機 '+(ne.d/1000).toFixed(1)+'km '+clock(ne)+(Math.abs(ne.dy)>300?(ne.dy>0?' 高':' 低'):''),tx,ty)}
+  if(ne){c.fillStyle='#ff6a5a';c.fillText((ne.e.ty==='su27'?'Su-27 ':'敵機 ')+(ne.d/1000).toFixed(1)+'km '+clock(ne)+(Math.abs(ne.dy)>300?(ne.dy>0?' 高':' 低'):''),tx,ty)}
   c.restore()}
 function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,W,H);if(M.mode==='menu'||M.over)return;c.shadowColor='rgba(0,0,0,.9)';c.shadowBlur=3;
   const k=clamp(Math.min(W,H)/420,.8,1.5),G='#7dff9a';c.lineWidth=1.6*k;c.strokeStyle=G;c.fillStyle=G;c.font=`600 ${13*k}px ui-monospace,Menlo,monospace`;c.textBaseline='middle';
@@ -1758,7 +1834,7 @@ function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,
   let fpm=null;if(P.V>30){proj(vh,s2);if(s2.ok){fpm={x:s2.x,y:s2.y};c.beginPath();c.arc(s2.x,s2.y,6*k,0,7);c.moveTo(s2.x-16*k,s2.y);c.lineTo(s2.x-6*k,s2.y);c.moveTo(s2.x+6*k,s2.y);c.lineTo(s2.x+16*k,s2.y);c.moveTo(s2.x,s2.y-6*k);c.lineTo(s2.x,s2.y-12*k);c.stroke()}}
   if(!inp.stickOn){proj(P.aim,s1);if(s1.ok&&(s1.x<30||s1.x>W-30||s1.y<20||s1.y>H-20))s1.ok=false;if(s1.ok){const ld=P.gear&&!P.onDeck;c.lineWidth=(ld?1.4:2.4)*k;c.beginPath();c.arc(s1.x,s1.y,(ld?8:17)*k,0,7);c.stroke();c.lineWidth=1.6*k}
     else if(!P.onDeck&&P.state==='fly'){t1.copy(P.aim).applyQuaternion(_cqi.copy(cam.quaternion).invert());const a=Math.atan2(-t1.y,t1.x),R=Math.min(W,H)*.3;c.save();c.translate(W/2+Math.cos(a)*R,H/2+Math.sin(a)*R);c.rotate(a);c.lineWidth=3*k;c.beginPath();c.moveTo(-8*k,-12*k);c.lineTo(6*k,0);c.lineTo(-8*k,12*k);c.stroke();c.restore();c.lineWidth=1.6*k}}
-  if(M.mode==='combat'){c.save();c.font=`bold ${13*k}px sans-serif`;c.textAlign='center';c.fillStyle='rgba(0,0,0,.35)';c.fillRect(W/2-120*k,H-26*k,240*k,20*k);c.fillStyle='#ffe08a';c.fillText('擊落 '+CB.kills+'　地面 '+GA.kills+'　分數 '+(CB.kills*300+GA.kills*100+CB.dodged*50),W/2,H-11*k);c.restore();c.fillStyle=c.strokeStyle=G}
+  if(M.mode==='combat'){c.save();c.font=`bold ${13*k}px sans-serif`;c.textAlign='center';c.fillStyle='rgba(0,0,0,.35)';c.fillRect(W/2-120*k,H-26*k,240*k,20*k);c.fillStyle='#ffe08a';c.fillText('擊落 '+CB.kills+'　地面 '+GA.kills+'　分數 '+cbScore(),W/2,H-11*k);c.restore();c.fillStyle=c.strokeStyle=G}
   // 地面目標：8 公里內的活目標畫小三角；對地鎖定中畫方框，鎖定完成變實心菱形
   if(P.state==='fly'&&!P.onDeck){c.save();c.lineWidth=1.4*k;for(const u of GU){if(!guAlive(u))continue;const d=u.pos.distanceTo(P.pos);if(d>8000&&GA.lock.u!==u)continue;_gp2.copy(u.pos);_gp2.y+=3;proj(_gp2,s1);if(!s1.ok)continue;
       const L=GA.lock.u===u;c.strokeStyle=c.fillStyle=L?(GA.lock.ok?'#ff5040':'#ffb060'):'rgba(255,190,120,.75)';
@@ -1778,7 +1854,7 @@ function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,
     if(s1.ok&&s1.x>10&&s1.x<W-10&&s1.y>10&&s1.y<H-10){c.strokeStyle=c.fillStyle='#ff5040';const r=(isL?16:11)*k;c.beginPath();c.moveTo(s1.x,s1.y-r);c.lineTo(s1.x+r,s1.y);c.lineTo(s1.x,s1.y+r);c.lineTo(s1.x-r,s1.y);c.closePath();c.stroke();
       c.textAlign='center';c.fillText((d/1000).toFixed(1)+'km',s1.x,s1.y+r+12*k);
       if(isL&&LOCK.w){c.lineWidth=2.4*k;c.beginPath();c.arc(s1.x,s1.y,r+8*k,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,LOCK.t/.7));c.stroke();c.lineWidth=1.6*k;c.fillText(LOCK.ok?(LOCK.w==='9'?'鎖定・短程':'鎖定・中程'):'鎖定中',s1.x,s1.y-r-12*k)}}
-    else box(e.pos,'敵機','#ff5040')}
+    else box(e.pos,ENE[e.ty]?ENE[e.ty].name:'敵機','#ff5040')}
   c.strokeStyle=c.fillStyle=G;
   // 己方飛彈飛行中／結果（v0.19）：目標旁寫「飛彈 3.2s」倒數；結束時在目標位置跳「擊落！」「命中！」或「未命中・原因」。目標不在畫面上（或會擋到左上雷達、右上按鈕）就改寫在畫面下方中間
   {const L=[],sc=s1,off=[];const inHud=(x,y)=>x>20&&x<W-20&&y>20&&y<H-20&&!(x<W*.34&&y<H*.42)&&!(x>W*.66&&y<H*.24);
@@ -1822,7 +1898,9 @@ function drawHUD(dt){const c=hx;c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,
     if(along>100&&along<7000){const gs=Math.atan2(P.pos.y-AC.GH-DECK_Y,along),e=clamp((gs-.061)/.013,-2.2,2.2),bx=W*.35,by=H*.5;
       c.strokeStyle='#44ff66';c.beginPath();c.lineWidth=2.5*k;c.moveTo(bx-42*k,by);c.lineTo(bx-13*k,by);c.moveTo(bx+13*k,by);c.lineTo(bx+42*k,by);c.stroke();c.lineWidth=1.6*k;
       c.fillStyle=e<-1?'#ff4030':'#ffc040';c.beginPath();c.arc(bx,by-e*26*k,9*k,0,7);c.fill();
-      c.fillStyle=c.strokeStyle=G;c.textAlign='center';c.fillText(e>1?'太高':e<-1?'太低':'下滑道',bx,by+74*k);
+      c.fillStyle=c.strokeStyle=G;c.textAlign='center';{const dft=(P.pos.y-AC.GH-DECK_Y-Math.tan(.061)*along)*3.281;c.fillText((e>1?'太高':e<-1?'太低':'下滑道')+(Math.abs(dft)>=8?' '+(dft>0?'+':'−')+Math.abs(dft).toFixed(0)+' 呎':''),bx,by+74*k)}
+      if(P.lsoOn){c.fillStyle='#7fe8ff';c.fillText(P.lsoA&&P.lsoA.k<1?'著艦輔助 接手中…':'著艦輔助：放開＝自動沿下滑道',bx,by-70*k);c.fillStyle=G}
+      else if(P.lsoA&&P.lsoA.off){c.fillStyle='#ffc040';c.fillText('著艦輔助暫停（搖桿回中恢復）',bx,by-70*k);c.fillStyle=G}
       const le=clamp(lat/(along*.035+4),-2,2);c.fillText(Math.abs(le)<.5?'對正':le>0?'← 往左':'往右 →',bx,by+92*k);
       const ae=(P.alpha-AC.ONSPEED)*57.3;c.fillText(Math.abs(ae)<1.2?'攻角 ○ 正好':ae>0?'攻角 ▽ 太慢':'攻角 △ 太快',bx,by+108*k);
       c.fillText((P.hook?'':'尾鉤未放　')+(P.flaps?'':'襟翼未放'),bx,by+124*k)}}
@@ -1927,7 +2005,7 @@ function frame(now){requestAnimationFrame(frame);const rdt=Math.min(1,(now-last)
 requestAnimationFrame(frame);
 
 /* 測試用掛鉤 */
-window.__G={wpNow,get wpP(){return wpP},TP,WPN,RAD,setTF,get TF(){return TF},TFP,guKill,reviveGU,fireAgm,bunker,bunkerRuin,FIRES,GSHD,SCAR,boom,trick,GU,GA,inp,plane,cam,sun,LOOK,setLook,GY,bankG,CB,LOCK,SAMS,fireMsl,countermeasure,spawnEne,launch,TERRAIN,renderer,scene,SURF,get PARTS(){return PARTS},get modelSrc(){return modelSrc},plane,ccip,AAA,P,M,AC,start,simStep,updWorld,spawn,act,dropBomb,groundH,floorOf,xc,LP0,LD,tgtPos,inp,DT,
+window.__G={LA,lsoZone,wpNow,get wpP(){return wpP},TP,WPN,RAD,setTF,get TF(){return TF},TFP,guKill,reviveGU,fireAgm,bunker,bunkerRuin,FIRES,GSHD,SCAR,boom,trick,GU,GA,inp,plane,cam,sun,LOOK,setLook,GY,bankG,CB,LOCK,SAMS,fireMsl,countermeasure,spawnEne,launch,TERRAIN,renderer,scene,SURF,get PARTS(){return PARTS},get modelSrc(){return modelSrc},plane,ccip,AAA,P,M,AC,start,simStep,updWorld,spawn,act,dropBomb,groundH,floorOf,xc,LP0,LD,tgtPos,inp,DT,
   run(sec,fn){const n=Math.round(sec/DT);for(let i=0;i<n;i++){if(fn)fn(i*DT);simStep(DT);if(i%2===0)updWorld(DT*2)}}};
 </script>
 </body>
