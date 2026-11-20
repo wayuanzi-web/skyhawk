@@ -132,7 +132,7 @@ body.inmenu .btn,body.inmenu #thr,body.inmenu #thrLbl,body.inmenu #col,body.inme
     <div class="tag"><span class="dot"></span>CVN-09 ◆ 第七艦載機聯隊 ◆ <b>機密</b></div>
     <h1 class="logo">怒海雄鷹</h1>
     <div class="logoE">OPERATION&nbsp;SEA&nbsp;HAWK</div>
-    <div class="sub">試飛版 0.29 ｜ F/A-18E 超級大黃蜂</div>
+    <div class="sub">試飛版 0.30 ｜ F/A-18E 超級大黃蜂</div>
     <div class="sl" style="margin-top:12px">作戰難度 / DIFFICULTY</div>
     <div class="seg diff"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
     <div class="hLinks"><button class="mb ghost" id="mSet">⚙ 設定</button><button class="mb ghost" id="mHelp">操作說明</button><button class="mb ghost" id="mStat">★ 戰績</button></div>
@@ -579,9 +579,10 @@ function blk(w,h,d,ch=0,tp=0){const a=w/2,b=d/2,ring=(y,s)=>{const A=a-s,B=b-s,C
   const hb=ST(0x101214,.6,.2);for(const [x,z,w] of [[33.4,-40,22],[33.4,95,16],[-39.6,20,26],[-39.6,-70,12]]){mk(1,5,w,hb,x,13.5,z)}
   for(let z=-100;z<=140;z+=12)for(const x of [34.6,-41]){mk(.6,.8,1.6,hb,x,17,z)}
   // 水線白浪
-  {const W=R[5].map(p=>[p[0],p[2]]),cx=-4,P=[],C=[],I=[],n=W.length;for(const [k,a] of [[0,.55],[6,0]])for(const [x,z] of W){const dx=x-cx,dz=z,l=Math.hypot(dx,dz)||1;P.push(x+dx/l*k,.15,z+dz/l*k*.5);C.push(1,1,1,a)}
+  const foam=(W,cx)=>{const P=[],C=[],I=[],n=W.length;for(const [k,a] of [[0,.55],[6,0]])for(const [x,z] of W){const dx=x-cx,dz=z,l=Math.hypot(dx,dz)||1;P.push(x+dx/l*k,.15,z+dz/l*k*.5);C.push(1,1,1,a)}
     for(let i=0;i<n;i++){const j=(i+1)%n;I.push(i,j,n+i,j,n+j,n+i)}const g2=new THREE.BufferGeometry();g2.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g2.setAttribute('color',new THREE.Float32BufferAttribute(C,4));g2.setIndex(I);
-    const f=new THREE.Mesh(g2,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide}));f.renderOrder=1;cv.add(f)}
+    const f=new THREE.Mesh(g2,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide}));f.renderOrder=1;f.userData.keep=1;cv.add(f);return f};
+  cv.userData.foam=foam(R[5].map(p=>[p[0],p[2]]),-4);
   // 甲板車輛：拖車、消防車、吊車（同材質方塊，下面會合併成少數網格）
   {const wt=ST(0xd9d5c6,.6,.1),yl=ST(0xc9a227,.6,.1),tb=ST(0x1c1e20,.9,.05),gl=ST(0x2a3540,.2,.5);
     const tug=(x,z,ry,m=wt)=>{const c=Math.cos(ry),s2=Math.sin(ry),P2=(lx,lz)=>[x+lx*c+lz*s2,z-lx*s2+lz*c];
@@ -630,6 +631,15 @@ function blk(w,h,d,ch=0,tp=0){const a=w/2,b=d/2,ring=(y,s)=>{const A=a-s,B=b-s,C
   const wakeG=(w0,w1,L)=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute([-w0/2,0,0,w0/2,0,0,w1/2,0,L,-w1/2,0,L],3));g.setAttribute('uv',new THREE.Float32BufferAttribute([.5-w0/w1*.5,1,.5+w0/w1*.5,1,1,0,0,0],2));g.setIndex([0,2,1,0,3,2]);return g};
   {const w=new THREE.Mesh(wakeG(46,170,720),WAKE);w.position.set(-4,.2,150);w.renderOrder=1;scene.add(w)}
   window.__WAKE={mat:WAKE,geo:wakeG};
+  // 細模型（tools/build_cvn.py → assets/cvn.glb，LOD0–2）：載入後拿掉上面程式產生的靜態外形；偏流板、助降鏡燈、甲板人員、水線白浪、航跡仍用程式版（同位置）
+  cv.userData.proc=cv.children.filter(o=>o.isMesh&&!o.userData.dyn&&!o.userData.keep);
+  {const ok=g=>{const L=['LOD0','LOD1','LOD2'].map(n=>g.scene.getObjectByName(n));if(!L[0])return;for(const o of cv.userData.proc)cv.remove(o);
+      const lod=new THREE.LOD();L.forEach((o,i)=>{if(!o)return;o.parent&&o.parent.remove(o);o.visible=true;o.traverse(m=>{if(m.isMesh){m.castShadow=i===0&&m.material.name==='vc';m.receiveShadow=true;if(m.material.map)aniso(m.material.map,8,4)}})/* 只有零件（艦島、車輛、武器）投影；艦體與甲板不投影 */;lod.addLevel(o,[0,700,3000][i])});
+      const wl=JSON.parse(L[0].userData.wl||'null');if(wl){cv.remove(cv.userData.foam);cv.userData.foam=foam(wl,0)}/* 水線白浪換成細模型的水線形狀 */
+      lod.name='cvnGLB';cv.add(lod);cv.userData.glb=lod};
+    const LDR=new GLTFLoader();LDR.setMeshoptDecoder(MeshoptDecoder);
+    if(window.__GLB9){const bin=atob(window.__GLB9),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);LDR.parse(u8.buffer,'',ok,e=>console.warn('cvn',e))}
+    else LDR.load('assets/cvn.glb',ok,undefined,e=>console.warn('cvn',e))}
   scene.add(cv);window.__CV=cv}
 { // 護衛艦兩艘：外飄＋艏舷弧的放樣艦體（水線帶、錨）、倒角內收的匿蹤上層結構、斜窗艦橋、四腳主桅＋雷達、煙囪、機庫、直升機甲板標線、
   // 主砲、垂直發射器格柵、反艦飛彈發射筒、近迫武器、救生艇與吊架、救生筏筒、管線、舷號；艦體以外的靜態零件依材質合併（每艘約 10 次繪製，原本 18 次）
@@ -700,7 +710,15 @@ function blk(w,h,d,ch=0,tp=0){const a=w/2,b=d/2,ring=(y,s)=>{const A=a-s,B=b-s,C
       for(const sx of [-1,1]){const n=new THREE.Mesh(new THREE.PlaneGeometry(6.4,3.2),nm),z=zt(.13),y=yd(.13)-2.6,hit=new THREE.Raycaster(V3(sx*60,y,z),V3(-sx,0,0)).intersectObject(HULL)[0];
         if(hit){const nn=hit.face.normal.clone();if(nn.x*sx<0)nn.negate();n.position.copy(hit.point).addScaledVector(nn,.08);n.lookAt(hit.point.clone().addScaledVector(nn,5))}else{n.position.set(sx*B*.4,y,z);n.rotation.y=sx*Math.PI/2}g.add(n)}}g.remove(b);g.add(mg);
     return g};
-  for(const [x,z,L,B,no] of [[-1900,-1100,150,20,'1105'],[2300,1500,140,18,'1107']]){const sp=ship(L,B,no);sp.position.set(x,0,z);scene.add(sp)}}
+  const SH=[];for(const [x,z,L,B,no] of [[-1900,-1100,150,20,'1105'],[2300,1500,140,18,'1107']]){const sp=ship(L,B,no);sp.position.set(x,0,z);scene.add(sp);sp.userData.no=no;sp.userData.proc=sp.children.filter(o=>o.material!==__WAKE.mat);SH.push(sp)}
+  // 細模型（阿利·伯克級外形，tools/build_ddg.py → assets/ddg.glb，LOD0–2）：載入後換掉上面程式產生的艦體與上層結構（航跡保留）；艏舷號依艦顯示 noA／noB 其一
+  {const ok=g=>{const L=['LOD0','LOD1','LOD2'].map(n=>g.scene.getObjectByName(n));if(!L[0])return;const nums=JSON.parse(L[0].userData.numbers||'[]');
+      for(const sp of SH){for(const o of sp.userData.proc)sp.remove(o);const lod=new THREE.LOD();
+        L.forEach((o,i)=>{if(!o)return;const c=o.clone(true);c.visible=true;if(i===0)nums.forEach((n,k)=>{const q=c.getObjectByName('no'+'AB'[k]);if(q)q.visible=n===sp.userData.no});c.traverse(m=>{if(m.isMesh){m.castShadow=false;m.receiveShadow=i===0}});lod.addLevel(c,[0,600,2500][i])});
+        lod.name='ddgGLB';sp.add(lod);sp.userData.glb=lod}};
+    const LDR=new GLTFLoader();LDR.setMeshoptDecoder(MeshoptDecoder);
+    if(window.__GLB10){const bin=atob(window.__GLB10),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);LDR.parse(u8.buffer,'',ok,e=>console.warn('ddg',e))}
+    else LDR.load('assets/ddg.glb',ok,undefined,e=>console.warn('ddg',e))}}
 
 /* ---------- 飛機外形（程式放樣，P0 之後換成 Blender 管線的模型） ---------- */
 // ---------- 特效著色器（共用時間） ----------
@@ -1602,15 +1620,40 @@ const GMOD=(()=>{const L=(c,r=.85,m=.1)=>new THREE.MeshStandardMaterial({color:c
     const hub=new THREE.Mesh(new THREE.CylinderGeometry(.4,.4,.35,10),m);g.add(hub);return mergeDeep(g)};
   const trot=()=>{const g=new THREE.Group(),m=L(0x1b1d1a,.6,.3);for(let i=0;i<3;i++){const b2=new THREE.Mesh(new THREE.BoxGeometry(.06,1.6,.22),m);b2.position.y=.8;const a=new THREE.Group();a.rotation.x=i/3*6.283;a.add(b2);g.add(a)}return mergeDeep(g)};
   // 巡邏艇：尖艏艇身、駕駛艙、前甲板機砲、雷達桅
-  const boat=()=>{const g=new THREE.Group(),gray=L(0x6b7378,.7,.2),dk=L(0x2b3034,.6,.3),sh=new THREE.Shape();sh.moveTo(0,-14);sh.quadraticCurveTo(3.2,-6,3,2);sh.lineTo(3,12);sh.lineTo(-3,12);sh.lineTo(-3,2);sh.quadraticCurveTo(-3.2,-6,0,-14);
-    const hg=new THREE.ExtrudeGeometry(sh,{depth:3,bevelEnabled:false});hg.rotateX(Math.PI/2);hg.translate(0,2.2,0);add(g,hg,gray,0,0,0);add(g,new THREE.BoxGeometry(4.4,2.4,7),gray,0,3.4,2.5);add(g,new THREE.BoxGeometry(4.5,.7,1),dk,0,4.0,-.9);
-    add(g,new THREE.CylinderGeometry(.9,1.1,.8,12),gray,0,2.6,-7);add(g,new THREE.CylinderGeometry(.08,.1,2.4,8),dk,0,3.0,-8.4,Math.PI/2,0,0);add(g,new THREE.CylinderGeometry(.12,.16,5,8),dk,0,7,3);add(g,new THREE.BoxGeometry(2.2,.15,.4),dk,0,8.6,3);return g};
+  const boat=()=>{const g=new THREE.Group(),gray=L(0x6b7378,.7,.2),lt=L(0x7f888d,.7,.2),dk=L(0x2b3034,.6,.3),bk=L(0x15181b,.5,.3),gl=L(0x16202a,.2,.5),wh=L(0xe2e2dc,.6,.05),org=L(0xd9661e,.6,.05),red=L(0x5a2a26,.8,.1),nsk=L(0x474d52,.9,.05);
+    // 艇身：深 V 放樣（艏部外飄與舷弧上翹、硬舭線、方艉）；舷側灰、水線黑帶、船底紅，甲板防滑灰
+    const NS=16,zt=t=>-14+26*t,yd=t=>2.2+1.1*Math.pow(Math.max(0,(.4-t)/.4),1.6),hb=t=>3*Math.pow(Math.sin(Math.min(1,(t+.012)/.5)*Math.PI/2),.75),kz=t=>-.9+1.1*Math.pow(Math.max(0,(.22-t)/.22),1.3);
+    const sec=t=>{const h=hb(t),c=h*.86,y=yd(t);return[[-h,y],[-h*.97,1.0],[-c,.3],[-c*.96,-.05],[0,Math.min(kz(t),y-.5)],[c*.96,-.05],[c,.3],[h*.97,1.0],[h,y]]};
+    const lofts=[[0,2,gray],[2,3,bk],[3,5,red],[5,6,bk],[6,8,gray]];
+    for(const [a,b,m] of lofts){const Pp=[],Ix=[];let n=0;for(let k=0;k<=NS;k++){const t=k/NS,S=sec(t);for(let q=a;q<=b;q++){const [x,y]=S[q];Pp.push(x,y,zt(t))}n=b-a+1}
+      for(let k=0;k<NS;k++)for(let q=0;q<n-1;q++){const o=k*n+q,c=o+n;Ix.push(o,c,o+1,o+1,c,c+1)}const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(Pp,3));gg.setIndex(Ix);gg.computeVertexNormals();add(g,gg,m,0,0,0)}
+    {const S=sec(1),sh=new THREE.Shape();S.forEach(([x,y],i)=>i?sh.lineTo(x,y):sh.moveTo(x,y));const tg=new THREE.ShapeGeometry(sh);tg.translate(0,0,12);add(g,tg,gray,0,0,0);/* 方艉 */
+      const Pp=[],Ix=[];for(let k=0;k<=NS;k++){const t=k/NS,h=hb(t)*.99,y=yd(t)+.02;Pp.push(-h,y,zt(t),0,y+.08,zt(t),h,y,zt(t))}for(let k=0;k<NS;k++){const o=k*3,c=o+3;Ix.push(o,o+1,c,o+1,c+1,c,o+1,o+2,c+1,o+2,c+2,c+1)}
+      const dg=new THREE.BufferGeometry();dg.setAttribute('position',new THREE.Float32BufferAttribute(Pp,3));dg.setIndex(Ix);dg.computeVertexNormals();add(g,dg,nsk,0,0,0)}
+    // 舷牆欄杆（立柱＋扶手）、護舷條
+    for(const sx of [-1,1])for(let k=1;k<NS;k++){const t0=k/NS,t1=(k+1)/NS,x0=sx*hb(t0)*.96,x1=sx*hb(Math.min(1,t1))*.96,y0=yd(t0),y1=yd(Math.min(1,t1)),z0=zt(t0),z1=zt(Math.min(1,t1)),ln=Math.hypot(x1-x0,y1-y0,z1-z0);
+      add(g,new THREE.CylinderGeometry(.03,.03,.9,4),dk,x0,y0+.45,z0);const r=add(g,new THREE.BoxGeometry(.05,.05,ln),dk,(x0+x1)/2,(y0+y1)/2+.9,(z0+z1)/2);r.lookAt(g.localToWorld(V3(x1,y1+.9,z1)));
+      const f=add(g,new THREE.BoxGeometry(.12,.14,ln),bk,(x0+x1)/2*1.04,(y0+y1)/2-.25,(z0+z1)/2);f.lookAt(g.localToWorld(V3(x1*1.04,y1-.25,z1)))}
+    // 上層：駕駛艙（前窗外傾黑色窗帶、側窗、頂板）、飛航駕駛台、主桅（雷達、天線罩、航行燈、探照燈、鞭狀天線）
+    add(g,new THREE.BoxGeometry(4.2,2.0,6.4),lt,0,3.25,3.0);add(g,new THREE.BoxGeometry(4.0,.85,.12),gl,0,3.65,-.24,-.28,0,0);
+    for(const sx of [-1,1]){add(g,new THREE.BoxGeometry(.1,.7,4.2),gl,sx*2.12,3.65,3.0);add(g,new THREE.TorusGeometry(.42,.09,6,14),org,sx*2.2,2.95,5.6,0,Math.PI/2,0)}
+    add(g,new THREE.BoxGeometry(4.5,.16,6.9),gray,0,4.32,2.9);add(g,new THREE.BoxGeometry(2.6,.9,2.0),lt,0,4.85,4.2);add(g,new THREE.BoxGeometry(2.7,.4,.1),gl,0,5.05,3.15,-.3,0,0);
+    for(let k=0;k<2;k++)add(g,new THREE.CylinderGeometry(.32,.32,1.1,10),wh,(k?1:-1)*1.4,4.7,6.0,0,0,Math.PI/2);
+    add(g,new THREE.CylinderGeometry(.1,.14,4.2,8),dk,0,6.4,2.6);add(g,new THREE.BoxGeometry(2.4,.12,.12),dk,0,7.6,2.6);add(g,new THREE.BoxGeometry(1.8,.14,.3),bk,0,8.0,2.6);
+    add(g,new THREE.CylinderGeometry(.08,.08,.3,6),bk,0,7.85,2.6);add(g,new THREE.SphereGeometry(.42,10,8),wh,0,8.7,2.6);add(g,new THREE.CylinderGeometry(.03,.03,2.6,4),bk,-1.1,8.9,2.6);add(g,new THREE.CylinderGeometry(.03,.03,2.2,4),bk,1.1,8.7,2.6);
+    add(g,new THREE.CylinderGeometry(.22,.22,.35,10),dk,-.9,4.6,1.9,Math.PI/2,0,0);
+    // 前甲板機砲：砲座、防盾、砲身、彈藥箱；艉部兩挺機槍（立柱＋槍身）；艉部排氣口、錨
+    add(g,new THREE.CylinderGeometry(.9,1.1,.6,12),dk,0,yd(.27)+.3,-7);add(g,new THREE.BoxGeometry(1.5,.9,.3),gray,0,yd(.27)+1.05,-7.55,.25,0,0);add(g,new THREE.BoxGeometry(.9,.6,1.2),dk,0,yd(.27)+.85,-6.8);
+    add(g,new THREE.CylinderGeometry(.07,.09,2.6,8),bk,0,yd(.27)+.95,-8.6,Math.PI/2,0,0);add(g,new THREE.BoxGeometry(.4,.35,.5),dk,.55,yd(.27)+.9,-6.5);
+    for(const sx of [-1,1]){add(g,new THREE.CylinderGeometry(.05,.06,1.1,6),bk,sx*2.2,yd(.9)+.55,10.4);add(g,new THREE.CylinderGeometry(.04,.04,1.3,6),bk,sx*2.2,yd(.9)+1.15,9.9,Math.PI/2,0,0);
+      add(g,new THREE.BoxGeometry(.7,.35,.1),bk,sx*1.3,.95,12.03);add(g,new THREE.BoxGeometry(.3,.6,.5),bk,sx*hb(.12)*.97,yd(.12)-.7,-11.3)}
+    return g};
   // 頂點色合併：每輛車只剩 1–2 個繪製（車體、砲塔），原本每種材質一個
   const VM=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85,metalness:.12});
   const mergeVC=root=>{root.updateMatrixWorld(true);const inv=new THREE.Matrix4().copy(root.matrixWorld).invert(),gs=[];root.traverse(o=>{if(!o.isMesh)return;let q=o.geometry.clone();q.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv,o.matrixWorld));if(q.index)q=q.toNonIndexed();
       for(const n of Object.keys(q.attributes))if(n!=='position'&&n!=='normal')q.deleteAttribute(n);const c=o.material.color,a=new Float32Array(q.attributes.position.count*3);for(let i=0;i<a.length;i+=3){a[i]=c.r;a[i+1]=c.g;a[i+2]=c.b}q.setAttribute('color',new THREE.BufferAttribute(a,3));gs.push(q)});
     const m=new THREE.Mesh(mergeGeometries(gs,false),VM);m.castShadow=m.receiveShadow=true;return m};
-  const T0=(()=>{const g=tank(),tur=g.userData.tur;g.remove(tur);tur.position.set(0,0,0);const b=new THREE.Group(),h=mergeVC(g),t=mergeVC(tur);t.name='tur';t.position.set(0,1.6,.3);b.add(h,t);return b})(),TR0=(()=>{const b=new THREE.Group();b.add(mergeVC(truck()));return b})(),H0=mergeDeep(heli()),R0=rotor(),TRT0=trot(),B0=mergeDeep(boat());
+  const T0=(()=>{const g=tank(),tur=g.userData.tur;g.remove(tur);tur.position.set(0,0,0);const b=new THREE.Group(),h=mergeVC(g),t=mergeVC(tur);t.name='tur';t.position.set(0,1.6,.3);b.add(h,t);return b})(),TR0=(()=>{const b=new THREE.Group();b.add(mergeVC(truck()));return b})(),H0=mergeDeep(heli()),R0=rotor(),TRT0=trot(),B0=(()=>{const b=new THREE.Group();b.add(mergeVC(boat()));return b})();
   const cl=src=>src.clone(true);
   const heliC=()=>{const g=cl(H0),r=R0.clone(true),t=trot();r.position.set(0,4.05,-.2);t.position.set(.25,3.6,12.4);g.add(r,t);g.userData.rot=r;g.userData.trot=t;return g};
   const wakeTx=(()=>{const c=document.createElement('canvas');c.width=64;c.height=256;const x=c.getContext('2d');for(let i=0;i<500;i++){const v=i/500,y=v*256,w=6+v*50;x.fillStyle=`rgba(255,255,255,${(.5*(1-v))*Math.random()})`;x.fillRect(32-w/2+(Math.random()-.5)*w*.6,y,2+Math.random()*4,2)}const g=x.createLinearGradient(0,0,64,0);return new THREE.CanvasTexture(c)})();
