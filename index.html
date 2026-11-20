@@ -132,7 +132,7 @@ body.inmenu .btn,body.inmenu #thr,body.inmenu #thrLbl,body.inmenu #col,body.inme
     <div class="tag"><span class="dot"></span>CVN-09 ◆ 第七艦載機聯隊 ◆ <b>機密</b></div>
     <h1 class="logo">怒海雄鷹</h1>
     <div class="logoE">OPERATION&nbsp;SEA&nbsp;HAWK</div>
-    <div class="sub">試飛版 0.28 ｜ F/A-18E 超級大黃蜂</div>
+    <div class="sub">試飛版 0.29 ｜ F/A-18E 超級大黃蜂</div>
     <div class="sl" style="margin-top:12px">作戰難度 / DIFFICULTY</div>
     <div class="seg diff"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
     <div class="hLinks"><button class="mb ghost" id="mSet">⚙ 設定</button><button class="mb ghost" id="mHelp">操作說明</button><button class="mb ghost" id="mStat">★ 戰績</button></div>
@@ -764,12 +764,12 @@ const plane=new THREE.Group();let gearGrp,hookMesh,stabL,stabR,abL,abR,HK=[-1.5,
       const cg=new THREE.CylinderGeometry(1.25,4.6,5.5,28,8,true);cg.rotateX(-Math.PI/2);cg.translate(0,.1,1.2);const m=new THREE.Mesh(cg,vapMat());m.renderOrder=4;m.frustumCulled=false;plane.add(m);plane.userData.vcone=m}
     { // 航行燈：左紅右綠、尾白、垂尾頂端防撞閃光
       const cv=document.createElement('canvas');cv.width=cv.height=64;const x=cv.getContext('2d'),gr=x.createRadialGradient(32,32,0,32,32,32);gr.addColorStop(0,'rgba(255,255,255,1)');gr.addColorStop(.25,'rgba(255,255,255,.6)');gr.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=gr;x.fillRect(0,0,64,64);
-      const tx=new THREE.CanvasTexture(cv),L=[];for(const [p,c,f] of [[[-6.95,.13,1.2],0xff2a20,0],[[6.95,.13,1.2],0x30ff60,0],[[0,.35,8.9],0xffffff,0],[[-2.1,3.95,6.4],0xff3030,1],[[2.1,3.95,6.4],0xff3030,1]]){
+      const tx=new THREE.CanvasTexture(cv),L=[];for(const [p,c,f] of [[[-6.6,.04,1.93],0xff2a20,0],[[6.6,.04,1.93],0x30ff60,0],[[0,.36,8.95],0xffffff,0],[[-2.02,2.66,5.05],0xff3030,1],[[2.02,2.66,5.05],0xff3030,1]]){
         const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,color:c,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));sp.position.set(...p);sp.scale.setScalar(.7);sp.userData.f=f;plane.add(sp);L.push(sp)}plane.userData.navL=L}
     plane.traverse(o=>o.layers.set(1));modelSrc='fa18e.glb';
     // 甲板停放機：艦艏右側兩架（近處用細模型，遠了換粗模型，再遠不畫）
     const L1=g.scene.getObjectByName('LOD1');for(const [x,z,ry] of [[24,-128,2.3],[30,-104,2.3]])/* 原本 (29,-142) 那架有一半懸在甲板外 */{const lod=new THREE.LOD(),a0=m.clone(true);a0.traverse(o=>{if(/^(cockpit|bomb)/.test(o.name))o.visible=false});const a=mergeDeep(a0);
-      lod.addLevel(a,0);if(L1){const b=L1.clone(true);b.visible=true;lod.addLevel(b,350)}lod.addLevel(new THREE.Object3D(),3000);lod.position.set(x,DECK_Y+AC.GH,z);lod.rotation.y=ry;scene.add(lod)}};
+      lod.addLevel(a,0);if(L1){const b=L1.clone(true);b.visible=true;lod.addLevel(b,150)}lod.addLevel(new THREE.Object3D(),3000);lod.position.set(x,DECK_Y+AC.GH,z);lod.rotation.y=ry;scene.add(lod)}};
   // 材質：烤漆（清漆層＋接縫凹線）、噴嘴金屬、座艙罩玻璃反光
   const MC={};const skinMat=m=>{if(MC[m.uuid])return MC[m.uuid];const n=m.name;let o;
     const base={color:m.color,map:m.map,transparent:m.transparent,opacity:m.opacity,side:THREE.DoubleSide,name:n};
@@ -840,7 +840,7 @@ function animParts(dt){const c=P.cmd||{pitch:0,roll:0},k=Math.min(1,dt*6),t=(n,v
   if(!PARTS){if(hookMesh)hookMesh.rotation.x=P.hook?HK[1]:HK[0];return}
   for(const s of ['I','O']){part('lef'+s+'L',-SURF.lef);part('lef'+s+'R',-SURF.lef)}
   part('flapL',SURF.flap+SURF.ail);part('flapR',SURF.flap-SURF.ail);part('ailL',SURF.flap*.6+SURF.ail);part('ailR',SURF.flap*.6-SURF.ail);
-  part('stabL',SURF.stab+SURF.stabR);part('stabR',SURF.stab-SURF.stabR);part('rudL',-SURF.rud);part('rudR',SURF.rud);part('hook',SURF.hook);
+  part('stabL',SURF.stab+SURF.stabR);part('stabR',SURF.stab-SURF.stabR);part('rudL',-SURF.rud);part('rudR',SURF.rud);part('lexSpL',-SURF.rud*1.5);part('lexSpR',-SURF.rud*1.5);part('hook',SURF.hook);
   // 起落架收放：放下時先開艙門再放輪，收起時先收輪再關門（約 4 秒）
   if(P.gearT===undefined)P.gearT=P.gear?1:0;P.gearT=clamp(P.gearT+(P.gear?1:-1)*dt/4,0,1);const gp=clamp((P.gearT-.15)/.85,0,1),dop=clamp(P.gearT*4,0,1),ge=x=>x*x*(3-2*x);
   {const f=1-ge(gp);part('gearN',f*1.75);part('gearML',f*1.55);part('gearMR',-f*1.55);const c=1-ge(dop);part('doorNL',c*1.5);part('doorNR',-c*1.5);part('doorML',c*1.45);part('doorMR',-c*1.45);
@@ -1767,14 +1767,14 @@ function loadYamato(S=YM.bb,b64=window.__GLB4,url='assets/yamato.glb'){const L2=
   const ok=g=>{let sc=g.scene,L0=sc.getObjectByName('LOD0');if(!L0)return;if(S===YM.bb)YM.glb=sc;
     // 姊妹艦差分檔（瑞鶴）：借翔鶴的網格（LOD0–2、砲座原型），換自己的甲板貼圖、加專屬零件（extra）、用自己的 layout／mounts
     const sis=L0.userData.sister;if(sis){const src=YM.glbBy[sis];if(!src){(YM.wait[sis]=YM.wait[sis]||[]).push(()=>ok(g));return}
-      const dc=sc.getObjectByName('deckcard'),map=dc&&(dc.isMesh?dc:dc.children.find(c=>c.isMesh)).material.map,sc2=new THREE.Group(),dm=new Map();
+      const dc=sc.getObjectByName('deckcard'),mp={},sc2=new THREE.Group(),dm=new Map();if(dc)dc.traverse(c=>{if(c.isMesh&&c.material.map)mp[c.material.name]=c.material.map});   // 差分檔帶的貼圖（甲板、艦體迷彩），依材質名換
       for(const o of src){const c=o.clone(true);if(c.name==='LOD0'){c.userData=Object.assign({},L0.userData);const x=sc.getObjectByName('extra');if(x)c.add(x)}sc2.add(c)}
-      if(map)sc2.traverse(m=>{if(m.isMesh&&m.material.name==='deck'){if(!dm.has(m.material)){const q=m.material.clone();q.map=map;dm.set(m.material,q)}m.material=dm.get(m.material)}});
+      sc2.traverse(m=>{if(m.isMesh&&mp[m.material.name]){if(!dm.has(m.material)){const q=m.material.clone();q.map=mp[m.material.name];dm.set(m.material,q)}m.material=dm.get(m.material)}});
       sc=sc2;L0=sc.getObjectByName('LOD0')}
     if(S.kind==='cv'&&!sis){sc.updateMatrixWorld(true);YM.glbBy[S.id]=['LOD0','LOD1','LOD2','AA25','HA127'].map(n=>sc.getObjectByName(n)).filter(Boolean).map(o=>o.clone(true));setTimeout(()=>{for(const f of YM.wait[S.id]||[])f();YM.wait[S.id]=[]},0)}
     const lay=JSON.parse(L0.userData.layout||'{}'),mo=JSON.parse(L0.userData.mounts||'{"aa":[],"ha":[]}');if(lay.deck)S.dk=lay.deck;ymMounts(S,mo);
     if(S.kind==='cv'){if(lay.planes){S.park.length=0;for(const [x,z,a] of lay.planes)S.park.push({p:V3(x,0,z),a,alive:true,burnt:false})}if(lay.launch)S.launch=lay.launch;if(lay.fdY)S.fdY=lay.fdY;if(lay.fdeck)S.fdZ0=lay.fdeck[0][0]+1;if(lay.boxes)S.boxes=lay.boxes;S.parkIM=null}
-    const lv=[L0,sc.getObjectByName('LOD1'),sc.getObjectByName('LOD2')];S.lods=lv;
+    const lv=[L0,sc.getObjectByName('LOD1'),sc.getObjectByName('LOD2')];S.lods=lv;S.det=L0.getObjectByName('det');   // det：航母 LOD0 的細節零件（800 m 外隱藏）
     for(const o of lv){if(!o)continue;o.parent&&o.parent.remove(o);S.tilt.add(o);o.traverse(m=>{if(m.isMesh){m.castShadow=false;m.receiveShadow=false;if(m.material.map)aniso(m.material.map,8,2)}})}
     // 機砲座、高角砲座：InstancedMesh（一種一次繪製）；被擊毀的那一座變黑、壓扁
     S.inst={};for(const [pn,key] of [['AA25','aa'],['HA127','ha']]){const pr=sc.getObjectByName(pn);if(!pr)continue;pr.updateWorldMatrix(true,true);const L=S[key],ims=[];
@@ -1785,6 +1785,14 @@ function loadYamato(S=YM.bb,b64=window.__GLB4,url='assets/yamato.glb'){const L2=
     lv[1].visible=lv[2].visible=false};
   if(b64){const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn(S.sh,e))}else L2.load(url,ok,undefined,e=>console.warn(S.sh,e))}
 loadYamato();loadYamato(YM.cvs[0],window.__GLB5,'assets/shokaku.glb');loadYamato(YM.cvs[1],window.__GLB6,'assets/zuikaku.glb');
+// 護航驅逐艦（assets/kagero.glb：陽炎型 1945 狀態，LOD0–2 各一次繪製；extras「mounts」＝砲座／機砲位置）；載入前用程式建模的 ddGeo
+function loadDD(b64=window.__GLB8,url='assets/kagero.glb'){const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);
+  const ok=g=>{const sc=g.scene,L0=sc.getObjectByName('LOD0');if(!L0)return;const mo=JSON.parse(L0.userData.mounts||'{"aa":[],"ha":[]}'),lay=JSON.parse(L0.userData.layout||'{}');
+    for(const S of YM.ships){if(S.kind!=='dd')continue;const lv=['LOD0','LOD1','LOD2'].map(n=>{const o=sc.getObjectByName(n).clone();o.traverse(m=>{if(m.isMesh){m.castShadow=m.receiveShadow=false}});S.tilt.add(o);return o});
+      if(S.mesh){S.tilt.remove(S.mesh);S.mesh=null}S.lods=lv;S.lodD=[900,4000];lv[1].visible=lv[2].visible=false;if(lay.deck)S.dk=lay.deck;
+      S.aa.length=S.ha.length=0;for(const [x,y,z,a] of mo.aa)S.aa.push({p:V3(x,y,z),a,alive:true,bh:0});for(const [x,y,z,a] of mo.ha)S.ha.push({p:V3(x,y,z),a,side:0,alive:true,cd:Math.random()*4,dd:true})}};
+  if(b64){const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn('dd',e))}else L2.load(url,ok,undefined,e=>console.warn('dd',e))}
+loadDD();
 function ymMountSet(S,key,i){const ims=S.inst&&S.inst[key];if(!ims)return;const m=S[key][i];_yq.setFromAxisAngle(_Y,m.a);_ym4.compose(m.p,_yq,_yS.set(1,m.alive?1:.55,1));
   for(const im of ims){im.setMatrixAt(i,_ym5.copy(_ym4).multiply(im.userData.m0));im.setColorAt(i,_yc.setScalar(m.alive?1:.16));im.instanceMatrix.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true}}
 // ---- 局部↔世界 ----
@@ -1843,9 +1851,12 @@ const CVSC=(()=>{const n=14,pos=[0,0,0],col=[.02,.02,.02],idx=[];for(let i=0;i<n
   return {g,m:new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.92,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2})}})();
 const ZTP=.21,ZH0=1.28,ZH1=1.55,_zq=new THREE.Quaternion(),_ZX=V3(1,0,0);
 function cvPark(S){const L2=ENE.zero.lod2;if(!L2||!S.lods)return;
-  if(!S.parkIM){S.parkIM=[];L2.updateWorldMatrix(true,true);L2.traverse(m=>{if(!m.isMesh)return;const im=new THREE.InstancedMesh(m.geometry,(window.__SKM||(q=>q))(m.material),S.park.length);im.userData.m0=m.matrixWorld.clone();im.castShadow=false;im.frustumCulled=false;S.parkIM.push(im);S.tilt.add(im)})}
+  if(!S.parkIM){S.parkIM=[];S.parkNM=[];L2.updateWorldMatrix(true,true);L2.traverse(m=>{if(!m.isMesh)return;const im=new THREE.InstancedMesh(m.geometry,(window.__SKM||(q=>q))(m.material),S.park.length);im.userData.m0=m.matrixWorld.clone();im.castShadow=false;im.frustumCulled=false;S.parkIM.push(im);S.tilt.add(im)});
+    // 近距（650 m 內）改用零戰 LOD0（近距合併版＋起落架＋螺旋槳）：機身細節、座艙罩、主輪／尾輪看得清楚
+    const D=ENE.zero;if(D.near&&D.l1m)for(const n of [D.near,D.prop,...(D.gear||[])]){if(!n)continue;n.updateMatrixWorld(true);n.traverse(m=>{if(!m.isMesh)return;for(let v=m;v;v=v.parent)if(!v.visible)return;
+      const im=new THREE.InstancedMesh(m.geometry,m.material,S.park.length);im.userData.m0=D.l1m.clone().multiply(m.matrixWorld);im.castShadow=false;im.frustumCulled=false;im.visible=false;S.parkNM.push(im);S.tilt.add(im)})}}
   S.park.forEach((k,i)=>{_yq.setFromAxisAngle(_Y,k.a).multiply(_zq.setFromAxisAngle(_ZX,ZTP));_ym4.compose(_y5.set(k.p.x,S.fdY+ZH0,k.p.z),_yq,_yS.set(1,k.alive?(k.burnt?.6:1):0,k.alive?1:0));
-    for(const im of S.parkIM){im.setMatrixAt(i,_ym5.copy(_ym4).multiply(im.userData.m0));im.setColorAt(i,_yc.setScalar(k.burnt?.12:1));im.instanceMatrix.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true}})}
+    for(const im of S.parkIM.concat(S.parkNM)){im.setMatrixAt(i,_ym5.copy(_ym4).multiply(im.userData.m0));im.setColorAt(i,_yc.setScalar(k.burnt?.12:1));im.instanceMatrix.needsUpdate=true;if(im.instanceColor)im.instanceColor.needsUpdate=true}})}
 const cvDeckOk=S=>!S.zones.some(z=>(z.id==='FDF'||z.id==='FDM')&&z.dead);
 // 起飛：甲板最前面一架滑到起飛位置，原地暖車 2.2 秒，再以約 3.4 m/s² 沿甲板加速，滑過甲板前緣離艦
 function cvLaunch(S){const k=S.park.find(k=>k.alive&&!k.burnt);if(!k)return false;k.alive=false;cvPark(S);const T=ETY.zero;
@@ -1927,8 +1938,8 @@ function updYM(dt){if(!YM.on)return;YM.t+=dt;const st=YM.st,bb=YM.bb,cp=cam.posi
     if((S.cap)&&S.sinkY>S.T*4+20){S.root.visible=false}
     ymXf(S);
     // 遠近：LOD0 1.6 km 內、LOD1 6 km 內、再遠用 LOD2；看不到的艦就不更新細節
-    const dc=S.pos.distanceTo(cp);if(S.lods){const l=dc<1600?0:dc<6000?1:2;S.lods.forEach((o,i)=>{if(o)o.visible=i===l});S.near=l===0}
-    if(S.kind==='cv'){cvUpd(S,dt);if(S.parkIM)for(const im of S.parkIM)im.visible=dc<2600&&S.root.visible}
+    const dc=S.pos.distanceTo(cp);if(S.lods){const D2=S.lodD||[1600,6000],l=dc<D2[0]?0:dc<D2[1]?1:2;S.lods.forEach((o,i)=>{if(o)o.visible=i===l});S.near=l===0;if(S.det)S.det.visible=dc<800}
+    if(S.kind==='cv'){cvUpd(S,dt);if(S.parkIM){const nr=dc<650&&S.parkNM.length>0;for(const im of S.parkIM)im.visible=!nr&&dc<2600&&S.root.visible;for(const im of S.parkNM)im.visible=nr&&S.root.visible}}
     S.wake.visible=S.root.visible&&S.spd>1.5&&!S.cap;if(S.wake.visible)S.wake.material.opacity=.9*clamp(S.spd/11,0,1);
     // GU（對地鎖定）位置
     for(const u of S.gu){if(!u.alive)continue;const z=u.zone;if(!z){ymW(S,_y1.set(0,8,-10),u.pos);continue}
@@ -2309,7 +2320,7 @@ function loadEne(ty,b64,url){const L2=new GLTFLoader();L2.setMeshoptDecoder(Mesh
     {const L0=g.scene.getObjectByName('LOD0');if(L0){g.scene.updateMatrixWorld(true);const c=L0.clone(true);c.traverse(o=>{if(/^(gear|door|hook|bomb|prop)/.test(o.name))o.visible=false});
       // 螺旋槳機：螺旋槳（會轉）與起落架（起飛時放下）另外存，掛在每架敵機上；LOD2 給航母甲板停放用（InstancedMesh）
       if(ty==='zero'){const rel=o=>{const n=o.clone(true);n.visible=true;new THREE.Matrix4().copy(L.matrixWorld).invert().multiply(o.matrixWorld).decompose(n.position,n.quaternion,n.scale);n.traverse(q=>{if(q.isMesh){q.castShadow=true;q.material=(window.__SKM||(m=>m))(q.material)}});return n};
-        const pr=L0.getObjectByName('prop');if(pr)D.prop=rel(pr);D.gear=['gearML','gearMR','gearT'].map(n=>L0.getObjectByName(n)).filter(Boolean).map(rel);D.lod2=g.scene.getObjectByName('LOD2')}
+        const pr=L0.getObjectByName('prop');if(pr)D.prop=rel(pr);D.gear=['gearML','gearMR','gearT'].map(n=>L0.getObjectByName(n)).filter(Boolean).map(rel);D.lod2=g.scene.getObjectByName('LOD2');D.l1m=L.matrixWorld.clone()}
       const n=mergeDeep(c);n.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=false;o.material=(window.__SKM||(m=>m))(o.material)}});
       new THREE.Matrix4().copy(L.matrixWorld).invert().multiply(L0.matrixWorld).decompose(n.position,n.quaternion,n.scale);D.near=n}}
     // 先前借用別的模型的敵機，換成正確機型
