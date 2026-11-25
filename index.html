@@ -119,6 +119,14 @@ body.inmenu .btn,body.inmenu #thr,body.inmenu #thrLbl,body.inmenu #col,body.inme
 #skTLk{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#ffe0a0;box-shadow:0 0 0 2px rgba(0,0,0,.6)}
 .skTk{position:absolute;top:-6px;width:2px;height:18px;margin-left:-1px;background:#ff6a4a}
 #skTime{font:600 12px ui-monospace,monospace;color:var(--ink);white-space:nowrap;width:82px;text-align:center;flex:none}
+#ph{position:fixed;inset:0;z-index:80;display:none;flex-direction:column;background:rgba(6,8,8,.96);padding:calc(8px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));color:var(--ink);font:13px system-ui,sans-serif;touch-action:none}
+#phTop{display:flex;justify-content:space-between;align-items:center;flex:none;letter-spacing:2px;font-weight:800}
+#phBox{flex:1;min-height:0;display:flex;align-items:center;gap:8px;position:relative}
+#phI{flex:1;min-width:0;height:100%;object-fit:contain;transition:opacity .25s;filter:contrast(1.05)}
+#phMsg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:.8}
+.phA{height:56px;min-width:44px;font-size:22px}
+#phCap{flex:none;text-align:center;margin-top:6px;font-weight:700}
+#phSrc{flex:none;text-align:center;font-size:11px;opacity:.65}#phSrc a{color:inherit}
 .skSeg{display:flex;gap:3px;flex:none}.skSeg .skB{min-width:38px;padding:0 6px}
 #skCams{display:flex;gap:4px;overflow-x:auto;flex:1 1 auto;min-width:0;scrollbar-width:none}#skCams::-webkit-scrollbar{display:none}
 @media (max-width:760px){#sk .skB{padding:0 6px;letter-spacing:0;font-size:12px}#sk .skSeg .skB{min-width:34px;padding:0 4px}#skTime{width:74px}#skTitle{font-size:14px;letter-spacing:1px}}
@@ -158,7 +166,7 @@ body.skon .btn,body.skon #thr,body.skon #thrLbl,body.skon #col,body.skon #stickB
     <div class="tag"><span class="dot"></span>CVN-09 ◆ 第七艦載機聯隊 ◆ <b>機密</b></div>
     <h1 class="logo">怒海雄鷹</h1>
     <div class="logoE">OPERATION&nbsp;SEA&nbsp;HAWK</div>
-    <div class="sub">試飛版 0.32 ｜ F/A-18E 超級大黃蜂</div>
+    <div class="sub">試飛版 0.33 ｜ F/A-18E 超級大黃蜂</div>
     <div class="sl" style="margin-top:12px">作戰難度 / DIFFICULTY</div>
     <div class="seg diff"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
     <div class="hLinks"><button class="mb ghost" id="mSet">⚙ 設定</button><button class="mb ghost" id="mHelp">操作說明</button><button class="mb ghost" id="mStat">★ 戰績</button></div>
@@ -2128,17 +2136,48 @@ const skE=(t,fn,mk)=>({t,fn,mk});
 const skFireAt=(p,t0,t1,s)=>({p:p.clone?p.clone():V3(p[0],p[1],p[2]),t0,t1,s});
 /*==SINK_FRAMEWORK_END==*/
 /*==SINK_UI_BEGIN==*/
+// ---- 史實照片（獨立檢視，不混進 3D）：Wikimedia Commons 公有領域照片，執行時從網路載入 ----
+const PHW=f=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(f)+'?width=1280',PHP=f=>'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(f.replace(/ /g,'_'));
+const PHOTOS={
+ bb:[['Japanese battleship Yamato explodes on 7 April 1945 (NH 62579).jpg','1945/4/7 天一號作戰：大和翻覆後殉爆，美軍艦載機拍攝','美國海軍歷史與遺產司令部 NH 62579（公有領域）'],
+  ['Explosion of the Japanese battleship Yamato, on 7 April 1945 (NH 62582).jpg','大和爆炸瞬間，左側為護航驅逐艦','NHHC NH 62582（公有領域）'],
+  ['Explosion of the Japanese battleship Yamato, 7 April 1945 (NH 62584).jpg','大和翻覆殉爆後，煙柱升入雲層','NHHC NH 62584（公有領域）'],
+  ['Damaged Japanese battleship Yamato underway on 7 April 1945 (NH 62580).jpg','同日稍早：受創的大和仍在航行','NHHC NH 62580（公有領域）'],
+  ['Japanese battleship Yamato under attack in the East China Sea on 7 April 1945 (L42-09.06.05).jpg','東海上空遭美軍機攻擊中的大和','NHHC L42-09.06.05（公有領域）'],
+  ['Yamato during Trial Service.jpg','1941 年試航中的大和','日本海軍照片（公有領域）']],
+ shokaku:[['Aircraft carrier shokaku h73066.jpg','1941/8 甫完工的翔鶴（橫須賀）','NHHC NH 73066（公有領域）'],
+  ['BattleCoralSea Shokaku g17031.jpg','1942/5/8 珊瑚海海戰：翔鶴艦艏中彈起火','美國國家檔案館 80-G-17031（公有領域）']],
+ zuikaku:[['Japanese carrier under attack during Battle off Cape Engaño 1944.jpg','1944/10/25 恩加諾角海戰：遭俯衝轟炸的日本航母（極可能是瑞鶴）','美國海軍（公有領域）'],
+  ['Lowering the flag on Zuikaku.jpg','瑞鶴沉沒前，乘員向降下的軍艦旗敬禮','NHHC（公有領域）'],
+  ['Japanese.aircraft.carrier.zuikaku.jpg','1941/9 完工時的瑞鶴','吳海事博物館（公有領域）']],
+ dd:[['Hamakaze-19450407-tengo.jpg','1945/4/7 天一號作戰：遭空襲的陽炎型驅逐艦濱風，不久後被擊沉','公有領域'],
+  ['Japanese light cruiser Yahagi under attack by U.S. planes on 7 April 1945 (80-G-316084).jpg','同一艦隊的輕巡矢矧遭美軍機攻擊','美國國家檔案館 80-G-316084（公有領域）']]};
+function phList(S){if(!S)return [];return PHOTOS[S.id]||PHOTOS[S.kind]||[]}
+let PH=null;
+function phOpen(S){const L=phList(S);if(!L.length)return;const C=SINKCIN;
+ if(!PH){PH=document.createElement('div');PH.id='ph';PH.innerHTML='<div id="phTop"><span id="phN"></span><button class="skB" id="phX">✕ 關閉</button></div><div id="phBox"><button class="skB phA" id="phL">‹</button><img id="phI" alt=""><div id="phMsg"></div><button class="skB phA" id="phR">›</button></div><div id="phCap"></div><div id="phSrc"></div>';document.body.appendChild(PH);
+  const st=e=>e.stopPropagation();PH.addEventListener('pointerdown',st);PH.addEventListener('touchstart',st,{passive:true});
+  const I=PH.querySelector('#phI'),M=PH.querySelector('#phMsg');I.onload=()=>{M.textContent='';I.style.opacity=1};I.onerror=()=>{M.textContent='照片載入失敗（需要網路連線）';I.style.opacity=0};
+  PH.querySelector('#phX').onclick=phClose;PH.querySelector('#phL').onclick=()=>phGo(-1);PH.querySelector('#phR').onclick=()=>phGo(1);
+  let sx=null;I.addEventListener('pointerdown',e=>{sx=e.clientX});I.addEventListener('pointerup',e=>{if(sx!=null&&Math.abs(e.clientX-sx)>40)phGo(e.clientX<sx?1:-1);sx=null});}
+ PH.L=L;PH.i=0;PH.wasPlay=C.playing;C.playing=false;PH.style.display='flex';phGo(0)}
+function phGo(d){const L=PH.L;PH.i=(PH.i+d+L.length)%L.length;const [f,cap,src]=L[PH.i],I=PH.querySelector('#phI');
+ I.style.opacity=.15;PH.querySelector('#phMsg').textContent='載入中…';I.src=PHW(f);PH.querySelector('#phN').textContent='史實照片 '+(PH.i+1)+' / '+L.length;
+ PH.querySelector('#phCap').textContent=cap;PH.querySelector('#phSrc').innerHTML='來源：'+src+'・<a href="'+PHP(f)+'" target="_blank" rel="noopener">Wikimedia Commons</a>';
+ PH.querySelector('#phL').style.visibility=PH.querySelector('#phR').style.visibility=L.length>1?'':'hidden'}
+function phClose(){if(!PH)return;PH.style.display='none';if(PH.wasPlay&&SINKCIN.active)SINKCIN.playing=true}
 // ---- 過場介面：寬銀幕黑邊、標題、時間軸（可拖曳、事件刻度）、播放／暫停、速度、機位、自由視角、跳過 ----
 const skUI=(()=>{let R=null,E={},last='';const fmt=t=>{t=Math.max(0,t);return (t/60|0)+':'+String(t%60|0).padStart(2,'0')};
   function build(){R=document.createElement('div');R.id='sk';
     R.innerHTML='<div id="skTop" class="skBar"><div id="skTitle"></div><div id="skSub"></div><div id="skQ"></div></div><div id="skView"></div>'+
       '<div id="skBot" class="skBar"><div class="skRow"><button class="skB" id="skPlay">❚❚</button><div id="skTL"><div id="skTLb"><div id="skTLw"></div><div id="skTLf"></div><div id="skTicks"></div><div id="skTLk"></div></div></div><div id="skTime">0:00 / 0:00</div>'+
       '<div class="skSeg" id="skSpd"><button class="skB" data-sp=".25">¼×</button><button class="skB" data-sp=".5">½×</button><button class="skB sel" data-sp="1">1×</button><button class="skB" data-sp="2">2×</button></div></div>'+
-      '<div class="skRow"><div id="skCams"></div><button class="skB" id="skFree">自由視角</button><button class="skB skip" id="skSkip">跳過 ▶▶</button></div></div>';
-    document.body.appendChild(R);for(const id of ['skTop','skBot','skTitle','skSub','skQ','skView','skPlay','skTL','skTLb','skTLw','skTLf','skTicks','skTLk','skTime','skSpd','skCams','skFree','skSkip'])E[id]=document.getElementById(id);
+      '<div class="skRow"><div id="skCams"></div><button class="skB" id="skPh">📷 史實照片</button><button class="skB" id="skFree">自由視角</button><button class="skB skip" id="skSkip">跳過 ▶▶</button></div></div>';
+    document.body.appendChild(R);for(const id of ['skTop','skBot','skTitle','skSub','skQ','skView','skPlay','skTL','skTLb','skTLw','skTLf','skTicks','skTLk','skTime','skSpd','skCams','skPh','skFree','skSkip'])E[id]=document.getElementById(id);
     const C=SINKCIN,stop=e=>{e.stopPropagation()};R.addEventListener('pointerdown',stop);R.addEventListener('touchstart',stop,{passive:true});
     E.skPlay.onclick=()=>{C.playing=!C.playing;if(C.playing&&C.t>=C.tEnd-.01)C.seek(0);tick(1)};
-    E.skSkip.onclick=()=>C.skip();
+    E.skSkip.onclick=()=>{phClose();C.skip()};
+    E.skPh.onclick=()=>phOpen(C.S);
     E.skFree.onclick=()=>{if(C.free){C.free=null}else C.freeOn();camSel()};
     E.skSpd.querySelectorAll('[data-sp]').forEach(b=>b.onclick=()=>{C.spd=+b.dataset.sp;E.skSpd.querySelectorAll('[data-sp]').forEach(x=>x.classList.toggle('sel',x===b))});
     // 時間軸拖曳：拖曳中暫停播放，每幀最多重放一次（C.pend）
@@ -2162,7 +2201,7 @@ const skUI=(()=>{let R=null,E={},last='';const fmt=t=>{t=Math.max(0,t);return (t
   function camSel(){const C=SINKCIN;E.skCams.querySelectorAll('[data-cam]').forEach(b=>b.classList.toggle('sel',!C.free&&+b.dataset.cam===C.cam));E.skFree.classList.toggle('sel',!!C.free)}
   function tick(force){const C=SINKCIN,P=C.P;if(!P||!R)return;const s=fmt(C.t)+' / '+fmt(P.dur)+(C.playing?'':'p');if(s!==last||force){last=s;E.skTime.textContent=fmt(C.t)+' / '+fmt(P.dur);E.skPlay.textContent=C.playing?'❚❚':'▶'}if(!C.drag)knob(C.t)}
   function q(){if(!R)return;const Q=SINKCIN.queue;E.skQ.textContent=Q.length?'接著：'+Q.map(x=>x[0].sh).join('、'):''}
-  function show(S,P){if(!R)build();const C=SINKCIN;E.skTitle.textContent=S.sh+'　'+P.label;E.skSub.textContent=P.note||'';
+  function show(S,P){if(!R)build();const C=SINKCIN;E.skPh.style.display=phList(S).length?'':'none';E.skTitle.textContent=S.sh+'　'+P.label;E.skSub.textContent=P.note||'';
     E.skTicks.innerHTML='';for(const e of C.ev)if(e.mk){const d=document.createElement('div');d.className='skTk';d.style.left=(e.t/P.dur*100)+'%';d.title=e.mk;d.dataset.mk=e.mk;E.skTicks.appendChild(d)}
     E.skTLw.style.display=P.short?'block':'none';if(P.short){E.skTLw.style.left=(C.t0/P.dur*100)+'%';E.skTLw.style.width=((C.tEnd-C.t0)/P.dur*100)+'%'}
     E.skCams.innerHTML='';C.cams.forEach((c,i)=>{const b=document.createElement('button');b.className='skB';b.dataset.cam=i;b.textContent=c.name;b.onclick=()=>{C.cam=i;C.free=null;camSel()};E.skCams.appendChild(b)});
@@ -2580,7 +2619,7 @@ function cams(S,P){const C=(t)=>{const r=rootAt(P,t),hd=r[2];return {x:r[0],z:r[
   const shake=(o,t,amp)=>{const tau=t-tx;if(tau>0&&tau<4){const d=o.p.distanceTo(_v.set(X[0],X[1],X[2])),k=amp*Math.exp(-tau*1.4)*clamp(2500/d,0,1)*30;o.p.x+=Math.sin(t*61)*k;o.p.y+=Math.sin(t*47+1)*k*.6;o.p.z+=Math.cos(t*53)*k}if(o.p.y<2)o.p.y=2;return o};
   const tgt=(t)=>{const c=C(t),g=Math.min(P.goneF,P.goneA);return t<g?wp(P,false,t,V3(0,8,P.zc!=null&&t>=tx?(P.zc-131)/2+30:0),V3()):V3(c.x,0,c.z)};
   const L=[
-   {name:'史實照片',fn:(S,P,t)=>{const c=C(0),k=pb(t),k2=ss(tx+14,tx+60,t),D=2700+4700*k+4000*k2,h=1350+1450*k+600*k2,a=P.yhd0+Math.PI*.7;const p=V3(c.x+Math.sin(a)*D,h,c.z+Math.cos(a)*D),l=V3(X[0],lerp(0,P.H*.38,k)+P.H*.12*k2,X[2]);return {p,l,fov:20+32*k+6*k2}}},
+   {name:'美軍機視角',fn:(S,P,t)=>{const c=C(0),k=pb(t),k2=ss(tx+14,tx+60,t),D=2700+4700*k+4000*k2,h=1350+1450*k+600*k2,a=P.yhd0+Math.PI*.7;const p=V3(c.x+Math.sin(a)*D,h,c.z+Math.cos(a)*D),l=V3(X[0],lerp(0,P.H*.38,k)+P.H*.12*k2,X[2]);return {p,l,fov:20+32*k+6*k2}}},
    {name:'低角水面',fn:(S,P,t)=>{const c=C(t),k=pb(t),D=(P.mode==='bow'?430:650)+1300*k;const p=V3(c.x+c.sx*ls*D-c.fx*140,4+20*k,c.z+c.sz*ls*D-c.fz*140),l=tgt(t).add(V3(0,12+P.H*.16*k,0));return shake({p,l,fov:42+14*k},t,1)}},
    {name:'艦橋特寫',fn:(S,P,t)=>{const c=C(t),brk=P.zc!=null&&t>=tx,lp=brk?V3(0,2,P.zc-14):V3(0,30,-3),q=wp(P,false,Math.min(t,P.goneF),lp,V3());q.y=Math.max(1,q.y);const D=brk?190:120,p=V3(q.x+c.sx*ls*D+c.fx*(brk?-90:45),Math.max(14,q.y+(brk?26:8)),q.z+c.sz*ls*D+c.fz*(brk?-90:45));return shake({p,l:q,fov:48},t,1.4)}},
    {name:'蕈狀雲遠景',fn:(S,P,t)=>{const k=ss(tx-.5,tx+6,t),R=16000,p=V3(X[0]+Math.sin(P.farA)*R,140,X[2]+Math.cos(P.farA)*R),l=V3(X[0],lerp(40,P.H?P.H*.45:400,k),X[2]);return {p,l,fov:lerp(4.5,P.H?34:12,k)}}},
