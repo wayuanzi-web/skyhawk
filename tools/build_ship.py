@@ -770,9 +770,13 @@ fine = finish(mb, "fine", static=False, sharp=0); fine.parent = LOD0
 
 # ---------------- 機砲座、高角砲座原型 ----------------
 mb = MB(); mount25(mb, (0, 0, 0), 0.0)
-revolve(mb, [(0, 1.95), (1.0, 1.95)], (0, 0, 0), (0, 1, 0), "steel2", 16, False)                   # 圓形防彈圍（1945 照片／模型：筒狀機砲座）
-revolve(mb, [(0, 1.82), (1.0, 1.82)], (0, 0, 0), (0, 1, 0), "steel2", 16, False)
-revolve(mb, [(1.0, 1.82), (1.0, 1.95)], (0, 0, 0), (0, 1, 0), "steel2", 16, False)
+# 圓形防彈圍（1945 線圖俯視：機砲座是直徑約 5 m 的大圓筒，舷邊的會伸出甲板外；遠看上層結構的「毛茸茸」輪廓主要來自這些圓筒）
+AR = 2.5
+revolve(mb, [(0, AR), (1.15, AR)], (0, 0, 0), (0, 1, 0), "steel2", 18, False)
+revolve(mb, [(0, AR - 0.13), (1.15, AR - 0.13)], (0, 0, 0), (0, 1, 0), "steel2", 18, False)
+revolve(mb, [(1.15, AR - 0.13), (1.15, AR)], (0, 0, 0), (0, 1, 0), "steel2", 18, False)
+cyl(mb, (0, -0.02, 0), (0, 0.04, 0), AR, "steel2", 18)                                              # 台面
+cyl(mb, (0, -0.9, 0), (0, -0.02, 0), AR * 0.55, "steel2", 12, False, AR)                           # 下方漏斗形托座（伸出甲板外的不懸空）
 AAP = finish(mb, "AA25", static=False)
 def ha127(mb, c, rot):
     """八九式 12.7 cm 連裝高角砲（A1 型防盾）：圓頂防盾、雙管、旋轉座。"""
@@ -807,7 +811,7 @@ mounts["ha"] = [[round(v, 3) if isinstance(v, float) else v for v in m] for m in
 
 # ---------------- 貼圖 ----------------
 def tex_deck(path, W=4096, Hh=1024):
-    img = Image.new("RGB", (W, Hh), (190, 165, 118)); dr = ImageDraw.Draw(img); rnd = random.Random(3)
+    img = Image.new("RGB", (W, Hh), (180, 162, 126)); dr = ImageDraw.Draw(img); rnd = random.Random(3)
     px = lambda z, x: ((z - Z0) / L * W, (1 - (x + 20) / 40) * Hh)
     pw = 0.36; n = int(40 / pw)
     for i in range(n):   # 木條：每條色差、錯開的端接縫
@@ -815,7 +819,7 @@ def tex_deck(path, W=4096, Hh=1024):
         z = Z0; off = rnd.uniform(0, 8)
         while z < -Z0:
             ln = rnd.uniform(6.0, 9.0); k = base * rnd.uniform(0.95, 1.05)
-            c = tuple(int(v * k) for v in (192, 166, 120))
+            c = tuple(int(v * k) for v in (182, 163, 128))
             a, b = px(z + off * 0, x0), px(z + ln, x0 + pw)
             dr.rectangle([a[0], b[1], b[0], a[1]], fill=c)
             dr.line([px(z, x0), px(z, x0 + pw)], fill=(120, 100, 70), width=1)
@@ -860,15 +864,15 @@ def tex_deck(path, W=4096, Hh=1024):
 def tex_hull(path, W=4096, Hh=512):
     img = Image.new("RGB", (W, Hh)); dr = ImageDraw.Draw(img); rnd = random.Random(5)
     py = lambda y: (1 - (y + 11) / 23) * Hh; pz = lambda z: (z - Z0) / L * W
-    grey = (104, 111, 116)
+    grey = (122, 128, 132)
     dr.rectangle([0, 0, W, py(0.9)], fill=grey)
     dr.rectangle([0, py(0.9), W, py(-0.7)], fill=(30, 30, 32))             # 水線帶（黑）
     dr.rectangle([0, py(-0.7), W, Hh], fill=(118, 44, 38))                  # 水線下防污漆（紅）
     for i in range(int(L / 2.2)):   # 船殼板接縫
-        z = Z0 + i * 2.2; dr.line([(pz(z), py(13)), (pz(z), py(1.2))], fill=(96, 103, 108), width=1)
-    for y in (3.2, 6.0): dr.line([(0, py(y)), (W, py(y))], fill=(96, 103, 108), width=1)
+        z = Z0 + i * 2.2; dr.line([(pz(z), py(13)), (pz(z), py(1.2))], fill=(113, 119, 123), width=1)
+    for y in (3.2, 6.0): dr.line([(0, py(y)), (W, py(y))], fill=(113, 119, 123), width=1)
     B_ = P["hull"]["belt"]   # 舷側裝甲帶：稍深的一條
-    dr.rectangle([pz(B_["z0"]), py(B_["y1"]), pz(B_["z1"]), py(0.9)], fill=(97, 104, 109))
+    dr.rectangle([pz(B_["z0"]), py(B_["y1"]), pz(B_["z1"]), py(0.9)], fill=(115, 121, 125))
     for row_y, z0, z1 in ((5.0, -112, -70), (6.9, -112, -66), (5.0, 68, 122), (6.9, 64, 124), (4.8, -66, 64)):
         z = z0
         while z < z1:
@@ -884,7 +888,7 @@ def tex_hull(path, W=4096, Hh=512):
     for i in range(int(L / 6)):
         z = Z0 + 4 + i * 6; dr.rectangle([pz(z) - 2, py(7.9), pz(z) + 2, py(7.6)], fill=(40, 42, 44))
     for row_y, z0, z1 in ((5.0, -112, -70), (6.9, -112, -66), (5.0, 68, 122), (6.9, 64, 124), (4.8, -66, 64)):
-        dr.line([(pz(z0), py(row_y + 0.35)), (pz(z1), py(row_y + 0.35))], fill=(92, 99, 104), width=1)
+        dr.line([(pz(z0), py(row_y + 0.35)), (pz(z1), py(row_y + 0.35))], fill=(109, 115, 119), width=1)
     ov = Image.new("RGBA", (W, Hh), (0, 0, 0, 0)); od = ImageDraw.Draw(ov)
     for z in (-123.0,):   # 錨鏈孔下方鏽痕
         for k in range(6): od.line([(pz(z) + k * 2 - 5, py(6.8)), (pz(z) + k * 2 - 5 + rnd.uniform(-2, 2), py(rnd.uniform(2.0, 4.0)))], fill=(90, 58, 38, 90), width=2)
@@ -934,9 +938,34 @@ for name, target in P["lods"].items():
     j = join(dup, name)
     bpy.context.view_layer.objects.active = j; bpy.ops.object.select_all(action='DESELECT'); j.select_set(True)
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-    bm = bmesh.new(); bm.from_mesh(j.data); bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.02); bm.to_mesh(j.data); bm.free()
+    bm = bmesh.new(); bm.from_mesh(j.data); bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.02)
+    if name == "LOD2":
+        # 6 km 外：先丟掉小零件（欄杆段、線纜、小箱子等對角線 < 2.5 m 的獨立塊），再平面溶解，最後才塌縮減面。
+        # 原本整艘直接塌縮到 7%，艦體被吃出大洞、上層結構碎成片（修前 LOD2 破面）。
+        bm.verts.ensure_lookup_table(); seen = set(); kill = []
+        for v0 in bm.verts:
+            if v0.index in seen: continue
+            isl = [v0]; seen.add(v0.index); k = 0
+            while k < len(isl):
+                for e in isl[k].link_edges:
+                    w = e.other_vert(isl[k])
+                    if w.index not in seen: seen.add(w.index); isl.append(w)
+                k += 1
+            xs_ = [v.co.x for v in isl]; ys_ = [v.co.y for v in isl]; zs_ = [v.co.z for v in isl]
+            if math.dist((min(xs_), min(ys_), min(zs_)), (max(xs_), max(ys_), max(zs_))) < 2.5: kill += isl
+        bmesh.ops.delete(bm, geom=kill, context='VERTS')
+    bm.to_mesh(j.data); bm.free()
+    if name == "LOD2":
+        m = j.modifiers.new("pl", "DECIMATE"); m.decimate_type = 'DISSOLVE'; m.angle_limit = math.radians(4); bpy.ops.object.modifier_apply(modifier="pl")
+        m = j.modifiers.new("tr", "TRIANGULATE"); bpy.ops.object.modifier_apply(modifier="tr")
     m = j.modifiers.new("dec", "DECIMATE"); m.ratio = min(1.0, target / max(1, tri(j)))
-    bpy.ops.object.modifier_apply(modifier="dec"); stats[name] = tri(j)
+    bpy.ops.object.modifier_apply(modifier="dec")
+    # 減面後重算法線並依角度切硬邊（否則整片平滑法線會讓砲塔、甲板室變成圓鼓鼓的，1.6 km 切 LOD 時明暗跳動）
+    bm = bmesh.new(); bm.from_mesh(j.data); bm.normal_update()
+    se = [e for e in bm.edges if len(e.link_faces) == 2 and e.calc_face_angle(0) > math.radians(40)]
+    bmesh.ops.split_edges(bm, edges=se)
+    for f in bm.faces: f.smooth = True
+    bm.to_mesh(j.data); bm.free(); stats[name] = tri(j)
 bpy.context.view_layer.update()
 pts = [o.matrix_world @ v.co for o in mesh_nodes for v in o.data.vertices]
 xs = [p.x for p in pts]; ys = [p.y for p in pts]; zs = [p.z for p in pts]
