@@ -166,7 +166,7 @@ body.skon .btn,body.skon #thr,body.skon #thrLbl,body.skon #col,body.skon #stickB
     <div class="tag"><span class="dot"></span>CVN-09 ◆ 第七艦載機聯隊 ◆ <b>機密</b></div>
     <h1 class="logo">怒海雄鷹</h1>
     <div class="logoE">OPERATION&nbsp;SEA&nbsp;HAWK</div>
-    <div class="sub">試飛版 0.33 ｜ F/A-18E 超級大黃蜂</div>
+    <div class="sub">試飛版 0.34 ｜ F/A-18E 超級大黃蜂</div>
     <div class="sl" style="margin-top:12px">作戰難度 / DIFFICULTY</div>
     <div class="seg diff"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
     <div class="hLinks"><button class="mb ghost" id="mSet">⚙ 設定</button><button class="mb ghost" id="mHelp">操作說明</button><button class="mb ghost" id="mStat">★ 戰績</button></div>
@@ -1813,11 +1813,11 @@ for(let i=0;i<3;i++){const S=mkShip({kind:'dd',nm:'驅逐艦 '+DDNAMES[i],sh:DDN
   YM.ships.push(S)}
 // 大和
 YM.bb=(()=>{const S=mkShip({kind:'bb',nm:'大和',sh:'大和',L:263,B:38.9,T:10.4,dk:YDK0,
-  boxes:[[15.2,8,12.4,-24,52],[11.2,12,15.2,-20,40.5],[7,15,18.8,-8,30],[4.8,18,38.5,-8.5,2.5],[5,18,34,9,30],[8,8,15.2,-63,-44],[8,8,18.6,-43,-23],[8,8,15.2,48,69],[4.5,15,22,-20,-10],[4.5,12,18,39,50],[17.6,12.4,13.4,8.5,23],[16.4,15.6,16.6,-6.5,38]]});
+  boxes:[[15.2,8,12.4,-8.5,44],[11.2,12,16,-6,40.5],[7.8,15.6,19.7,-5.5,34.6],[5,19.5,41,-3.9,7.7],[4.6,17,31.6,13,31],[7.4,8,12.9,-59,-40.5],[7.4,8,15.9,-36.5,-18],[7.4,8,12.9,53,72],[4,14.5,18,-17,-8],[4,13,16.8,44.5,54],[3,15.8,26,37,43.5],[16.4,12.2,13.4,6,31],[9.8,21.5,22.2,1,31]]});
   // 損傷分區（局部位置 p、半徑 r、耐久 hp）；主砲／副砲的節點載入模型後接上
   const Z=(id,nm,kind,p,r,hp,o)=>Object.assign({id,nm,kind,p,r,hp,hp0:hp,dead:false},o||{});
-  S.zones=[Z('T1','一號主砲塔','main',V3(0,12,-54),10,4),Z('T2','二號主砲塔','main',V3(0,15.5,-33.5),10,4),Z('T3','三號主砲塔','main',V3(0,12,58.5),10,4),
-    Z('S1','前部副砲塔','sec',V3(0,20,-15),6,2),Z('S2','後部副砲塔','sec',V3(0,16.5,44),6,2),Z('BR','艦橋','bridge',V3(0,29,-3),8,3),Z('FN','煙囪','funnel',V3(0,27,19),7,3),
+  S.zones=[Z('T1','一號主砲塔','main',V3(0,11,-49.8),10,4),Z('T2','二號主砲塔','main',V3(0,14,-27.2),10,4),Z('T3','三號主砲塔','main',V3(0,11,62.5),10,4),
+    Z('S1','前部副砲塔','sec',V3(0,17,-12.7),6,2),Z('S2','後部副砲塔','sec',V3(0,15.5,49),6,2),Z('BR','艦橋','bridge',V3(0,30,2),8,3),Z('FN','煙囪','funnel',V3(0,26,23),7,3),
     Z('HL','左舷高角砲','ha',V3(),0,0,{side:-1}),Z('HR','右舷高角砲','ha',V3(),0,0,{side:1}),
     Z('AF','前部機砲群','aa',V3(),0,0,{grp:'F'}),Z('AL','左舷機砲群','aa',V3(),0,0,{grp:'ML'}),Z('AR','右舷機砲群','aa',V3(),0,0,{grp:'MR'}),Z('AA','後部機砲群','aa',V3(),0,0,{grp:'A'})];
   S.mag=0;S.sanT=30;return S})();
