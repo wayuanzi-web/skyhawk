@@ -166,7 +166,7 @@ body.skon .btn,body.skon #thr,body.skon #thrLbl,body.skon #col,body.skon #stickB
     <div class="tag"><span class="dot"></span>CVN-09 ◆ 第七艦載機聯隊 ◆ <b>機密</b></div>
     <h1 class="logo">怒海雄鷹</h1>
     <div class="logoE">OPERATION&nbsp;SEA&nbsp;HAWK</div>
-    <div class="sub">試飛版 0.35 ｜ F/A-18E 超級大黃蜂</div>
+    <div class="sub">試飛版 0.36 ｜ F/A-18E 超級大黃蜂</div>
     <div class="sl" style="margin-top:12px">作戰難度 / DIFFICULTY</div>
     <div class="seg diff"><button class="mb sel" data-d="0">簡單</button><button class="mb" data-d="1">普通</button><button class="mb" data-d="2">擬真</button></div>
     <div class="hLinks"><button class="mb ghost" id="mSet">⚙ 設定</button><button class="mb ghost" id="mHelp">操作說明</button><button class="mb ghost" id="mStat">★ 戰績</button></div>
@@ -1855,7 +1855,10 @@ function loadYamato(S=YM.bb,b64=window.__GLB4,url='assets/yamato.glb'){const L2=
     if(S.kind==='cv'&&!sis){sc.updateMatrixWorld(true);YM.glbBy[S.id]=['LOD0','LOD1','LOD2','AA25','HA127'].map(n=>sc.getObjectByName(n)).filter(Boolean).map(o=>o.clone(true));setTimeout(()=>{for(const f of YM.wait[S.id]||[])f();YM.wait[S.id]=[]},0)}
     const lay=JSON.parse(L0.userData.layout||'{}'),mo=JSON.parse(L0.userData.mounts||'{"aa":[],"ha":[]}');if(lay.deck)S.dk=lay.deck;ymMounts(S,mo);
     if(S.kind==='cv'){if(lay.planes){S.park.length=0;for(const [x,z,a] of lay.planes)S.park.push({p:V3(x,0,z),a,alive:true,burnt:false})}if(lay.launch)S.launch=lay.launch;if(lay.fdY)S.fdY=lay.fdY;if(lay.fdeck)S.fdZ0=lay.fdeck[0][0]+1;if(lay.boxes)S.boxes=lay.boxes;S.parkIM=null}
-    const lv=[L0,sc.getObjectByName('LOD1'),sc.getObjectByName('LOD2')];S.lods=lv;S.det=L0.getObjectByName('det');   // det：航母 LOD0 的細節零件（800 m 外隱藏）
+    const lv=[L0,sc.getObjectByName('LOD1'),sc.getObjectByName('LOD2')];S.lods=lv;S.det=L0.getObjectByName('det');
+    // 天線線纜（extras.wires）：細線（LineSegments，抗鋸齒、固定 1 px）隨距離淡出；原本的細圓柱 300 m 外會閃成虛線
+    if(L0.userData.wires){const W=JSON.parse(L0.userData.wires),pp=[];for(const l of W)for(let i=0;i+1<l.length;i++)pp.push(...l[i],...l[i+1]);const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.Float32BufferAttribute(pp,3));
+      const wl=new THREE.LineSegments(gg,new THREE.LineBasicMaterial({color:0x2b2d2f,transparent:true,opacity:.8,depthWrite:false}));wl.name='wires';wl.userData.cineB=1;wl.frustumCulled=false;L0.add(wl);S.wl=wl}   // det：航母 LOD0 的細節零件（800 m 外隱藏）
     for(const o of lv){if(!o)continue;o.parent&&o.parent.remove(o);S.tilt.add(o);o.traverse(m=>{if(m.isMesh){m.castShadow=false;m.receiveShadow=false;if(m.material.map)aniso(m.material.map,8,2)}})}
     // 機砲座、高角砲座：InstancedMesh（一種一次繪製）；被擊毀的那一座變黑、壓扁
     S.inst={};for(const [pn,key] of [['AA25','aa'],['HA127','ha']]){const pr=sc.getObjectByName(pn);if(!pr)continue;pr.updateWorldMatrix(true,true);const L=S[key],ims=[];
@@ -1866,6 +1869,29 @@ function loadYamato(S=YM.bb,b64=window.__GLB4,url='assets/yamato.glb'){const L2=
     lv[1].visible=lv[2].visible=false};
   if(b64){const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);L2.parse(u8.buffer,'',ok,e=>console.warn(S.sh,e))}else L2.load(url,ok,undefined,e=>console.warn(S.sh,e))}
 loadYamato();loadYamato(YM.cvs[0],window.__GLB5,'assets/shokaku.glb');loadYamato(YM.cvs[1],window.__GLB6,'assets/zuikaku.glb');
+// 大和近景（電影級）模型 assets/yamato_cine.glb：只在 精緻／標準 畫質、大和任務開始後背景載入（不阻塞開局；省電畫質完全不載）。
+// 350 m 內與沉沒過場特寫時，艦體／細件／砲塔外殼／砲管／機砲座換成近景網格：近景網格掛在 LOD0 底下（userData.cine），被取代的原網格標 cineB，
+// 所以剖切平面（clipMats）、斷裂後段深複製（rig）、砲塔拋飛（z.node.clone）、砲塔損毀變黑（z.mats）、機砲座擊毀（S.inst）都自動作用在近景網格上
+const YC={st:0,sc:null};
+function ymCineLoad(){if(YC.st||LOOK.q<1)return;YC.st=1;const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);
+  const ok=g=>{YC.sc=g.scene;YC.st=2;ymCineAttach(YM.bb)},bad=e=>{YC.st=3;console.warn('yamato_cine',e)};
+  const parse=b64=>{const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);window.__GLB11=null;L2.parse(u8.buffer,'',ok,bad)};
+  if(window.__GLB11)parse(window.__GLB11);
+  else if(document.querySelector('script[src="m/yamato.js"]')){const e=document.createElement('script');e.src='m/yamato_cine.js';e.onload=()=>window.__GLB11?parse(window.__GLB11):bad('empty');e.onerror=bad;document.head.appendChild(e)}   // 分檔版：近景檔不放在 head，任務開始才載
+  else if(!window.__GLB4)L2.load('assets/yamato_cine.glb',ok,undefined,bad);else YC.st=3}
+function ymCineAttach(S){if(!S||!S.lods||!S.lods[0]||!YC.sc||S.cineOK)return;const L0=S.lods[0],sc=YC.sc,C=sc.getObjectByName('CINE');if(!C)return;sc.updateMatrixWorld(true);
+  const mk=o=>{o.traverse(m=>{m.userData.cine=1;if(m.isMesh){m.castShadow=false;m.receiveShadow=false;for(const k of ['map','normalMap','roughnessMap'])if(m.material[k]&&!m.material[k].userData.an)aniso(m.material[k],8,2)}});o.visible=false;return o};
+  for(const n of ['hull','fine']){const o=C.getObjectByName(n),b=L0.getObjectByName(n);if(!o)continue;if(b)b.userData.cineB=1;L0.add(mk(o))}
+  for(const z of S.zones){if(!z.node)continue;const c=C.getObjectByName(z.id);if(!c)continue;const gs=[0,1,2].map(k=>c.getObjectByName(z.id+'g'+k+'m')),cm=c.getObjectByName(z.id+'m'),bm=z.node.getObjectByName(z.id+'m');
+    if(cm){if(bm)bm.userData.cineB=1;z.node.add(mk(cm));cm.traverse(m=>{if(m.isMesh)z.mats.push(m)})}
+    gs.forEach((cg,k)=>{const g=z.node.getObjectByName(z.id+'g'+k);if(!g||!cg)return;const bg=g.getObjectByName(z.id+'g'+k+'m');if(bg)bg.userData.cineB=1;g.add(mk(cg));cg.traverse(m=>{if(m.isMesh)z.mats.push(m)})})}
+  for(const [pn,key] of [['AA25','aa'],['HA127','ha']]){const pr=sc.getObjectByName(pn),ims=S.inst&&S.inst[key];if(!pr||!ims)continue;pr.updateWorldMatrix(true,true);for(const im of ims)im.userData.cineB=1;
+    pr.traverse(m=>{if(!m.isMesh)return;const im=new THREE.InstancedMesh(m.geometry,m.material,S[key].length);im.userData.m0=m.matrixWorld.clone();im.userData.cine=1;im.castShadow=false;im.frustumCulled=false;im.visible=false;ims.push(im);L0.add(im)});
+    for(let i=0;i<S[key].length;i++)ymMountSet(S,key,i)}
+  // 甲板木紋貼圖和遠景 LOD0 是同一張（4096×1024）：近景改用 LOD0 那份，省一張貼圖的顯示記憶體（約 22 MB）
+  {let bd=null;L0.traverse(m=>{if(m.isMesh&&!m.userData.cine&&m.material.name==='deck'&&m.material.map)bd=m.material.map});if(bd)L0.traverse(m=>{if(m.isMesh&&m.userData.cine&&m.material.name==='deck'&&m.material.map&&m.material.map!==bd){m.material.map.dispose();m.material.map=bd;m.material.needsUpdate=true}})}
+  S.cineOK=true;S.cineOn=false;YC.sc=null}
+function ymCineSet(root,on){if(root)root.traverse(o=>{if(o.userData.cine)o.visible=on;else if(o.userData.cineB)o.visible=!on})}
 // 護航驅逐艦（assets/kagero.glb：陽炎型 1945 狀態，LOD0–2 各一次繪製；extras「mounts」＝砲座／機砲位置）；載入前用程式建模的 ddGeo
 function loadDD(b64=window.__GLB8,url='assets/kagero.glb'){const L2=new GLTFLoader();L2.setMeshoptDecoder(MeshoptDecoder);
   const ok=g=>{const sc=g.scene,L0=sc.getObjectByName('LOD0');if(!L0)return;const mo=JSON.parse(L0.userData.mounts||'{"aa":[],"ha":[]}'),lay=JSON.parse(L0.userData.layout||'{}');
@@ -1880,7 +1906,7 @@ function ymMountSet(S,key,i){const ims=S.inst&&S.inst[key];if(!ims)return;const 
 const ymW=(S,lp,o)=>o.copy(lp).applyMatrix4(S.tilt.matrixWorld),ymL=(S,wp,o)=>o.copy(wp).applyMatrix4(S.inv);
 function ymXf(S){S.root.position.y=0;S.root.rotation.y=S.hd;S.tilt.rotation.set(S.pitch,0,-S.roll,'YXZ');S.tilt.position.set(0,-S.sinkY,S.sinkZ||0);S.root.updateMatrixWorld(true);S.inv.copy(S.tilt.matrixWorld).invert()}
 // ---- 開局：艦隊位置、航向、狀態歸零 ----
-function ymReset(){const S0=YM.bb;SINKCIN.reset();for(const S of YM.ships)skClean(S);YM.t=0;YM.res=0;YM.sup=90;YM.bursts.length=0;YM.mush=null;YM.lockS=null;YM.lockT=0;YM.lockOk=false;
+function ymReset(){const S0=YM.bb;SINKCIN.reset();if(S0.cineOK&&S0.cineOn){S0.cineOn=false;ymCineSet(S0.tilt,false)}for(const S of YM.ships)skClean(S);YM.t=0;YM.res=0;YM.sup=90;YM.bursts.length=0;YM.mush=null;YM.lockS=null;YM.lockT=0;YM.lockOk=false;
   YM.st={hpnF:0,hpnH:0,hpnSD:0,agmF:0,agmH:0,bombF:0,bombH:0,near:0,gunMounts:0,dmg:0,how:'',t:0,ddSunk:0,cvSunk:0,zeroL:0,parkK:0};
   const crs=Math.PI/2+.25;YM.crs=crs;YM.crsT=70;
   YM.ships.forEach((S,i)=>{const off=S.off0;S.hd=crs;S.spd=11.3;S.root.position.set(1800,0,22000);_y1.set(off[0],0,off[1]).applyAxisAngle(_Y,crs);S.root.position.add(_y1);S.off=off;
@@ -2456,8 +2482,8 @@ function capGeo(S,zc,ang){const d=ydk(S,zc),T=S.T,dh=d[0],wd=d[1],ww=Math.max(1,
   for(const b of S.boxes){if(!(zc>b[3]&&zc<b[4]))continue;const xo=b[5]||0,x0=xo-b[0],x1=xo+b[0],y0=Math.max(b[1],dh-.2),y1=b[2];V(x0,y0);V(x1,y0);V(x1,y1);V(x0,y0);V(x1,y1);V(x0,y1)}
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();return g}
 // 材質換成帶剖切平面的複製品（原材質存在 userData.ym0，重置時還原）
-function clipMats(root,cache,pl){root.traverse(m=>{if(!m.isMesh||m.userData.ymCap)return;if(!m.userData.ym0)m.userData.ym0=m.material;const s=m.userData.ym0;let c=cache.get(s);if(!c){c=s.clone();c.clippingPlanes=[pl];c.clipShadows=false;if(c.isMeshStandardMaterial&&c.name!=='gold'){c.roughness=Math.max(c.roughness,.86);c.envMapIntensity=.45}cache.set(s,c)}/* 翻覆後朝天的船底在低角度不要反射成一片白 */m.material=c})}
-function unclip(root){root.traverse(m=>{if(m.isMesh&&m.userData.ym0){m.material=m.userData.ym0;delete m.userData.ym0}})}
+function clipMats(root,cache,pl){root.traverse(m=>{if(!(m.isMesh||m.isLine)||m.userData.ymCap)return;if(!m.userData.ym0)m.userData.ym0=m.material;const s=m.userData.ym0;let c=cache.get(s);if(!c){c=s.clone();c.clippingPlanes=[pl];c.clipShadows=false;if(c.isMeshStandardMaterial&&c.name!=='gold'){c.roughness=Math.max(c.roughness,.86);c.envMapIntensity=.45}cache.set(s,c)}/* 翻覆後朝天的船底在低角度不要反射成一片白 */m.material=c})}
+function unclip(root){root.traverse(m=>{if((m.isMesh||m.isLine)&&m.userData.ym0){m.material=m.userData.ym0;delete m.userData.ym0}})}
 // 準備兩截：後段＝LOD0–2 的深複製（共用幾何），掛在 S.root；兩截各一塊斷面蓋板
 function rig(S,P){mkObjs();const Y=S.ysk||(S.ysk={});for(const n of O.tur)if(n)scene.remove(n);O.tur.length=0;
   if(Y.aft){S.root.remove(Y.aft);Y.aft=null}if(Y.capF){S.tilt.remove(Y.capF);Y.capF=null}unclip(S.tilt);
@@ -2556,7 +2582,8 @@ function events(S,P){const E=[],W=(aft,t,lp)=>wp(P,aft,t,lp,V3());
 // ---------- 連續特效（每幀依 t 全部重算）----------
 const WL=[.11,.1,.09],FG=[.92,.94,.96];
 function fx(S,P,t,dt,scrub){mkObjs();const B=O.bb,A=O.ad;B.n=0;A.n=0;const q=LOOK.q===0?.55:LOOK.q===1?.8:1,wd=P.wind,cp=cam.position,sl=SUND;
-  O.lodF=0;{const r=rootAt(P,t),d=Math.hypot(cp.x-r[0],cp.z-r[1],cp.y);O.lodF=d<4000?0:d<9000?1:2;const Y=S.ysk;if(Y&&Y.alods)Y.alods.forEach((o,i)=>o.visible=i===O.lodF);if(S.lods)S.lods.forEach((o,i)=>{if(o)o.visible=i===O.lodF})}
+  O.lodF=0;{const r=rootAt(P,t),d=Math.hypot(cp.x-r[0],cp.z-r[1],cp.y);O.lodF=d<4000?0:d<9000?1:2;const Y=S.ysk;if(Y&&Y.alods)Y.alods.forEach((o,i)=>o.visible=i===O.lodF);if(S.lods)S.lods.forEach((o,i)=>{if(o)o.visible=i===O.lodF});
+    if(S.cineOK){const on=LOOK.q>=1&&O.lodF===0&&d<(S.cineOn?700:650);if(on!==S.cineOn){S.cineOn=on;ymCineSet(S.tilt,on);if(Y)ymCineSet(Y.aft,on)}}}
   // 1) 艦上火災黑煙＋火光、煙囪煙／蒸汽（點在水面下就不冒）
   const smoke=(aft,lp,t0,t1,rate,life,rise,s0,s1,a,col,seed,add)=>{const ta=Math.max(t0,t-life),tb=Math.min(t1,t);if(tb<ta)return;const k0=Math.ceil(ta*rate),k1=Math.floor(tb*rate);
     for(let k=k0;k<=k1;k++){const ts=k/rate,age=t-ts,u=age/life;wp(P,aft,Math.max(0,ts),lp,_v);if(_v.y<.4)continue;const j1=hs(P,k,seed)-.5,j2=hs(P,k,seed+1)-.5;
@@ -2706,7 +2733,9 @@ function updYM(dt){if(!YM.on)return;YM.t+=dt;const st=YM.st,bb=YM.bb,cp=cam.posi
     if((S.cap)&&S.sinkY>S.T*4+20){S.root.visible=false}
     ymXf(S);
     // 遠近：LOD0 1.6 km 內、LOD1 6 km 內、再遠用 LOD2；看不到的艦就不更新細節
-    const dc=S.pos.distanceTo(cp);if(S.lods){const D2=S.lodD||[1600,6000],l=dc<D2[0]?0:dc<D2[1]?1:2;S.lods.forEach((o,i)=>{if(o)o.visible=i===l});S.near=l===0;if(S.det)S.det.visible=dc<800}
+    const dc=S.pos.distanceTo(cp);if(S.lods){const D2=S.lodD||[1600,6000],l=dc<D2[0]?0:dc<D2[1]?1:2;S.lods.forEach((o,i)=>{if(o)o.visible=i===l});S.near=l===0;if(S.det)S.det.visible=dc<800;
+      if(S.wl)S.wl.material.opacity=clamp((2400-dc)/1900,0,1)*.55;
+      if(S.cineOK&&!(SINKCIN.active&&SINKCIN.S===S)){const on=S.near&&LOOK.q>=1&&dc<(S.cineOn?380:340);if(on!==S.cineOn){S.cineOn=on;ymCineSet(S.tilt,on)}}}
     if(S.kind==='cv'){cvUpd(S,dt);if(S.parkIM){const nr=dc<650&&S.parkNM.length>0;for(const im of S.parkIM)im.visible=!nr&&dc<2600&&S.root.visible;for(const im of S.parkNM)im.visible=nr&&S.root.visible}}
     S.wake.visible=S.root.visible&&S.spd>1.5&&!S.cap;if(S.wake.visible)S.wake.material.opacity=.9*clamp(S.spd/11,0,1);
     // GU（對地鎖定）位置
@@ -3338,7 +3367,7 @@ tap('bCal',()=>{GY.cal=true;say('已校正：現在的拿法是水平飛行',1.5
 if(GY.on)window.addEventListener('devicemotion',onMotion);
 addEventListener('pagehide',stSave);document.addEventListener('visibilitychange',()=>{if(document.hidden)stSave()});
 function openMenu(pause){stSave();document.body.classList.add('inmenu');M.paused=true;$('menu').style.display='flex';const pz=pause&&M.mode!=='menu'&&!M.over;$('resume').style.display=pz?'block':'none';$('mainRows').style.display=pz?'none':'block';$('set').style.display='none'}
-function start(mode){document.body.classList.remove('inmenu');SINKCIN.reset();MV.reset();M.arena=mode==='arena';if(mode==='yamato')YM.on=true;else ymHide();if(M.arena)mode='combat';M.mode=mode;P.ezRel=false;inp.ezOn=false;WIREL.visible=false;GY.cal=true;M.paused=false;plane.visible=true;$('menu').style.display='none';$('set').style.display='none';$('result').style.display='none';spawn(mode==='land'?4:0);stM(stKey()).plays++;stSave();acc=0;last=performance.now();gyStatus()}
+function start(mode){document.body.classList.remove('inmenu');if(mode==='yamato')setTimeout(ymCineLoad,1200);SINKCIN.reset();MV.reset();M.arena=mode==='arena';if(mode==='yamato')YM.on=true;else ymHide();if(M.arena)mode='combat';M.mode=mode;P.ezRel=false;inp.ezOn=false;WIREL.visible=false;GY.cal=true;M.paused=false;plane.visible=true;$('menu').style.display='none';$('set').style.display='none';$('result').style.display='none';spawn(mode==='land'?4:0);stM(stKey()).plays++;stSave();acc=0;last=performance.now();gyStatus()}
 function retry(){document.body.classList.remove('inmenu');M.paused=false;plane.visible=true;$('menu').style.display='none';$('result').style.display='none';spawn(M.mode==='mission'?M.cp:(M.mode==='land'?4:0));if(M.mode!=='mission'||M.cp===0){stM(stKey()).plays++;stSave()}acc=0;last=performance.now();stkShow()}
 function showResult(win){document.body.classList.add('inmenu');M.over=true;M.paused=true;$('result').style.display='flex';
   const rec=stResult(win),sm=stM(stKey()),sc=cbScore(),stk=CB.best?'　最高連殺 '+CB.best+(CB.sb?'（+'+CB.sb+'）':''):'';
